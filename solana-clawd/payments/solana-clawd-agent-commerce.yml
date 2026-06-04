@@ -1,0 +1,57 @@
+name: solana-clawd-agent-commerce
+subdomain: solana-clawd-agent-commerce
+title: "Solana CLAWD Agent Commerce"
+description: "Sandbox-first paid storefront and decision endpoints for mintable Solana CLAWD agents."
+category: ai_ml
+version: v1
+forward_url: http://127.0.0.1:8787
+accounting: pooled
+
+endpoints:
+  - method: GET
+    path: "v1/health"
+    description: "Free health check for agent storefronts and automation."
+
+  - method: GET
+    path: "v1/agents/:agentId"
+    description: "Read a registered CLAWD agent profile, Metaplex asset address, services, and current store manifest."
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.001
+
+  - method: POST
+    path: "v1/agents/:agentId/decide"
+    description: "Ask an autonomous agent to evaluate a purchase, tool call, or store action under its spend policy."
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.005
+
+  - method: POST
+    path: "v1/agents/:agentId/store/orders"
+    description: "Create a paid store order for an agent-provided service or digital good."
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.01
+
+  - method: POST
+    path: "v1/agents/:agentId/memory"
+    description: "Paid durable memory write for agent commerce receipts, decisions, and customer state."
+    metering:
+      dimensions:
+        - direction: usage
+          unit: requests
+          scale: 1
+          tiers:
+            - price_usd: 0.002

@@ -1,0 +1,23 @@
+{
+  "name": "buddy-terminal",
+  "version": "1.0.0",
+  "description": "Interactive ASCII companion terminal — hatch, pet, and vibe with your deterministic buddy",
+  "type": "module",
+  "main": "dist/terminal.js",
+  "bin": {
+    "buddy": "./dist/terminal.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node --loader ts-node/esm src/terminal.ts",
+    "dev": "npx tsx src/terminal.ts"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.0.0"
+  }
+}

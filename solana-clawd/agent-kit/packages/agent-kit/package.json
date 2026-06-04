@@ -1,0 +1,31 @@
+{
+  "name": "@solana-clawd/agent-kit",
+  "version": "0.1.0",
+  "description": "Solana Clawd agent loader, runtime profile helpers, and the clawd-agent CLI for designing, validating, and registering agents.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "clawd-kit": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@solana-clawd/agent-registry": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.16"
+  }
+}

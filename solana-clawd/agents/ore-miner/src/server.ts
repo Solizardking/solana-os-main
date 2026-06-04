@@ -1,0 +1,120 @@
+/**
+ * server.ts — Live dashboard server for Clawd ORE Mining Agent.
+ *
+ * Starts an Express + Socket.io server that broadcasts CLAWD LOOP state
+ * to connected browser clients. The agent calls `io.emit('state', ...)`.
+ *
+ * Usage: imported by agent.ts; also standalone via `node --import tsx/esm src/server.ts`
+ */
+
+import express from 'express';
+import { createServer } from 'node:http';
+import { Server as SocketIOServer } from 'socket.io';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export interface DashboardState {
+  tick: number;
+  round: number;
+  miningOpen: boolean;
+  miningSecondsRemaining: number;
+  claimHoursRemaining: number;
+  totalDeployed: string;
+  totalMiners: number;
+  motherlode: string;
+  settled: boolean;
+  winningSquare: number | null;
+  squares: SquareState[];
+  wallet: {
+    pubkey: string;
+    balanceSol: string;
+    rewardsSol: string;
+    rewardsOre: string;
+    checkpointNeeded: boolean;
+  } | null;
+  agentAction: string;
+  agentReasoning: string;
+  loop: 'observe' | 'orient' | 'decide' | 'act' | 'idle';
+  log: LogEntry[];
+  dryRun: boolean;
+  timestamp: number;
+}
+
+export interface SquareState {
+  index: number;
+  deployed: string;
+  miners: number;
+  ev: number;
+  isUnderbet: boolean;
+  isEmpty: boolean;
+  myDeployment: string | null;
+}
+
+export interface LogEntry {
+  ts: number;
+  level: 'info' | 'action' | 'warn' | 'error';
+  msg: string;
+}
+
+export interface DashboardServer {
+  io: SocketIOServer;
+  url: string;
+  publishState: (state: DashboardState) => void;
+}
+
+export function createDashboardServer(port = 3333): DashboardServer {
+  const app = express();
+  const httpServer = createServer(app);
+  const io = new SocketIOServer(httpServer, {
+    cors: { origin: '*' },
+  });
+  let lastState: DashboardState | null = null;
+  let boundPort = port;
+
+  app.use(express.static(join(__dirname, 'public')));
+
+  app.get('/', (_req, res) => {
+    res.sendFile(join(__dirname, 'public', 'index.html'));
+  });
+
+  io.on('connection', (socket) => {
+    console.log(`[dashboard] client connected: ${socket.id}`);
+    if (lastState) {
+      socket.emit('state', lastState);
+    }
+    socket.on('disconnect', () => {
+      console.log(`[dashboard] client disconnected: ${socket.id}`);
+    });
+  });
+
+  // Try the requested port; if busy, try the next 4 ports before giving up.
+  const tryListen = (p: number, attemptsLeft: number): void => {
+    httpServer.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE' && attemptsLeft > 0) {
+        console.warn(`[dashboard] port ${p} in use, trying ${p + 1}…`);
+        boundPort = p + 1;
+        setTimeout(() => tryListen(p + 1, attemptsLeft - 1), 500);
+      } else {
+        console.error(`[dashboard] failed to bind: ${err.message}`);
+        // Don't crash the process — agent works fine without the dashboard.
+      }
+    });
+    httpServer.listen(p, () => {
+      boundPort = p;
+      console.log(`[dashboard] live at http://localhost:${p}`);
+    });
+  };
+
+  tryListen(port, 4);
+
+  return {
+    io,
+    get url() { return `http://localhost:${boundPort}`; },
+    publishState: (state: DashboardState) => {
+      lastState = state;
+      io.emit('state', state);
+    },
+  };
+}

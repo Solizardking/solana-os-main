@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "assets": {
+    "app-release.apk": {
+      "path": "app-release.apk",
+      "sha256": "5d6ef798a5910a9541c212a11ffb43a6ce2111e8041d09da94b99df521f389cd",
+      "uri": "./app-release.apk"
+    },
+    "assets/MhPv9kNdyMNpbi_XvpiIEKAGSwOLOkoYoFPw-Da_UFY.png": {
+      "path": "assets/MhPv9kNdyMNpbi_XvpiIEKAGSwOLOkoYoFPw-Da_UFY.png",
+      "sha256": "3213eff6435dc8c3696e2fd7be988810a0064b038b3a4a18a053f0f836bf5056",
+      "uri": "./assets/MhPv9kNdyMNpbi_XvpiIEKAGSwOLOkoYoFPw-Da_UFY.png"
+    },
+    "screenshots/screenshot-1.png": {
+      "path": "screenshots/screenshot-1.png",
+      "sha256": "6df32d1427557825a361e870286fe9ebd9c8e0420b9a692f315bb201f3f0fe6e",
+      "uri": "./screenshots/screenshot-1.png"
+    },
+    "screenshots/screenshot-2.png": {
+      "path": "screenshots/screenshot-2.png",
+      "sha256": "1e11deb4231d165dda7a6aa75a182059472b48cbb273e7bd5cce2271a8ea0908",
+      "uri": "./screenshots/screenshot-2.png"
+    },
+    "screenshots/screenshot-3.png": {
+      "path": "screenshots/screenshot-3.png",
+      "sha256": "0e29b5f5ee834706faa16174c2a2755e861ef3f7696d6787446719c9274664f4",
+      "uri": "./screenshots/screenshot-3.png"
+    },
+    "screenshots/screenshot-4.png": {
+      "path": "screenshots/screenshot-4.png",
+      "sha256": "19762334c42ec35ecf2979593c3b84abe2bf08386f853e46bc68924321390416",
+      "uri": "./screenshots/screenshot-4.png"
+    },
+    "assets/mm4uioS9-TqZp7ROv9tLu9Wb4p1SioGhi2lm_rKFdsA.png": {
+      "path": "assets/mm4uioS9-TqZp7ROv9tLu9Wb4p1SioGhi2lm_rKFdsA.png",
+      "sha256": "9a6e2e8a84bdf93a99a7b44ebfdb4bbbd59be29d528a81a18b6966feb28576c0",
+      "uri": "./assets/mm4uioS9-TqZp7ROv9tLu9Wb4p1SioGhi2lm_rKFdsA.png"
+    },
+    "assets/DFvGIc-v1nGyDd-wRZ54YoAgl30i7ncEv5_6HhLTyeI.png": {
+      "path": "assets/DFvGIc-v1nGyDd-wRZ54YoAgl30i7ncEv5_6HhLTyeI.png",
+      "sha256": "0c5bc621cfafd671b20ddfb0459e78628020977d22ee7704bf9ffa1e12d3c9e2",
+      "uri": "./assets/DFvGIc-v1nGyDd-wRZ54YoAgl30i7ncEv5_6HhLTyeI.png"
+    }
+  }
+}

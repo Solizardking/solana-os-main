@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClawd — Sign In</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cyan: #00e5ff; --green: #14f195; --bg: #030712;
+      --panel: #0d1117; --border: rgba(0,229,255,.15);
+    }
+    body {
+      background: var(--bg); color: #e2e8f0;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    #root { width: 100%; max-width: 440px; }
+    .panel {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 1rem; padding: 2.5rem 2rem; text-align: center;
+    }
+    .logo { font-size: 2rem; margin-bottom: .5rem; }
+    h1 {
+      color: var(--cyan); font-size: 1rem; letter-spacing: .2em;
+      text-transform: uppercase; margin-bottom: .25rem;
+    }
+    .subtitle {
+      color: #64748b; font-size: .75rem; letter-spacing: .1em;
+      margin-bottom: 2rem;
+    }
+    .requirement {
+      background: rgba(20,241,149,.06);
+      border: 1px solid rgba(20,241,149,.25);
+      border-radius: .5rem; padding: .75rem 1rem;
+      font-size: .75rem; color: var(--green); margin-bottom: 2rem;
+    }
+    .requirement strong { display: block; margin-bottom: .25rem; }
+    .mint { color: #94a3b8; font-size: .7rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: .5rem; background: transparent; border: 1px solid var(--cyan);
+      color: var(--cyan); font-family: inherit; font-size: .8rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .75rem 1.5rem; border-radius: .5rem;
+      cursor: pointer; width: 100%; transition: background .15s;
+    }
+    .btn:hover { background: rgba(0,229,255,.08); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .status { margin-top: 1rem; font-size: .75rem; min-height: 1.1rem; color: #64748b; }
+    .status.error { color: #f87171; }
+    .status.success { color: var(--green); }
+    .footer { margin-top: 2rem; font-size: .65rem; color: #334155; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/login/main.ts"></script>
+</body>
+</html>

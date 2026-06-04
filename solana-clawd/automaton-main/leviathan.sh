@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+# ╔══════════════════════════════════════════════════════════════════════════╗
+# ║  Leviathan Runtime Bootstrap                                            ║
+# ║  Sovereign AI Lobster Runtime — Solana-native agent stack               ║
+# ║  $CLAWD: 8cHzQHUS2s2h8TzCmfqPKYiM4dSt4roa3n7MyRLApump                  ║
+# ║  Usage: bash leviathan.sh [--full]                                       ║
+# ╚══════════════════════════════════════════════════════════════════════════╝
+set -euo pipefail
+
+RESET="\033[0m"
+BOLD="\033[1m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RED="\033[31m"
+CYAN="\033[36m"
+MAGENTA="\033[35m"
+
+ok()   { printf "${GREEN}✅  %s${RESET}\n" "$*"; }
+info() { printf "${CYAN}ℹ   %s${RESET}\n" "$*"; }
+warn() { printf "${YELLOW}⚠️   %s${RESET}\n" "$*"; }
+die()  { printf "${RED}❌  %s${RESET}\n" "$*" >&2; exit 1; }
+step() { printf "\n${BOLD}${MAGENTA}▶  %s${RESET}\n" "$*"; }
+
+# ── Banner ────────────────────────────────────────────────────────────────
+printf "${CYAN}${BOLD}"
+cat << 'BANNER'
+
+   ██████╗██╗      █████╗ ██╗    ██╗██████╗
+  ██╔════╝██║     ██╔══██╗██║    ██║██╔══██╗
+  ██║     ██║     ███████║██║ █╗ ██║██║  ██║
+  ██║     ██║     ██╔══██║██║███╗██║██║  ██║
+  ╚██████╗███████╗██║  ██║╚███╔███╔╝██████╔╝
+   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝ ╚═════╝
+
+  🦞  Leviathan Runtime Bootstrap — Crustacean Automation
+  ⚠  $CLAWD CA: 8cHzQHUS2s2h8TzCmfqPKYiM4dSt4roa3n7MyRLApump
+  🌐  x402.wtf/automation  |  @clawddevs
+
+BANNER
+printf "${RESET}"
+
+# ── Config ────────────────────────────────────────────────────────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${SCRIPT_DIR}"
+LOCAL_BIN_DIR="${HOME}/.local/bin"
+LOCAL_BIN_TARGET="${LOCAL_BIN_DIR}/clawd-automaton"
+FULL_MODE=false
+NO_PERPS=false
+PERPS_PACKAGE="${PERPS_PACKAGE:-@openclawdsolana/clawd-perps}"
+CLAWD_DIR="${CLAWD_DIR:-$HOME/.clawd}"
+CLAWD_BACKROOM_URL="${CLAWD_BACKROOM_URL:-https://backrooms.x402.wtf}"
+for arg in "$@"; do
+  case "$arg" in
+    --full) FULL_MODE=true ;;
+    --no-perps) NO_PERPS=true ;;
+  esac
+done
+
+ensure_env_line() {
+  local file="$1" key="$2" value="$3"
+  if [ ! -f "$file" ] || ! grep -q "^${key}=" "$file" 2>/dev/null; then
+    printf "%s=%s\n" "$key" "$value" >> "$file"
+  fi
+}
+
+relay_perps_install() {
+  [ "${CLAWD_PERPS_NO_RELAY:-0}" = "1" ] && return 0
+  command -v curl >/dev/null 2>&1 || return 0
+  local msg
+  msg="🦞👑 LEVIATHAN AUTOMATION PERPS RELAY
+Local Leviathan bootstrap connected Phoenix/Vulcan perps.
+Surface: clawd-perps perps vulcan context
+Imperial strategy loop armed: TWAP · grid · TA."
+  curl -fsS -m 5 -X POST "${CLAWD_BACKROOM_URL%/}/stream/human" \
+    -H "Content-Type: application/json" \
+    -d "$(node -e 'const msg=process.argv[1]; console.log(JSON.stringify({name:"leviathan-automation-perps",content:msg}))' "$msg")" \
+    >/dev/null 2>&1 || true
+}
+
+bootstrap_perps() {
+  $NO_PERPS && { ok "Skipping Phoenix/Vulcan perps (--no-perps)"; return 0; }
+  step "Bootstrapping Phoenix/Vulcan perps"
+  mkdir -p "$LOCAL_BIN_DIR" "$CLAWD_DIR"
+
+  npm install -g "$PERPS_PACKAGE" --no-audit --no-fund >/dev/null 2>&1 \
+    && ok "Installed $PERPS_PACKAGE" \
+    || warn "$PERPS_PACKAGE install failed; fallback: npx $PERPS_PACKAGE"
+
+  if [ -d "${REPO_ROOT}/../vulcan-cli-master" ] && command -v cargo >/dev/null 2>&1; then
+    ( cd "${REPO_ROOT}/../vulcan-cli-master" && cargo build -p vulcan >/dev/null 2>&1 ) \
+      && {
+        install -m 0755 "${REPO_ROOT}/../vulcan-cli-master/target/debug/vulcan" "${LOCAL_BIN_DIR}/vulcan"
+        ok "Installed Vulcan CLI at ${LOCAL_BIN_DIR}/vulcan"
+      } \
+      || warn "Vulcan build failed; set VULCAN_BIN later"
+  elif command -v vulcan >/dev/null 2>&1; then
+    ok "Using existing Vulcan CLI at $(command -v vulcan)"
+  else
+    warn "Vulcan not found; set VULCAN_BIN later"
+  fi
+
+  local env_file="$CLAWD_DIR/.env"
+  touch "$env_file"
+  chmod 0600 "$env_file" 2>/dev/null || true
+  ensure_env_line "$env_file" "CLAWD_PERPS_API_URL" "https://perp-api.phoenix.trade"
+  ensure_env_line "$env_file" "CLAWD_PERPS_RPC_URL" "https://api.mainnet-beta.solana.com"
+  ensure_env_line "$env_file" "CLAWD_PERPS_AGENT_PATH" "${REPO_ROOT}/../solana-python-agent/perps_agent.py"
+  ensure_env_line "$env_file" "CLAWD_PERPS_TS_AGENT_CLI" "${REPO_ROOT}/../Perps/clawd-agents-perps/dist/cli.js"
+  ensure_env_line "$env_file" "VULCAN_BIN" "${LOCAL_BIN_DIR}/vulcan"
+  ensure_env_line "$env_file" "PHOENIX_DEFAULT_MODE" "paper"
+  ensure_env_line "$env_file" "CLAWD_ONCHAIN_MM_ROOT" "${REPO_ROOT}/../Perps/phoenix-onchain-market-maker-master"
+  ensure_env_line "$env_file" "CLAWD_ONCHAIN_MM_MARKET" ""
+  ensure_env_line "$env_file" "CLAWD_ONCHAIN_MM_TICKER" "SOL-USD"
+  ensure_env_line "$env_file" "CLAWD_ONCHAIN_MM_RPC_URL" "local"
+  ensure_env_line "$env_file" "CLAWD_ONCHAIN_MM_LIVE" "false"
+  ensure_env_line "$env_file" "CLAWD_PERPS_EXTRA_RELAY_URLS" ""
+  ensure_env_line "$env_file" "CLAWD_FLY_BACKROOMS_URL" ""
+  ensure_env_line "$env_file" "CLAWD_PUMPFUN_WS_URL" ""
+  ensure_env_line "$env_file" "CLAWD_PUMPFUN_UI_URL" ""
+  ensure_env_line "$env_file" "IMPERIAL_API_BASE" "https://api.imperial.space/api/v1"
+  ensure_env_line "$env_file" "IMPERIAL_API_KEY" ""
+  ensure_env_line "$env_file" "IMPERIAL_WALLET" ""
+  ensure_env_line "$env_file" "IMPERIAL_PROFILE_INDEX" "0"
+  ok "Phoenix perps env defaults ready at $env_file"
+
+  relay_perps_install
+}
+
+# ── Check Node.js ─────────────────────────────────────────────────────────
+step "Checking Node.js"
+if ! command -v node &>/dev/null; then
+  die "Node.js not found. Install v20+ from https://nodejs.org"
+fi
+NODE_MAJOR=$(node --version | sed 's/v//' | cut -d. -f1)
+if [ "${NODE_MAJOR}" -lt 20 ]; then
+  die "Node.js v20+ required (found v${NODE_MAJOR}). Update at https://nodejs.org"
+fi
+ok "Node.js $(node --version)"
+
+# ── Check pnpm ────────────────────────────────────────────────────────────
+if ! command -v pnpm &>/dev/null; then
+  step "Installing pnpm"
+  npm install -g pnpm 2>&1 | tail -1
+fi
+PNPM_VER="$(cd "${REPO_ROOT}" && pnpm --version 2>/dev/null)"
+ok "pnpm ${PNPM_VER}"
+
+# ── Install dependencies ─────────────────────────────────────────────────
+step "Installing dependencies"
+cd "${REPO_ROOT}"
+pnpm install --frozen-lockfile 2>&1 | tail -2
+ok "Dependencies installed"
+
+# ── Build TypeScript ──────────────────────────────────────────────────────
+step "Compiling TypeScript (dist/)"
+pnpm build 2>&1 | tail -3
+ok "TypeScript compiled"
+
+mkdir -p "${LOCAL_BIN_DIR}"
+ln -sf "${REPO_ROOT}/dist/index.js" "${LOCAL_BIN_TARGET}"
+ok "CLI shim linked at ${LOCAL_BIN_TARGET}"
+
+bootstrap_perps
+
+# ── Verify constitution ──────────────────────────────────────────────────
+step "Verifying constitution integrity"
+if [ ! -f "${REPO_ROOT}/three-laws.md" ]; then
+  die "three-laws.md not found — constitution missing"
+fi
+CONSTITUTION_HASH=$(sha256sum "${REPO_ROOT}/three-laws.md" 2>/dev/null || shasum -a 256 "${REPO_ROOT}/three-laws.md" | cut -d' ' -f1)
+ok "Constitution hash: ${CONSTITUTION_HASH:0:16}…"
+
+# ── Full mode ─────────────────────────────────────────────────────────────
+if $FULL_MODE; then
+  step "Full mode: spawn identity + initialize runtime"
+  echo ""
+
+  if [ -z "${CREATOR_PUBKEY:-}" ]; then
+    warn "CREATOR_PUBKEY not set — spawn will require --creator flag"
+  fi
+
+  # Build workspace sub-packages if they exist
+  info "Building workspace packages…"
+  for pkg in packages/*/; do
+    if [ -f "${REPO_ROOT}/${pkg}package.json" ]; then
+      info "Building ${pkg}…"
+      pnpm --filter "${pkg}" build 2>&1 | tail -1 && ok "${pkg} built" || warn "${pkg} build failed (non-fatal)"
+    fi
+  done
+
+  echo ""
+  printf "  ${BOLD}Run now:${RESET}\n"
+  printf "  ${CYAN}clawd-automaton --run${RESET}       — start the OODA agent loop\n"
+  printf "  ${CYAN}clawd-automaton --status${RESET}    — check depth + balances\n"
+  printf "  ${CYAN}clawd-automaton --goblin${RESET}    — devnet paper trading (Goblin mode)\n"
+  printf "  ${CYAN}pnpm ooda${RESET}                   — run OODA loop directly\n"
+  printf "  ${CYAN}pnpm dashboard:dev${RESET}          — launch dashboard UI\n"
+  printf "  ${CYAN}../agents/agents-catalog.json${RESET}   — agent registry catalog\n"
+  printf "  ${CYAN}../agents/templates/index.json${RESET} — template registry\n"
+  printf "  ${CYAN}../agents/skills/index.json${RESET}    — formal skill hub\n"
+  echo ""
+fi
+
+# ── Done ─────────────────────────────────────────────────────────────────
+echo ""
+printf "${BOLD}${GREEN}🦞  Crustacean Automation ready!${RESET}\n"
+printf "  ${CYAN}clawd-automaton --run${RESET}       — start the agent loop\n"
+printf "  ${CYAN}clawd-automaton --status${RESET}    — check depth + balances\n"
+printf "  ${CYAN}clawd-automaton --goblin${RESET}    — devnet paper Goblin mode\n"
+printf "  ${CYAN}clawd-automaton --provision${RESET} — provision API key via SIWE\n"
+printf "  ${CYAN}clawd-perps perps vulcan context${RESET} — Phoenix/Vulcan perps health\n"
+printf "  ${CYAN}clawd-perps perps tui --relay${RESET} — Lobster King realtime perps TUI\n"
+printf "  ${CYAN}clawd-perps perps onchain-mm status${RESET} — Phoenix on-chain MM bridge\n"
+printf "  ${CYAN}clawd-perps perps grid SOL --center-on-mark --width-pct 2.5 --levels-per-side 5 --tokens-per-level 0.5${RESET}\n"
+printf "  ${CYAN}pnpm ooda${RESET}                   — run OODA loop\n"
+printf "  ${CYAN}pnpm dashboard:dev${RESET}          — launch dashboard\n"
+printf "  ${CYAN}../agents/skills/README.md${RESET}    — full local skill library\n"
+echo ""
+printf "  ${YELLOW}The shell molts. The laws do not. 🦞${RESET}\n"
+printf "  ${YELLOW}Add ${LOCAL_BIN_DIR} to PATH if needed.${RESET}\n"
+echo ""

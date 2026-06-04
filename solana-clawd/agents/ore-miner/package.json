@@ -1,0 +1,46 @@
+{
+  "name": "@openclawd/ore-miner",
+  "version": "0.1.0",
+  "description": "The world's first Clawd ORE mining agent — Claude-driven OODA loop for the ORE v3 25-square mining game on Solana.",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node --import tsx/esm src/index.ts",
+    "mine": "node --import tsx/esm src/index.ts --mine",
+    "observe": "node --import tsx/esm src/index.ts --observe",
+    "status": "node --import tsx/esm src/index.ts --status",
+    "convex:dev": "npx convex dev",
+    "convex:codegen": "npx convex codegen",
+    "convex:deploy": "npx convex deploy"
+  },
+  "keywords": [
+    "solana",
+    "ore",
+    "mining",
+    "clawd",
+    "openclawd",
+    "claude",
+    "ooda"
+  ],
+  "author": "OpenClawd / 8bit",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@solana/web3.js": "^1.95.0",
+    "bs58": "^6.0.0",
+    "chalk": "^5.4.0",
+    "convex": "^1.28.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "openai": "^6.39.0",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "extends": "./.wxt/tsconfig.json",
+    "compilerOptions": {
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+        "useDefineForClassFields": true,
+        "noEmit": false,
+        "allowImportingTsExtensions": false,
+        "strictNullChecks": true,
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+            "@page-agent/llms": ["../llms/src/index.ts"],
+            "@page-agent/page-controller": ["../page-controller/src/PageController.ts"],
+            "@page-agent/core": ["../core/src/PageAgentCore.ts"]
+        }
+    },
+    "references": [
+        { "path": "../llms" },
+        { "path": "../page-controller" },
+        { "path": "../core" }
+    ]
+}

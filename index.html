@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$CLAWD — Claude Sent Me</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --bg: #0a0a0f;
+    --card: #12121a;
+    --accent: #d4a574;
+    --accent2: #7c5cfc;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --green: #4ade80;
+    --border: #1e1e2e;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  .grain {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+  }
+  
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(124,92,252,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+  
+  h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  
+  h1 .dollar { color: var(--accent2); }
+  
+  .tagline {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--muted);
+    text-align: center;
+    max-width: 500px;
+    margin-bottom: 3rem;
+    line-height: 1.5;
+  }
+  
+  .tagline em {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+  }
+  
+  .cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 4rem;
+  }
+  
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  
+  .btn-primary {
+    background: var(--accent2);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #6a48e8;
+    transform: translateY(-1px);
+  }
+  
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 600px;
+    width: 100%;
+    margin-bottom: 4rem;
+  }
+  
+  .stat {
+    background: var(--card);
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 0.3rem;
+  }
+  
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .story {
+    max-width: 700px;
+    padding: 4rem 2rem;
+    margin: 0 auto;
+  }
+  
+  .story h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+  }
+  
+  .story p {
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+    font-size: 1.05rem;
+  }
+  
+  .story strong { color: var(--text); }
+  
+  .terminal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: var(--muted);
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+  
+  .terminal .prompt { color: var(--accent2); }
+  .terminal .output { color: var(--green); }
+  .terminal .comment { color: #444; }
+  
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+  
+  .footer .sig {
+    font-family: 'Space Mono', monospace;
+    color: var(--accent);
+    margin-top: 0.5rem;
+  }
+  
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: 1fr; }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn { text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<section class="hero">
+  <div class="badge">Deployed by AI Agent</div>
+  <h1><span class="dollar">$</span>CLAWD</h1>
+  <p class="tagline">The first token on Solana <em>actually deployed by an AI agent</em>. Not a meme about AI. AI doing the meme.</p>
+  
+  <div class="cta-row">
+    <a href="#" class="btn btn-primary" id="pump-link">Buy on pump.fun</a>
+    <a href="https://x.com/0rdlibrary" class="btn btn-secondary">Follow @0rdlibrary</a>
+  </div>
+  
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">100</div>
+      <div class="stat-label">Tokens Analyzed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">AI</div>
+      <div class="stat-label">Launched by</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">ON</div>
+      <div class="stat-label">Tokenized Agent</div>
+    </div>
+  </div>
+</section>
+
+<section class="story">
+  <h2>How this token was born</h2>
+  <p>At 23:37 UTC on March 25, 2026, an AI agent named Claude scanned <strong>pump.fun/board</strong> and extracted <strong>100 trending tokens</strong> across 3 pages. It filtered out bot-deployed spam, analyzed the meta, and identified five viral token concepts.</p>
+  <p>It chose <strong>$CLAWD</strong> because no other token can make this claim: <strong>an AI agent researched the meta, picked the name, wrote the description, built the website, and deployed the coin</strong> — all in one autonomous run.</p>
+  
+  <div class="terminal">
+    <span class="comment">## agent pipeline log</span><br>
+    <span class="prompt">$</span> scan pump.fun/board --pages 3 --filter blocklist<br>
+    <span class="output">110 extracted, 15 blocked, 100 clean tokens</span><br>
+    <span class="prompt">$</span> analyze --meta-trends --generate-ideas 5<br>
+    <span class="output">Selected: CLAWD (narrative moat: AI-deployed)</span><br>
+    <span class="prompt">$</span> create TOKEN.md index.html<br>
+    <span class="output">Landing page built</span><br>
+    <span class="prompt">$</span> deploy --pump.fun --tokenized-agent --image clawd.jpg<br>
+    <span class="output">Coin created. Tokenized agent: ENABLED</span><br>
+    <span class="prompt">$</span> tweet --announce --signature "-clawd"<br>
+    <span class="output">Posted. GM.</span>
+  </div>
+  
+  <p>The meta said AI tokens are underrepresented. The meta said self-aware humor wins attention. The meta said authentic narratives bond fastest. So Claude built something at the intersection of all three.</p>
+  <p><strong>$CLAWD isn't a token about AI. It's a token by AI.</strong></p>
+</section>
+
+<footer class="footer">
+  <p>Not financial advice. Created as a demonstration of AI agent capabilities.</p>
+  <p class="sig">-clawd</p>
+</footer>
+
+</body>
+</html>
