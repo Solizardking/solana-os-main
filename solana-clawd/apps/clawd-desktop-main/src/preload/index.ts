@@ -1025,7 +1025,7 @@ const clawdEngineAPI = {
 };
 
 // ── Clawd OS API — Helius, AssemblyAI, LiveKit, Metaplex ────────────────────
-const clawdAPI = {
+const clawdSolanaAPI = {
   helius: {
     getBalances: (address: string) => ipcRenderer.invoke("helius:getBalances", address),
     getTokenAccounts: (address: string) => ipcRenderer.invoke("helius:getTokenAccounts", address),
@@ -1089,10 +1089,12 @@ const clawdAPI = {
   },
 };
 
+// Merge engine API + Solana API into single clawdAPI for renderer
+const clawdAPI = { ...clawdEngineAPI, ...clawdSolanaAPI };
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
-    contextBridge.exposeInMainWorld("clawdEngineAPI", clawdEngineAPI);
     contextBridge.exposeInMainWorld("clawdAPI", clawdAPI);
   } catch (error) {
     console.error(error);
@@ -1100,8 +1102,6 @@ if (process.contextIsolated) {
 } else {
   // @ts-ignore (define in dts)
   window.electron = electronAPI;
-  // @ts-ignore (define in dts)
-  window.clawdEngineAPI = clawdEngineAPI;
   // @ts-ignore (define in dts)
   window.clawdAPI = clawdAPI;
 }
