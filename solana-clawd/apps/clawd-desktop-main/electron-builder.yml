@@ -35,9 +35,9 @@ mac:
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  hardenedRuntime: true
+  hardenedRuntime: false
   gatekeeperAssess: false
-  notarize: true
+  notarize: false
 dmg:
   artifactName: ClaWdOS-${version}-${arch}.${ext}
   title: Clawd OS
