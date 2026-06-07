@@ -62,7 +62,7 @@ A maintainer will review your PR and may request changes. Once approved, it will
 
 ## Reporting Bugs
 
-Found a bug? [Open an issue](https://github.com/NousResearch/clawd-desktop/issues/new) with:
+Found a bug? [Open an issue](https://github.com/x402agent/solana-clawd/issues/new) with:
 
 - A clear title and description.
 - Steps to reproduce the issue.
@@ -71,7 +71,7 @@ Found a bug? [Open an issue](https://github.com/NousResearch/clawd-desktop/issue
 
 ## Requesting Features
 
-Have an idea? [Open an issue](https://github.com/NousResearch/clawd-desktop/issues/new) and describe:
+Have an idea? [Open an issue](https://github.com/x402agent/solana-clawd/issues/new) and describe:
 
 - The problem you're trying to solve.
 - How you'd like it to work.
@@ -80,7 +80,13 @@ Have an idea? [Open an issue](https://github.com/NousResearch/clawd-desktop/issu
 ## Project Structure
 
 ```text
-src/main/                Electron main process, IPC handlers, Clawd integration
+src/main/                Electron main process, IPC handlers, Clawd OS integration
+src/main/clawd.ts        Core chat/streaming/API gateway client
+src/main/clawd-auth.ts   OAuth provider authentication flows
+src/main/config.ts       Profile-aware configuration management
+src/main/ssh-tunnel.ts   SSH tunnel for remote VPS connectivity
+src/main/helius.ts       Helius RPC Solana integration
+src/main/installer.ts    Clawd Agent installation and dependency resolution
 src/preload/             Secure renderer bridge
 src/renderer/src/        React app and UI components
 resources/               App icons and packaged assets
@@ -96,8 +102,7 @@ build/                   Packaging resources
 
 ## Community
 
-- Join the [Nous Research Discord](https://discord.gg/NousResearch) to chat with other contributors.
-- Check the [documentation](https://clawd-agent.nousresearch.com/docs/) for more context on how Clawd works.
+- Check the [Solana OS docs](https://github.com/x402agent/solana-os-go) for more context on the full Solana AI stack.
 
 ## License
 

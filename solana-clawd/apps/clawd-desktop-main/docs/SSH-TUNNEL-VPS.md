@@ -81,10 +81,10 @@ This is common on production VPSes. Clawd is installed under
 User=clawd
 Group=clawd
 Environment=HOME=/opt/clawd
-ExecStart=/optclawd/clawd-agent/.venv/bin/clawd gateway
+ExecStart=/opt/clawd/clawd-agent/.venv/bin/clawd gateway
 ```
 
-In this case the data lives at `/optclawd/.clawd/` and you need to
+In this case the data lives at `/opt/clawd/.clawd/` and you need to
 SSH in as the `clawd` user. Two things to set up:
 
 1. **Make sure the `clawd` user has a real login shell.** Hardened
@@ -100,11 +100,11 @@ SSH in as the `clawd` user. Two things to set up:
    ```bash
    PUBKEY="ssh-ed25519 AAAA... your-desktop-host"   # paste yours
 
-   sudo install -d -o clawd -g clawd -m 700 /optclawd/.ssh
-   sudo touch /optclawd/.ssh/authorized_keys
-   sudo chown clawd:clawd /optclawd/.ssh/authorized_keys
-   sudo chmod 600 /optclawd/.ssh/authorized_keys
-   echo "$PUBKEY" | sudo tee -a /optclawd/.ssh/authorized_keys
+   sudo install -d -o clawd -g clawd -m 700 /opt/clawd/.ssh
+   sudo touch /opt/clawd/.ssh/authorized_keys
+   sudo chown clawd:clawd /opt/clawd/.ssh/authorized_keys
+   sudo chmod 600 /opt/clawd/.ssh/authorized_keys
+   echo "$PUBKEY" | sudo tee -a /opt/clawd/.ssh/authorized_keys
    ```
 
    **Note:** systemd's `ProtectHome=read-only` on the Clawd service unit
@@ -135,7 +135,7 @@ ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
 
 You should see `200`. If you see `Permission denied (publickey)`, the
 key isn't authorized for that user — double-check
-`/optclawd/.ssh/authorized_keys` and its permissions (700 on the dir,
+`/opt/clawd/.ssh/authorized_keys` and its permissions (700 on the dir,
 600 on the file, owned by the target user). If you see a passphrase
 prompt, your key has a passphrase and SSH agent isn't loaded — either
 remove the passphrase, or load it into the agent before launching the
@@ -247,7 +247,7 @@ Fixed in [PR #205][#205] by probing the venv binary directly. If your
 build pre-dates that fix, you can verify locally with:
 
 ```bash
-ssh <user>@<host> '/optclawd/clawd-agent/.venv/bin/clawd --version'
+ssh <user>@<host> '/opt/clawd/clawd-agent/.venv/bin/clawd --version'
 ```
 
 A working version string means the fix will populate the card once your

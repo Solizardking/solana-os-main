@@ -1,20 +1,14 @@
-<img width="100%" alt="CLAWD DESKTOP" src="previews/header.webp" />
+<img width="100%" alt="CLAWD OS" src="previews/header.webp" />
 
 <br/>
 <p align="center">
-  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
-  <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
-  <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Download-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
-<a href="https://github.com/fathah/clawd-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
-</a>
-  <a href="https://github.com/fathah/clawd-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
+  <a href="https://github.com/x402agent/solana-clawd/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://github.com/x402agent/solana-clawd/releases/">
+  <img src="https://img.shields.io/github/downloads/x402agent/solana-clawd/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
 </a>
 </p>
 
-> **This project is in active development.** Features may change, and some things might break. If you run into a problem or have an idea, [open an issue](https://github.com/fathah/clawd-desktop/issues). Contributions are welcome!
+> **This project is in active development.** Features may change, and some things might break. If you run into a problem or have an idea, [open an issue](https://github.com/x402agent/solana-clawd/issues). Contributions are welcome!
 
 ## Languages
 
@@ -23,13 +17,23 @@
 - 日本語: `README.ja-JP.md`
 - 🌎 Español (LATAM): `README.es-LATAM.md`
 
-Clawd Desktop is a native desktop app for installing, configuring, and chatting with [Clawd Agent](https://github.com/NousResearch/clawd-agent) — a self-improving AI assistant with tool use, multi-platform messaging, and a closed learning loop.
+Clawd OS is a native desktop app for installing, configuring, and chatting with the Clawd Agent — a self-improving AI assistant with Solana blockchain integration, tool use, multi-platform messaging, and a closed learning loop.
 
-Instead of managing the CLI by hand, the app walks through install, provider setup, and day-to-day usage in one place. It uses the official Clawd install script, stores Clawd in `~/.clawd`, and gives you a GUI for chat, sessions, profiles, memory, skills, tools, scheduling, messaging gateways, and more.
+Instead of managing the CLI by hand, the app walks through install, provider setup, and day-to-day usage in one place. It stores Clawd in `~/.clawd`, and gives you a GUI for chat, sessions, profiles, memory, skills, tools, scheduling, messaging gateways, Solana wallet operations, and more.
 
 ## Install
 
-<a href="https://clawdagents.cc/"><img width="380" alt="Download Now" src="previews/download.webp" /></a>
+### macOS
+
+Download the latest `Clawd OS.app` from [Releases](https://github.com/x402agent/solana-clawd/releases). Move to `/Applications` and launch.
+
+```bash
+# Or build from source:
+cd solana-clawd/apps/clawd-desktop-main
+npm install
+npm run build:mac
+open dist/mac-arm64/Clawd\ OS.app
+```
 
 ### Windows
 
@@ -42,8 +46,6 @@ Instead of managing the CLI by hand, the app walks through install, provider set
 > # …re-run the installer; once it finishes:
 > sudo rm /etc/sudoers.d/clawd-install
 > ```
->
-> Tracked in [#109](https://github.com/fathah/clawd-desktop/issues/109).
 
 ### Fedora (RPM)
 
@@ -84,9 +86,11 @@ sudo dnf install ./clawd-desktop-<version>.rpm
 
 ## Features
 
-- **Guided first-run install** for Clawd Agent with progress tracking and dependency resolution
+- **Guided first-run install** for the Clawd Agent with progress tracking and dependency resolution
 - **Local or remote backend** — run Clawd locally on `127.0.0.1:8642`, or connect the desktop app to a remote Clawd API server with URL + API key
+- **SSH Tunnel mode** — full remote parity: every screen (Chat, Sessions, Skills, Memory, Soul, Tools, Schedules, Gateway, Profiles, Models, Logs) works against a remote VPS via SSH proxy. See the [SSH Tunnel VPS Guide](docs/SSH-TUNNEL-VPS.md)
 - **Multi-provider support** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, Hugging Face, Groq, and local OpenAI-compatible endpoints (LM Studio, Atomic Chat, Ollama, vLLM, llama.cpp)
+- **Solana integration** — Helius RPC for wallet balances, token accounts, transaction history, DAS assets, token pricing, and portfolio views. Built-in wallet creation, import, and message signing
 - **Streaming chat UI** with SSE streaming, tool progress indicators, markdown rendering, and syntax highlighting
 - **Token usage tracking** — live prompt/completion token counts and cost display in the chat footer, plus a `/usage` slash command
 - **22 slash commands** — `/new`, `/clear`, `/fast`, `/web`, `/image`, `/browse`, `/code`, `/shell`, `/usage`, `/help`, `/tools`, `/skills`, `/model`, `/memory`, `/persona`, `/version`, `/compact`, `/compress`, `/undo`, `/retry`, `/debug`, `/status`, and more
@@ -98,11 +102,17 @@ sudo dnf install ./clawd-desktop-<version>.rpm
 - **Saved models** — CRUD management for model configurations across providers
 - **Scheduled tasks** — cron job builder (minutes, hourly, daily, weekly, custom cron) with 15 delivery targets
 - **16 messaging gateways** — Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email (IMAP/SMTP), SMS (Twilio/Vonage), iMessage (BlueBubbles), DingTalk, Feishu/Lark, WeCom, WeChat (iLink Bot), Webhooks, Home Assistant
-- **Clawd Office (Claw3d)** — visual 3D interface with dev server and adapter management
+- **Clawd Office (Claw3D)** — visual 3D interface with dev server and adapter management
+- **Agent Wallet** — built-in Solana wallet management with keypair generation, encrypted vault storage, and transaction signing
+- **x402 Payments** — HTTP 402 payment-required protocol support for agent-to-agent payments on Solana
+- **Voice input** — AssemblyAI speech-to-text transcription and voice agent tokens
+- **LiveKit real-time** — WebRTC room and agent token generation for real-time communication
+- **Metaplex Agents** — browse and interact with on-chain agent registries
+- **Discover marketplace** — community registry for skills, MCPs, and workflows
 - **Backup, import & debug dump** — full data backup/restore and system diagnostics from Settings
 - **Log viewer** — view gateway and agent logs directly from the Settings screen
 - **Auto-updater** — check for and install updates via electron-updater
-- **i18n ready** — internationalization framework with English locale covering all screens, ready for community translations
+- **i18n ready** — internationalization framework with 12 language locales, ready for community translations
 - **Test suite** — SSE parser, IPC handlers, preload API surface, installer utilities, and constants validation with Vitest
 
 ## How It Works
@@ -110,11 +120,12 @@ sudo dnf install ./clawd-desktop-<version>.rpm
 On first launch, the app:
 
 1. Asks whether you want to run Clawd **locally** or connect to a **remote** Clawd API server.
-2. **Local mode:** checks whether Clawd is already installed in `~/.clawd`; if not, runs the official Clawd installer with dependency resolution (Git, uv, Python 3.11+).
+2. **Local mode:** checks whether Clawd is already installed in `~/.clawd`; if not, runs the Clawd installer with dependency resolution (Git, uv, Python 3.11+).
 3. **Remote mode:** prompts for the remote API URL and API key, validates the connection, and skips local install.
-4. Prompts for an API provider or local model endpoint.
-5. Saves provider config and API keys through Clawd config files.
-6. Launches the main workspace once setup is complete.
+4. **SSH Tunnel mode:** sets up an SSH tunnel to a remote VPS running the Clawd gateway, proxying every screen through the tunnel for full functionality parity. See [docs/SSH-TUNNEL-VPS.md](docs/SSH-TUNNEL-VPS.md).
+5. Prompts for an API provider or local model endpoint.
+6. Saves provider config and API keys through Clawd config files.
+7. Launches the main workspace once setup is complete.
 
 In local mode, chat requests go through `http://127.0.0.1:8642` with SSE streaming. In remote mode, the app talks to your configured remote URL with the same streaming protocol. The desktop app parses the stream in real time, rendering tool progress, markdown content, and token usage as it arrives.
 
@@ -162,6 +173,29 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix/Element, Mattermost, Email (I
 ### Tool Integrations
 
 Exa Search, Parallel API, Tavily, Firecrawl, FAL.ai (image generation), Honcho, Browserbase, Weights & Biases, and Tinker.
+
+## Solana Integration
+
+Clawd OS provides deep Solana blockchain integration through:
+
+- **Helius RPC** — wallet balances, token accounts, transaction history, DAS (Digital Asset Standard) queries, token pricing, and portfolio aggregation
+- **Wallet Management** — create new wallets, import existing ones via secret key, export secrets, sign messages and transactions
+- **Agent Wallet Vault** — encrypted local storage for Solana keypairs with NaCl secretbox
+- **x402 Payments** — HTTP 402 Payment Required protocol integration for agent-to-agent micropayments on Solana
+- **Metaplex Agents** — query the Metaplex Agent Registry for on-chain AI agents
+- **Phoenix DEX Perps** — perpetual futures trading via the `@openclawdsolana/clawd-perps` integration
+
+## Remote Connectivity
+
+Clawd OS supports three connection modes:
+
+| Mode | Description | Full Feature Parity |
+|------|-------------|---------------------|
+| **Local** | Clawd gateway runs on localhost:8642 | ✅ All screens |
+| **Remote (HTTP)** | Connect to a remote Clawd API via URL + API key | ❌ Chat only |
+| **SSH Tunnel** | SSH tunnel proxies all screens to a remote VPS | ✅ All screens |
+
+For complete setup instructions, see the [SSH Tunnel VPS Guide](docs/SSH-TUNNEL-VPS.md).
 
 ## Development
 
@@ -241,6 +275,27 @@ Clawd files are managed in:
 - `~/.clawd/state.db` — session history database
 - `~/.clawd/cron/jobs.json` — scheduled tasks
 
+## Project Structure
+
+```text
+src/main/                Electron main process, IPC handlers, Clawd integration
+src/main/clawd.ts        Core chat/streaming/API gateway client
+src/main/clawd-auth.ts   OAuth provider authentication flows
+src/main/installer.ts    Clawd Agent install, dependency resolution
+src/main/config.ts       Profile-aware configuration management
+src/main/ssh-tunnel.ts   SSH tunnel for remote VPS connectivity
+src/main/helius.ts       Helius RPC Solana integration
+src/main/assemblyai.ts   Speech-to-text voice transcription
+src/main/livekit.ts      WebRTC real-time communication
+src/main/metaplex-agents.ts  On-chain agent registry queries
+src/main/agent-wallet.ts     Solana wallet management
+src/main/vault.ts            Encrypted key storage
+src/preload/                 Secure renderer bridge
+src/renderer/src/            React app and UI components
+resources/                   App icons and packaged assets
+build/                       Packaging resources
+```
+
 ## Tech Stack
 
 - **Electron** 39 — cross-platform desktop shell
@@ -249,22 +304,30 @@ Clawd files are managed in:
 - **Tailwind CSS** 4 — utility-first styling
 - **Vite** 7 + electron-vite — fast dev server and build tooling
 - **better-sqlite3** — local session storage with FTS5 full-text search
-- **i18next** — internationalization framework
+- **@solana/web3.js** — Solana blockchain interaction
+- **tweetnacl + bs58** — cryptographic key management
+- **i18next** — internationalization framework (12 locales)
 - **Vitest** — test runner
 
 ## Notes
 
 - The desktop app depends on the upstream Clawd Agent project for agent behavior and tool execution.
-- The built-in installer runs the official Clawd install script with `--skip-setup`, then completes provider configuration in the GUI.
+- The built-in installer runs the official Clawd install script, then completes provider configuration in the GUI.
 - Local model providers do not require an API key, but the compatible server must already be running.
-- Alternative npm registry routes are supported for environments with restricted network access.
+- For SSH tunnel mode, the remote VPS must have the Clawd gateway running on `localhost:8642` and SSH access configured. See the [SSH Tunnel VPS Guide](docs/SSH-TUNNEL-VPS.md).
+- The app runs as an `LSUIElement` (menu bar only) on macOS — no dock icon. All interaction happens through the menu bar.
 
 ## Contributing
 
-Contributions are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to get started. If you're not sure where to begin, take a look at the [open issues](https://github.com/NousResearch/clawd-desktop/issues). Found a bug or have a feature request? [File an issue](https://github.com/NousResearch/clawd-desktop/issues/new).
+Contributions are welcome! Check out the [Contributing Guide](CONTRIBUTING.md) to get started. If you're not sure where to begin, take a look at the [open issues](https://github.com/x402agent/solana-clawd/issues). Found a bug or have a feature request? [File an issue](https://github.com/x402agent/solana-clawd/issues/new).
 
-## Related Project
+## Related Projects
 
-For the core agent, docs, and CLI workflows, see the main Clawd Agent repository:
+- **Clawd Agent** — the core AI agent runtime and CLI
+- **Solana OS** — the full Solana AI operating system monorepo
+- **Clawd Browser** — web-based companion interface
+- **Clawd Perps** — Phoenix DEX perpetual futures on Solana
 
-- https://github.com/NousResearch/clawd-agent
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
