@@ -11,7 +11,7 @@ type DeviceAuthStore = {
   tokens: Record<string, DeviceAuthEntry>;
 };
 
-const STORAGE_KEY = "openclawd.device.auth.v1";
+const STORAGE_KEY = "clawd-os.device.auth.v1";
 
 function normalizeRole(role: string): string {
   return role.trim();

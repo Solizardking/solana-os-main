@@ -62,13 +62,13 @@ describe("control UI routing", () => {
   });
 
   it("honors explicit base path overrides", async () => {
-    window.__CLAWD_OS_UI_BASE_PATH__ = "/openclawd";
-    const app = mountApp("/openclawd/sessions");
+    window.__CLAWD_OS_UI_BASE_PATH__ = "/clawd-os";
+    const app = mountApp("/clawd-os/sessions");
     await app.updateComplete;
 
-    expect(app.basePath).toBe("/openclawd");
+    expect(app.basePath).toBe("/clawd-os");
     expect(app.tab).toBe("sessions");
-    expect(window.location.pathname).toBe("/openclawd/sessions");
+    expect(window.location.pathname).toBe("/clawd-os/sessions");
   });
 
   it("updates the URL when clicking nav items", async () => {
@@ -171,7 +171,7 @@ describe("control UI routing", () => {
 
   it("hydrates token from URL params even when settings already set", async () => {
     localStorage.setItem(
-      "openclawd.control.settings.v1",
+      "clawd-os.control.settings.v1",
       JSON.stringify({ token: "existing-token" }),
     );
     const app = mountApp("/ui/overview?token=abc123");

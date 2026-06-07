@@ -1,4 +1,4 @@
-const KEY = "openclawd.control.settings.v1";
+const KEY = "clawd-os.control.settings.v1";
 
 import type { ThemeMode } from "./theme";
 
