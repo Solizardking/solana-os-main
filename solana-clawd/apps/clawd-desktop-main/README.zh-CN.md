@@ -2,19 +2,19 @@
 
 <br/>
 <p align="center">
-  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="文档"></a>
+  <a href="https://github.com/x402agent/solana-os-go"><img src="https://img.shields.io/badge/Docs-clawd--agent.github.com/x402agent-FFD700?style=for-the-badge" alt="文档"></a>
   <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://github.com/x402agent/solana-clawd/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
   <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Download-Releases-FF6600?style=for-the-badge" alt="下载"></a>
-<a href="https://github.com/fathah/clawd-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
+<a href="https://github.com/x402agent/solana-clawd/stargazers">
+  <img src="https://img.shields.io/github/stars/x402agent/solana-clawd?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
 </a>
-  <a href="https://github.com/fathah/clawd-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="下载量">
+  <a href="https://github.com/x402agent/solana-clawd/releases/">
+  <img src="https://img.shields.io/github/downloads/x402agent/solana-clawd/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="下载量">
 </a>
 </p>
 
-> **本项目处于活跃开发阶段。** 功能可能会发生变化，某些功能也可能会失效。如果您遇到问题或有好的想法，请 [提交 Issue](https://github.com/fathah/clawd-desktop/issues)。欢迎贡献代码！
+> **本项目处于活跃开发阶段。** 功能可能会发生变化，某些功能也可能会失效。如果您遇到问题或有好的想法，请 [提交 Issue](https://github.com/x402agent/solana-clawd/issues)。欢迎贡献代码！
 
 ## 语言
 
@@ -22,7 +22,7 @@
 - 简体中文: `README.zh-CN.md`
 - 日本語: `README.ja-JP.md`
 
-Clawd Desktop 是一款原生的桌面应用程序，用于安装、配置并与 [Clawd Agent](https://github.com/NousResearch/clawd-agent) 进行聊天——这是一款具备工具调用、多平台消息传递和闭环学习能力的自我进化的 AI 助手。
+Clawd Desktop 是一款原生的桌面应用程序，用于安装、配置并与 [Clawd Agent](https://github.com/x402agent/solana-os-go) 进行聊天——这是一款具备工具调用、多平台消息传递和闭环学习能力的自我进化的 AI 助手。
 
 无需手动管理命令行界面 (CLI)，该应用可在一个统一界面中引导您完成安装、提供商设置以及日常使用。它使用官方的 Clawd 安装脚本，将 Clawd 存储在 `~/.clawd` 目录下，并为您提供涵盖聊天、会话、配置、记忆、技能、工具、计划任务、消息网关等功能的图形界面。
 
@@ -42,7 +42,7 @@ Clawd Desktop 是一款原生的桌面应用程序，用于安装、配置并与
 > sudo rm /etc/sudoers.d/clawd-install
 > ```
 >
-> 详情请见 [#109](https://github.com/fathah/clawd-desktop/issues/109)。
+> 详情请见 [#109](https://github.com/x402agent/solana-clawd/issues/109)。
 
 ### Fedora (RPM)
 
@@ -259,10 +259,10 @@ Clawd 的相关文件统一管理于以下目录：
 
 ## 参与贡献
 
-欢迎大家参与贡献！查看 [参与贡献指南 (Contributing Guide)](CONTRIBUTING.md) 以开始。如果您不知从何入手，可以看一看 [开启的 Issues](https://github.com/NousResearch/clawd-desktop/issues)。发现了 Bug 或是对功能有新的需求？ [提交一个 Issue](https://github.com/NousResearch/clawd-desktop/issues/new)。
+欢迎大家参与贡献！查看 [参与贡献指南 (Contributing Guide)](CONTRIBUTING.md) 以开始。如果您不知从何入手，可以看一看 [开启的 Issues](https://github.com/x402agent/solana-clawd/issues)。发现了 Bug 或是对功能有新的需求？ [提交一个 Issue](https://github.com/x402agent/solana-clawd/issues/new)。
 
 ## 相关项目
 
 如果想了解核心代理功能、详细文档及命令行 (CLI) 的工作流程，请查阅主仓库 Clawd Agent：
 
-- https://github.com/NousResearch/clawd-agent
+- https://github.com/x402agent/solana-os-go

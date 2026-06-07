@@ -2,19 +2,19 @@
 
 <br/>
 <p align="center">
-  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
+  <a href="https://github.com/x402agent/solana-os-go"><img src="https://img.shields.io/badge/Docs-clawd--agent.github.com/x402agent-FFD700?style=for-the-badge" alt="Documentation"></a>
   <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://github.com/x402agent/solana-clawd/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
   <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Download-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
-<a href="https://github.com/fathah/clawd-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
+<a href="https://github.com/x402agent/solana-clawd/stargazers">
+  <img src="https://img.shields.io/github/stars/x402agent/solana-clawd?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
 </a>
-  <a href="https://github.com/fathah/clawd-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
+  <a href="https://github.com/x402agent/solana-clawd/releases/">
+  <img src="https://img.shields.io/github/downloads/x402agent/solana-clawd/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
 </a>
 </p>
 
-> **本プロジェクトは現在も活発に開発中です。** 機能は変更される可能性があり、一部が動作しなくなることもあります。問題に遭遇した場合や、アイデアがある場合は[Issue を作成してください](https://github.com/fathah/clawd-desktop/issues)。コントリビューションも歓迎しています！
+> **本プロジェクトは現在も活発に開発中です。** 機能は変更される可能性があり、一部が動作しなくなることもあります。問題に遭遇した場合や、アイデアがある場合は[Issue を作成してください](https://github.com/x402agent/solana-clawd/issues)。コントリビューションも歓迎しています！
 
 ## 言語
 
@@ -22,7 +22,7 @@
 - 简体中文: `README.zh-CN.md`
 - 日本語: `README.ja-JP.md`
 
-Clawd Desktop は、[Clawd Agent](https://github.com/NousResearch/clawd-agent)（ツール使用、マルチプラットフォームメッセージング、クローズドな学習ループを備えた、自己改善型 AI アシスタント）のインストール・設定・チャットを行うためのネイティブデスクトップアプリです。
+Clawd Desktop は、[Clawd Agent](https://github.com/x402agent/solana-os-go)（ツール使用、マルチプラットフォームメッセージング、クローズドな学習ループを備えた、自己改善型 AI アシスタント）のインストール・設定・チャットを行うためのネイティブデスクトップアプリです。
 
 CLI を手作業で管理する代わりに、本アプリではインストール、プロバイダのセットアップ、日常的な利用までを一箇所でガイドします。公式の Clawd インストールスクリプトを使用し、Clawd を `~/.clawd` に保存し、チャット、セッション、プロファイル、メモリ、スキル、ツール、スケジューリング、メッセージングゲートウェイなどを GUI で操作できます。
 
@@ -42,7 +42,7 @@ CLI を手作業で管理する代わりに、本アプリではインストー�
 > sudo rm /etc/sudoers.d/clawd-install
 > ```
 >
-> [#109](https://github.com/fathah/clawd-desktop/issues/109) で追跡しています。
+> [#109](https://github.com/x402agent/solana-clawd/issues/109) で追跡しています。
 
 ### Fedora (RPM)
 
@@ -259,10 +259,10 @@ Clawd のファイルは以下の場所で管理されます。
 
 ## コントリビューション
 
-コントリビューションを歓迎します！始め方は[コントリビューションガイド](CONTRIBUTING.md)をご覧ください。どこから手を付ければよいか分からない場合は、[Open Issues](https://github.com/NousResearch/clawd-desktop/issues) を確認してください。バグを見つけた、または機能要望がある場合は [Issue を作成してください](https://github.com/NousResearch/clawd-desktop/issues/new)。
+コントリビューションを歓迎します！始め方は[コントリビューションガイド](CONTRIBUTING.md)をご覧ください。どこから手を付ければよいか分からない場合は、[Open Issues](https://github.com/x402agent/solana-clawd/issues) を確認してください。バグを見つけた、または機能要望がある場合は [Issue を作成してください](https://github.com/x402agent/solana-clawd/issues/new)。
 
 ## 関連プロジェクト
 
 コアエージェント、ドキュメント、CLI ワークフローについては、Clawd Agent 本体のリポジトリを参照してください。
 
-- https://github.com/NousResearch/clawd-agent
+- https://github.com/x402agent/solana-os-go

@@ -62,7 +62,7 @@ PR は小さく目的を絞ってください — その方がレビューもマ
 
 ## バグ報告
 
-バグを見つけた場合は、以下の情報を添えて [Issue を作成してください](https://github.com/NousResearch/clawd-desktop/issues/new)。
+バグを見つけた場合は、以下の情報を添えて [Issue を作成してください](https://github.com/x402agent/solana-clawd/issues/new)。
 
 - 明確なタイトルと説明
 - 再現手順
@@ -71,7 +71,7 @@ PR は小さく目的を絞ってください — その方がレビューもマ
 
 ## 機能リクエスト
 
-アイデアがある場合は、[Issue を作成して](https://github.com/NousResearch/clawd-desktop/issues/new)以下を記述してください。
+アイデアがある場合は、[Issue を作成して](https://github.com/x402agent/solana-clawd/issues/new)以下を記述してください。
 
 - 解決したい問題
 - どのように動作してほしいか
@@ -96,8 +96,8 @@ build/                   パッケージング用リソース
 
 ## コミュニティ
 
-- 他のコントリビューターと話すには [Nous Research Discord](https://discord.gg/NousResearch) に参加してください。
-- Clawd の動作についての詳細は[ドキュメント](https://clawd-agent.nousresearch.com/docs/)を参照してください。
+- 他のコントリビューターと話すには [Nous Research Discord](https://github.com/x402agent/solana-os-go) に参加してください。
+- Clawd の動作についての詳細は[ドキュメント](https://github.com/x402agent/solana-os-go)を参照してください。
 
 ## ライセンス
 

@@ -72,7 +72,7 @@ description: Expert in building self-improving AI agents with tool use, multi-pl
 
 ## 1. Project Overview
 
-**Clawd Agent** is a self-improving AI agent built by [Nous Research](https://nousresearch.com). It is an open-source (MIT licensed), Python-based project that provides:
+**Clawd Agent** is a self-improving AI agent built by [x402](https://github.com/x402agent). It is an open-source (MIT licensed), Python-based project that provides:
 
 - A **full interactive terminal UI** (CLI) for conversing with LLMs
 - A **messaging gateway** supporting 16+ platforms (Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Email, etc.)
@@ -94,7 +94,7 @@ description: Expert in building self-improving AI agents with tool use, multi-pl
 - Anthropic SDK (native Anthropic support)
 - Rich + prompt_toolkit (CLI rendering)
 
-**Repository:** `github.com/NousResearch/clawd-agent`
+**Repository:** `github.com/x402agent/solana-os-go`
 **Version:** 0.7.0 (as of April 2026)
 **License:** MIT
 
@@ -126,7 +126,7 @@ description: Expert in building self-improving AI agents with tool use, multi-pl
 
 ```bash
 # One-line install (Linux, macOS, WSL2)
-curl -fsSL https://raw.githubusercontent.com/NousResearch/clawd-agent/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/x402agent/solana-os-go/main/scripts/install.sh | bash
 
 # After install
 source ~/.bashrc    # or: source ~/.zshrc
@@ -145,7 +145,7 @@ clawd doctor       # Diagnose any issues
 **For development:**
 
 ```bash
-git clone https://github.com/NousResearch/clawd-agent.git
+git clone https://github.com/x402agent/solana-os-go.git
 cd clawd-agent
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv venv venv --python 3.11
@@ -572,7 +572,7 @@ parse_reasoning_effort(str) → Dict  # "high" → {"enabled": True, "effort": "
 
 # Key constants
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
-NOUS_API_BASE_URL = "https://inference-api.nousresearch.com/v1"
+NOUS_API_BASE_URL = "https://inference-api.github.com/x402agent/v1"
 AI_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh/v1"
 VALID_REASONING_EFFORTS = ("xhigh", "high", "medium", "low", "minimal")
 ```
@@ -1762,4 +1762,4 @@ clawd_cli/main.py  (entry point — dispatches to all subsystems)
 
 ---
 
-_This document covers Clawd Agent v0.7.0 as of April 2026. For the latest information, refer to the [official documentation](https://clawd-agent.nousresearch.com/docs/) and the [GitHub repository](https://github.com/NousResearch/clawd-agent)._
+_This document covers Clawd Agent v0.7.0 as of April 2026. For the latest information, refer to the [official documentation](https://github.com/x402agent/solana-os-go) and the [GitHub repository](https://github.com/x402agent/solana-os-go)._

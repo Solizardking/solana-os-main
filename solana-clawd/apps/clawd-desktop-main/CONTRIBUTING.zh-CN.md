@@ -62,7 +62,7 @@
 
 ## 报告 Bug
 
-如果你发现了 bug，请在 GitHub 上 [提交 issue](https://github.com/NousResearch/clawd-desktop/issues/new)，并尽量包含：
+如果你发现了 bug，请在 GitHub 上 [提交 issue](https://github.com/x402agent/solana-clawd/issues/new)，并尽量包含：
 
 - 清晰的标题和描述
 - 复现步骤
@@ -71,7 +71,7 @@
 
 ## 功能请求
 
-如果你有新想法，也欢迎 [提交 issue](https://github.com/NousResearch/clawd-desktop/issues/new)，并描述：
+如果你有新想法，也欢迎 [提交 issue](https://github.com/x402agent/solana-clawd/issues/new)，并描述：
 
 - 你想解决的问题
 - 你希望它如何工作
@@ -96,8 +96,8 @@ build/                   打包配置资源
 
 ## 社区
 
-- 欢迎加入 [Nous Research Discord](https://discord.gg/NousResearch)，与其他贡献者交流。
-- 也可以查看 [文档](https://clawd-agent.nousresearch.com/docs/) 了解 Clawd 的整体工作方式。
+- 欢迎加入 [Nous Research Discord](https://github.com/x402agent/solana-os-go)，与其他贡献者交流。
+- 也可以查看 [文档](https://github.com/x402agent/solana-os-go) 了解 Clawd 的整体工作方式。
 
 ## 许可证
 

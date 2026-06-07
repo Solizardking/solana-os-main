@@ -1,4 +1,4 @@
 provider: github
-owner: fathah
+owner: x402agent
 repo: clawd-desktop
 updaterCacheDirName: clawd-desktop-updater

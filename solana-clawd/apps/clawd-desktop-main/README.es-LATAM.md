@@ -2,19 +2,19 @@
 
 <br/>
 <p align="center">
-  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Documentación-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentación"></a>
+  <a href="https://github.com/x402agent/solana-os-go"><img src="https://img.shields.io/badge/Documentación-clawd--agent.github.com/x402agent-FFD700?style=for-the-badge" alt="Documentación"></a>
   <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="Licencia: MIT"></a>
+  <a href="https://github.com/x402agent/solana-clawd/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="Licencia: MIT"></a>
   <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Descargar-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
-  <a href="https://github.com/fathah/clawd-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Estrellas" alt="Estrellas">
+  <a href="https://github.com/x402agent/solana-clawd/stargazers">
+  <img src="https://img.shields.io/github/stars/x402agent/solana-clawd?style=for-the-badge&color=FFD700&label=Estrellas" alt="Estrellas">
 </a>
-  <a href="https://github.com/fathah/clawd-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Descargas%20Totales" alt="Descargas">
+  <a href="https://github.com/x402agent/solana-clawd/releases/">
+  <img src="https://img.shields.io/github/downloads/x402agent/solana-clawd/total?style=for-the-badge&color=00B496&label=Descargas%20Totales" alt="Descargas">
 </a>
 </p>
 
-> **Este proyecto está en desarrollo activo.** Las funciones pueden cambiar y algunas cosas podrían no funcionar perfectamente. Si encuentras un problema o tienes una idea, [abre un issue](https://github.com/fathah/clawd-desktop/issues). ¡Las contribuciones son bienvenidas!
+> **Este proyecto está en desarrollo activo.** Las funciones pueden cambiar y algunas cosas podrían no funcionar perfectamente. Si encuentras un problema o tienes una idea, [abre un issue](https://github.com/x402agent/solana-clawd/issues). ¡Las contribuciones son bienvenidas!
 
 ## Idiomas
 
@@ -23,7 +23,7 @@
 - 日本語: `README.ja-JP.md`
 - 🌎 Español (LATAM): `README.es-LATAM.md`
 
-Clawd Desktop es una aplicación nativa de escritorio para instalar, configurar y chatear con [Clawd Agent](https://github.com/NousResearch/clawd-agent) — un asistente de IA con autoaprendizaje, uso de herramientas, mensajería multiplataforma y un ciclo de aprendizaje cerrado.
+Clawd Desktop es una aplicación nativa de escritorio para instalar, configurar y chatear con [Clawd Agent](https://github.com/x402agent/solana-os-go) — un asistente de IA con autoaprendizaje, uso de herramientas, mensajería multiplataforma y un ciclo de aprendizaje cerrado.
 
 En lugar de manejar el CLI a mano, la app guía todo el proceso de instalación, configuración de proveedores y uso diario en un solo lugar. Usa el script oficial de instalación de Clawd, guarda los archivos en `~/.clawd` y te da una GUI para chat, sesiones, perfiles, memoria, habilidades, herramientas, tareas programadas, gateways de mensajería y más.
 
@@ -43,7 +43,7 @@ En lugar de manejar el CLI a mano, la app guía todo el proceso de instalación,
 > sudo rm /etc/sudoers.d/clawd-install
 > ```
 >
-> Seguimiento en [#109](https://github.com/fathah/clawd-desktop/issues/109).
+> Seguimiento en [#109](https://github.com/x402agent/solana-clawd/issues/109).
 
 ### Fedora (RPM)
 
@@ -261,13 +261,13 @@ Los archivos de Clawd se gestionan en:
 
 ## Contribuir
 
-¡Las contribuciones son bienvenidas! Consulta la [Guía de contribución](CONTRIBUTING.md) para comenzar. Si no sabes por dónde empezar, mira los [issues abiertos](https://github.com/fathah/clawd-desktop/issues). ¿Encontraste un bug o tienes una solicitud de funcionalidad? [Abre un issue](https://github.com/fathah/clawd-desktop/issues/new).
+¡Las contribuciones son bienvenidas! Consulta la [Guía de contribución](CONTRIBUTING.md) para comenzar. Si no sabes por dónde empezar, mira los [issues abiertos](https://github.com/x402agent/solana-clawd/issues). ¿Encontraste un bug o tienes una solicitud de funcionalidad? [Abre un issue](https://github.com/x402agent/solana-clawd/issues/new).
 
 ## Proyecto relacionado
 
 Para el agente central, documentación y flujos de trabajo CLI, consulta el repositorio principal de Clawd Agent:
 
-- https://github.com/NousResearch/clawd-agent
+- https://github.com/x402agent/solana-os-go
 
 ---
 

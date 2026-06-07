@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Extend the existing GitHub Actions release pipeline to produce a Windows NSIS installer + winget manifests, and a Fedora `.rpm`, alongside the existing macOS/Linux artifacts. End state: open a PR from `Aiacos/clawd-desktop:feat/winget-rpm-release` to `fathah/clawd-desktop:main`.
+**Goal:** Extend the existing GitHub Actions release pipeline to produce a Windows NSIS installer + winget manifests, and a Fedora `.rpm`, alongside the existing macOS/Linux artifacts. End state: open a PR from `Aiacos/clawd-desktop:feat/winget-rpm-release` to `x402agent/solana-clawd:main`.
 
 **Architecture:** Two new jobs added to `.github/workflows/release.yml` (Windows build + winget manifest generator), one existing job extended (Linux gets rpm), one job gated on a new `dry_run` input. Winget manifests are filled from YAML templates by a tested Node ESM script and uploaded as a CI artifact for manual submission to `microsoft/winget-pkgs`.
 
@@ -224,7 +224,7 @@ Contents:
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
 # Placeholders ({{...}}) are replaced at build time. Do not edit the generated copy in dist/.
-PackageIdentifier: NousResearch.ClawdDesktop
+PackageIdentifier: Solizardking.ClawdDesktop
 PackageVersion: { { VERSION } }
 InstallerLocale: en-US
 InstallerType: nullsoft
@@ -246,16 +246,16 @@ Contents:
 
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
-PackageIdentifier: NousResearch.ClawdDesktop
+PackageIdentifier: Solizardking.ClawdDesktop
 PackageVersion: { { VERSION } }
 PackageLocale: en-US
 Publisher: Nous Research
-PublisherUrl: https://github.com/fathah/clawd-desktop
-PublisherSupportUrl: https://github.com/fathah/clawd-desktop/issues
+PublisherUrl: https://github.com/x402agent/solana-clawd
+PublisherSupportUrl: https://github.com/x402agent/solana-clawd/issues
 PackageName: Clawd Agent
-PackageUrl: https://github.com/fathah/clawd-desktop
+PackageUrl: https://github.com/x402agent/solana-clawd
 License: MIT
-LicenseUrl: https://github.com/fathah/clawd-desktop/blob/main/LICENSE
+LicenseUrl: https://github.com/x402agent/solana-clawd/blob/main/LICENSE
 ShortDescription: Self-improving AI assistant desktop app
 Description: |-
   Clawd Desktop is a native desktop app for installing, configuring, and chatting
@@ -278,7 +278,7 @@ Contents:
 
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
-PackageIdentifier: NousResearch.ClawdDesktop
+PackageIdentifier: Solizardking.ClawdDesktop
 PackageVersion: { { VERSION } }
 DefaultLocale: en-US
 ManifestType: version
@@ -357,7 +357,7 @@ describe("generateWingetManifests", () => {
       rootDir: TEST_DIR,
       version: "9.9.9",
       name: "clawd-desktop",
-      publishOwner: "fathah",
+      publishOwner: "x402agent",
     });
 
     const outDir = join(
@@ -365,17 +365,17 @@ describe("generateWingetManifests", () => {
       "winget",
       "manifests",
       "n",
-      "NousResearch",
+      "Solizardking",
       "ClawdDesktop",
       "9.9.9",
     );
     expect(
-      existsSync(join(outDir, "NousResearch.ClawdDesktop.installer.yaml")),
+      existsSync(join(outDir, "Solizardking.ClawdDesktop.installer.yaml")),
     ).toBe(true);
     expect(
-      existsSync(join(outDir, "NousResearch.ClawdDesktop.locale.en-US.yaml")),
+      existsSync(join(outDir, "Solizardking.ClawdDesktop.locale.en-US.yaml")),
     ).toBe(true);
-    expect(existsSync(join(outDir, "NousResearch.ClawdDesktop.yaml"))).toBe(
+    expect(existsSync(join(outDir, "Solizardking.ClawdDesktop.yaml"))).toBe(
       true,
     );
   });
@@ -393,7 +393,7 @@ describe("generateWingetManifests", () => {
       rootDir: TEST_DIR,
       version: "9.9.9",
       name: "clawd-desktop",
-      publishOwner: "fathah",
+      publishOwner: "x402agent",
     });
 
     const outFile = join(
@@ -401,15 +401,15 @@ describe("generateWingetManifests", () => {
       "winget",
       "manifests",
       "n",
-      "NousResearch",
+      "Solizardking",
       "ClawdDesktop",
       "9.9.9",
-      "NousResearch.ClawdDesktop.installer.yaml",
+      "Solizardking.ClawdDesktop.installer.yaml",
     );
     const content = readFileSync(outFile, "utf-8");
     expect(content).toContain("Version: 9.9.9");
     expect(content).toContain(
-      "Url: https://github.com/fathah/clawd-desktop/releases/download/v9.9.9/clawd-desktop-9.9.9-setup.exe",
+      "Url: https://github.com/x402agent/solana-clawd/releases/download/v9.9.9/clawd-desktop-9.9.9-setup.exe",
     );
     expect(content).toMatch(/Sha: [A-F0-9]{64}/);
     expect(content).toMatch(/Date: \d{4}-\d{2}-\d{2}/);
@@ -429,7 +429,7 @@ describe("generateWingetManifests", () => {
       rootDir: TEST_DIR,
       version: "9.9.9",
       name: "clawd-desktop",
-      publishOwner: "fathah",
+      publishOwner: "x402agent",
     });
 
     const outFile = join(
@@ -437,14 +437,14 @@ describe("generateWingetManifests", () => {
       "winget",
       "manifests",
       "n",
-      "NousResearch",
+      "Solizardking",
       "ClawdDesktop",
       "9.9.9",
-      "NousResearch.ClawdDesktop.locale.en-US.yaml",
+      "Solizardking.ClawdDesktop.locale.en-US.yaml",
     );
     const content = readFileSync(outFile, "utf-8");
     expect(content).toContain(
-      "Notes: https://github.com/fathah/clawd-desktop/releases/tag/v9.9.9",
+      "Notes: https://github.com/x402agent/solana-clawd/releases/tag/v9.9.9",
     );
     expect(content).not.toContain("{{");
   });
@@ -458,7 +458,7 @@ describe("generateWingetManifests", () => {
         rootDir: TEST_DIR,
         version: "9.9.9",
         name: "clawd-desktop",
-        publishOwner: "fathah",
+        publishOwner: "x402agent",
       }),
     ).toThrow(/installer not found/i);
   });
@@ -494,9 +494,9 @@ Contents:
 //
 // Fills the YAML templates in build/winget/ with the current version,
 // installer URL, and SHA256 of the NSIS installer in dist/, and writes
-// the result under dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/.
+// the result under dist/winget/manifests/n/Solizardking/ClawdDesktop/<version>/.
 //
-// Run from CLI: VERSION=0.2.3 PUBLISH_OWNER=fathah node scripts/generate-winget-manifests.mjs
+// Run from CLI: VERSION=0.2.3 PUBLISH_OWNER=x402agent node scripts/generate-winget-manifests.mjs
 // Or import as ESM and call generateWingetManifests({ rootDir, version, name, publishOwner }).
 
 import { createHash } from "node:crypto";
@@ -547,19 +547,19 @@ export function generateWingetManifests({
     "winget",
     "manifests",
     "n",
-    "NousResearch",
+    "Solizardking",
     "ClawdDesktop",
     version,
   );
   mkdirSync(outDir, { recursive: true });
 
   const files = [
-    ["Installer.template.yaml", "NousResearch.ClawdDesktop.installer.yaml"],
+    ["Installer.template.yaml", "Solizardking.ClawdDesktop.installer.yaml"],
     [
       "Locale.en-US.template.yaml",
-      "NousResearch.ClawdDesktop.locale.en-US.yaml",
+      "Solizardking.ClawdDesktop.locale.en-US.yaml",
     ],
-    ["Version.template.yaml", "NousResearch.ClawdDesktop.yaml"],
+    ["Version.template.yaml", "Solizardking.ClawdDesktop.yaml"],
   ];
 
   for (const [tmplName, outName] of files) {
@@ -580,7 +580,7 @@ if (isCli) {
     rootDir,
     version: process.env.VERSION || pkg.version,
     name: pkg.name,
-    publishOwner: process.env.PUBLISH_OWNER || "fathah",
+    publishOwner: process.env.PUBLISH_OWNER || "x402agent",
   });
   console.log(`Winget manifests generated in ${result.outDir}`);
   console.log(`InstallerSha256: ${result.sha256}`);
@@ -810,7 +810,7 @@ generate_winget:
     - name: Generate winget manifests
       env:
         VERSION: ${{ needs.prepare.outputs.version }}
-        PUBLISH_OWNER: fathah
+        PUBLISH_OWNER: x402agent
       run: node scripts/generate-winget-manifests.mjs
 
     - name: Upload winget manifests artifact
@@ -951,7 +951,7 @@ Locate the current Install section (lines ~22-37):
 ````markdown
 ## Install
 
-Download the latest build from the [Releases](https://github.com/fathah/clawd-desktop/releases/) page.
+Download the latest build from the [Releases](https://github.com/x402agent/solana-clawd/releases/) page.
 
 | Platform | File                  |
 | -------- | --------------------- |
@@ -972,7 +972,7 @@ Replace the table and add a Linux/Windows notes block. The new section:
 ````markdown
 ## Install
 
-Download the latest build from the [Releases](https://github.com/fathah/clawd-desktop/releases/) page.
+Download the latest build from the [Releases](https://github.com/x402agent/solana-clawd/releases/) page.
 
 | Platform       | File                    |
 | -------------- | ----------------------- |
@@ -987,7 +987,7 @@ Download the latest build from the [Releases](https://github.com/fathah/clawd-de
 Once the manifest has been accepted into [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs), you can install with:
 
 ```powershell
-winget install NousResearch.ClawdDesktop
+winget install Solizardking.ClawdDesktop
 ```
 ````
 
@@ -1117,7 +1117,7 @@ Fix the issue, commit on the branch, push, and re-trigger. Do not proceed to PR 
 
 - [ ] **Step 1: Download the artifact**
 
-Run: `gh run download <run-id> -n winget-manifests-0.2.3 -D /tmp/winget-check && ls -la /tmp/winget-check/manifests/n/NousResearch/ClawdDesktop/0.2.3/`
+Run: `gh run download <run-id> -n winget-manifests-0.2.3 -D /tmp/winget-check && ls -la /tmp/winget-check/manifests/n/Solizardking/ClawdDesktop/0.2.3/`
 
 (Replace `0.2.3` with the actual `version` from `package.json` if it changed.)
 
@@ -1125,13 +1125,13 @@ Expected: three `.yaml` files listed.
 
 - [ ] **Step 2: Visually inspect**
 
-Run: `cat /tmp/winget-check/manifests/n/NousResearch/ClawdDesktop/0.2.3/*.yaml`
+Run: `cat /tmp/winget-check/manifests/n/Solizardking/ClawdDesktop/0.2.3/*.yaml`
 
 Expected:
 
 - No `{{...}}` placeholders left.
 - `InstallerSha256` is a 64-character uppercase hex string.
-- `InstallerUrl` points to the `fathah/clawd-desktop` releases path with the correct version.
+- `InstallerUrl` points to the `x402agent/solana-clawd` releases path with the correct version.
 - `ReleaseDate` is today's date (UTC) in `YYYY-MM-DD`.
 - `PackageVersion` matches `package.json`.
 
@@ -1145,13 +1145,13 @@ Run: `rm -rf /tmp/winget-check`
 
 ## Phase 7: Open PR upstream
 
-### Task 24: Open PR to `fathah/clawd-desktop:main`
+### Task 24: Open PR to `x402agent/solana-clawd:main`
 
 This is a "shared state" action visible to others. The human operator confirms before running.
 
 - [ ] **Step 1: Confirm PR target with the user**
 
-Ask the user: "Ready to open the PR from `Aiacos:feat/winget-rpm-release` to `fathah/clawd-desktop:main`? Or do you want to review the diff one more time first?"
+Ask the user: "Ready to open the PR from `Aiacos:feat/winget-rpm-release` to `x402agent/solana-clawd:main`? Or do you want to review the diff one more time first?"
 
 Wait for explicit confirmation.
 
@@ -1161,7 +1161,7 @@ Run:
 
 ```bash
 gh pr create \
-  --repo fathah/clawd-desktop \
+  --repo x402agent/solana-clawd \
   --base main \
   --head Aiacos:feat/winget-rpm-release \
   --title "ci: add Windows (winget) and Fedora (RPM) release artifacts" \
@@ -1235,4 +1235,4 @@ Done.
 - `generateWingetManifests({ rootDir, version, name, publishOwner })` — same signature in test (Task 7), implementation (Task 9), and CLI entrypoint.
 - `winget-manifests-${{ needs.prepare.outputs.version }}` — same artifact name in `generate_winget` job (Task 15) and in the CI inspection step (Task 23).
 - `is_dry_run` output — defined in Task 12, consumed in Task 16.
-- `publishOwner: "fathah"` — same in workflow env (Task 15) and CLI default (Task 9).
+- `publishOwner: "x402agent"` — same in workflow env (Task 15) and CLI default (Task 9).

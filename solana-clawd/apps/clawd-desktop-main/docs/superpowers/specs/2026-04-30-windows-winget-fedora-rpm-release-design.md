@@ -2,7 +2,7 @@
 
 **Status:** Approved (brainstorming) — pending implementation plan
 **Date:** 2026-04-30
-**Branch target:** `Aiacos/clawd-desktop:feat/winget-rpm-release` → PR upstream `fathah/clawd-desktop:main`
+**Branch target:** `Aiacos/clawd-desktop:feat/winget-rpm-release` → PR upstream `x402agent/solana-clawd:main`
 
 ## Goal
 
@@ -46,8 +46,8 @@ The default-true on dispatch is a safety net: a stray click in the Actions UI ca
 
 ### Identifiers and naming
 
-- **Winget `PackageIdentifier`:** `NousResearch.ClawdDesktop` (stable, never renamed)
-- **Winget `Publisher`:** `Nous Research` (free-text; binaries hosted under `fathah/clawd-desktop`, which the moderation review will verify against the `InstallerUrl`)
+- **Winget `PackageIdentifier`:** `Solizardking.ClawdDesktop` (stable, never renamed)
+- **Winget `Publisher`:** `Nous Research` (free-text; binaries hosted under `x402agent/solana-clawd`, which the moderation review will verify against the `InstallerUrl`)
 - **Winget `PackageName`:** `Clawd Agent` (matches `productName` in `electron-builder.yml`)
 - **NSIS scope:** `oneClick: true`, `perMachine: false` — installs into `%LOCALAPPDATA%`, no UAC prompt, aligns with `winget install` default user scope and with the app's existing `~/.clawd` user-state model.
 - **RPM artifact name:** `clawd-desktop-<version>.rpm` (no spaces, no arch suffix — consistent with the existing `.deb` and `.AppImage` naming. The default `${productName}` would produce `Clawd Agent-...rpm` which breaks `dnf install ./file.rpm`. We explicitly only build `x86_64`, so the missing arch suffix is unambiguous in practice.).
@@ -73,7 +73,7 @@ The default-true on dispatch is a safety net: a stray click in the Actions UI ca
   - `runs-on: ubuntu-latest`
   - `needs: [prepare, release_windows]`
   - `if: needs.prepare.outputs.tag_exists == 'false'`
-  - Steps: checkout, download `windows-artifacts` to `dist/`, run `node scripts/generate-winget-manifests.mjs` with env `VERSION` and `PUBLISH_OWNER=fathah`, upload `dist/winget/` as artifact `winget-manifests-${{ needs.prepare.outputs.version }}`.
+  - Steps: checkout, download `windows-artifacts` to `dist/`, run `node scripts/generate-winget-manifests.mjs` with env `VERSION` and `PUBLISH_OWNER=x402agent`, upload `dist/winget/` as artifact `winget-manifests-${{ needs.prepare.outputs.version }}`.
 - Modify `publish`:
   - `needs: [prepare, release_mac, release_linux, release_windows, generate_winget]`
   - `if: needs.prepare.outputs.is_dry_run == 'false' && needs.prepare.outputs.tag_exists == 'false'`
@@ -99,7 +99,7 @@ YAML manifest with placeholders: `{{VERSION}}`, `{{INSTALLER_URL}}`, `{{INSTALLE
 
 #### `build/winget/Locale.en-US.template.yaml`
 
-Locale manifest with placeholders: `{{VERSION}}`, `{{RELEASE_NOTES_URL}}`. Includes `Publisher: Nous Research`, `PublisherUrl: https://github.com/fathah/clawd-desktop`, `PackageName: Clawd Agent`, `License: MIT`, `LicenseUrl: https://github.com/fathah/clawd-desktop/blob/main/LICENSE`, `ShortDescription`, `Tags: [ai, agent, desktop, electron, llm]`.
+Locale manifest with placeholders: `{{VERSION}}`, `{{RELEASE_NOTES_URL}}`. Includes `Publisher: Nous Research`, `PublisherUrl: https://github.com/x402agent/solana-clawd`, `PackageName: Clawd Agent`, `License: MIT`, `LicenseUrl: https://github.com/x402agent/solana-clawd/blob/main/LICENSE`, `ShortDescription`, `Tags: [ai, agent, desktop, electron, llm]`.
 
 #### `build/winget/Version.template.yaml`
 
@@ -107,11 +107,11 @@ Root version manifest with placeholders: `{{VERSION}}`. Trivial: `PackageIdentif
 
 #### `scripts/generate-winget-manifests.mjs`
 
-Node ESM script (~50 lines, zero external deps). Reads `package.json` to get `version` and `name`. Locates `dist/<name>-<version>-setup.exe`. Computes SHA256 with `node:crypto` `createHash('sha256')` over the file. Reads each `*.template.yaml` from `build/winget/`. Replaces all `{{KEY}}` placeholders by string `replaceAll`. Writes output to `dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/`:
+Node ESM script (~50 lines, zero external deps). Reads `package.json` to get `version` and `name`. Locates `dist/<name>-<version>-setup.exe`. Computes SHA256 with `node:crypto` `createHash('sha256')` over the file. Reads each `*.template.yaml` from `build/winget/`. Replaces all `{{KEY}}` placeholders by string `replaceAll`. Writes output to `dist/winget/manifests/n/Solizardking/ClawdDesktop/<version>/`:
 
-- `NousResearch.ClawdDesktop.installer.yaml`
-- `NousResearch.ClawdDesktop.locale.en-US.yaml`
-- `NousResearch.ClawdDesktop.yaml`
+- `Solizardking.ClawdDesktop.installer.yaml`
+- `Solizardking.ClawdDesktop.locale.en-US.yaml`
+- `Solizardking.ClawdDesktop.yaml`
 
 The path mirrors the directory layout in `microsoft/winget-pkgs`, so the operator submitting the PR can `cp -r` directly.
 
@@ -123,7 +123,7 @@ Add script `"build:rpm": "npm run build && electron-builder --linux rpm"` for lo
 
 #### `README.md`
 
-Update the Install section's platform table to add Windows (`.exe` and, once accepted into winget-pkgs, `winget install NousResearch.ClawdDesktop`) and Fedora (`.rpm`). Add a note that:
+Update the Install section's platform table to add Windows (`.exe` and, once accepted into winget-pkgs, `winget install Solizardking.ClawdDesktop`) and Fedora (`.rpm`). Add a note that:
 
 - The Windows build is unsigned; Windows SmartScreen will warn on first launch.
 - The `.rpm` is unsigned; install with `sudo dnf install ./clawd-desktop-<version>.x86_64.rpm` (or use `--nogpgcheck` if a system policy enforces signature checking).
@@ -151,7 +151,7 @@ download-artifact "windows-artifacts" → dist/
 node scripts/generate-winget-manifests.mjs
   → SHA256(dist/clawd-desktop-<version>-setup.exe)
   → fill 3 templates with VERSION, INSTALLER_URL, INSTALLER_SHA256, RELEASE_DATE
-  → write dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/*.yaml
+  → write dist/winget/manifests/n/Solizardking/ClawdDesktop/<version>/*.yaml
 upload-artifact "winget-manifests-<version>"
 ```
 
@@ -218,12 +218,12 @@ softprops/action-gh-release files=artifacts/* (excludes winget/ subdir)
 
 ### PR
 
-13. Open PR `Aiacos:feat/winget-rpm-release` → `fathah:main`. PR description summarizes what was added, the verification done, and the manual steps the maintainer has to take post-merge to actually publish to winget (download manifest artifact from the first real release run, submit to `microsoft/winget-pkgs`).
+13. Open PR `Aiacos:feat/winget-rpm-release` → `x402agent:main`. PR description summarizes what was added, the verification done, and the manual steps the maintainer has to take post-merge to actually publish to winget (download manifest artifact from the first real release run, submit to `microsoft/winget-pkgs`).
 
 ## Open questions deferred to implementation
 
 - Exact wording of `linux.synopsis` and `linux.description` (will follow `package.json.description` style).
-- Final value of `linux.vendor` (`Nous Research` vs `fathah`).
+- Final value of `linux.vendor` (`Solizardking` vs `x402agent`).
 - Whether to include `manifestVersion: 1.10.0` (current latest) or stick with `1.6.0` (more compatible with older `winget` clients). Default to `1.6.0` unless implementation reveals required fields.
 
 ## Out-of-scope follow-ups (future PRs, if desired)
