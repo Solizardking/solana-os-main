@@ -1,4 +1,4 @@
-import type { OpenClawdApp } from "./app";
+import type { ClawdOsApp } from "./app";
 import type { EventLogEntry } from "./app-events";
 import type { ExecApprovalRequest } from "./controllers/exec-approval";
 import type { GatewayEventFrame, GatewayHelloOk } from "./gateway";
@@ -122,7 +122,7 @@ export function connectGateway(host: GatewayHost) {
     url: host.settings.gatewayUrl,
     token: host.settings.token.trim() ? host.settings.token : undefined,
     password: host.password.trim() ? host.password : undefined,
-    clientName: "openclawd-control-ui",
+    clientName: "clawd-os-control-ui",
     mode: "webchat",
     onHello: (hello) => {
       host.connected = true;
@@ -135,10 +135,10 @@ export function connectGateway(host: GatewayHost) {
       (host as unknown as { chatStream: string | null }).chatStream = null;
       (host as unknown as { chatStreamStartedAt: number | null }).chatStreamStartedAt = null;
       resetToolStream(host as unknown as Parameters<typeof resetToolStream>[0]);
-      void loadAssistantIdentity(host as unknown as OpenClawdApp);
-      void loadAgents(host as unknown as OpenClawdApp);
-      void loadNodes(host as unknown as OpenClawdApp, { quiet: true });
-      void loadDevices(host as unknown as OpenClawdApp, { quiet: true });
+      void loadAssistantIdentity(host as unknown as ClawdOsApp);
+      void loadAgents(host as unknown as ClawdOsApp);
+      void loadNodes(host as unknown as ClawdOsApp, { quiet: true });
+      void loadDevices(host as unknown as ClawdOsApp, { quiet: true });
       void refreshActiveTab(host as unknown as Parameters<typeof refreshActiveTab>[0]);
     },
     onClose: ({ code, reason }) => {
@@ -192,7 +192,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
         payload.sessionKey,
       );
     }
-    const state = handleChatEvent(host as unknown as OpenClawdApp, payload);
+    const state = handleChatEvent(host as unknown as ClawdOsApp, payload);
     if (state === "final" || state === "error" || state === "aborted") {
       resetToolStream(host as unknown as Parameters<typeof resetToolStream>[0]);
       void flushChatQueueForEvent(host as unknown as Parameters<typeof flushChatQueueForEvent>[0]);
@@ -200,14 +200,14 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
       if (runId && host.refreshSessionsAfterChat.has(runId)) {
         host.refreshSessionsAfterChat.delete(runId);
         if (state === "final") {
-          void loadSessions(host as unknown as OpenClawdApp, {
+          void loadSessions(host as unknown as ClawdOsApp, {
             activeMinutes: CHAT_SESSIONS_ACTIVE_MINUTES,
           });
         }
       }
     }
     if (state === "final") {
-      void loadChatHistory(host as unknown as OpenClawdApp);
+      void loadChatHistory(host as unknown as ClawdOsApp);
     }
     return;
   }
@@ -227,7 +227,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
   }
 
   if (evt.event === "device.pair.requested" || evt.event === "device.pair.resolved") {
-    void loadDevices(host as unknown as OpenClawdApp, { quiet: true });
+    void loadDevices(host as unknown as ClawdOsApp, { quiet: true });
   }
 
   if (evt.event === "exec.approval.requested") {

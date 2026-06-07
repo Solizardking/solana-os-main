@@ -1,4 +1,4 @@
-import type { OpenClawdApp } from "./app";
+import type { ClawdOsApp } from "./app";
 import { refreshChat } from "./app-chat";
 import {
   startLogsPolling,
@@ -174,22 +174,22 @@ export async function refreshActiveTab(host: SettingsHost) {
     await loadChannelsTab(host);
   }
   if (host.tab === "instances") {
-    await loadPresence(host as unknown as OpenClawdApp);
+    await loadPresence(host as unknown as ClawdOsApp);
   }
   if (host.tab === "sessions") {
-    await loadSessions(host as unknown as OpenClawdApp);
+    await loadSessions(host as unknown as ClawdOsApp);
   }
   if (host.tab === "cron") {
     await loadCron(host);
   }
   if (host.tab === "skills") {
-    await loadSkills(host as unknown as OpenClawdApp);
+    await loadSkills(host as unknown as ClawdOsApp);
   }
   if (host.tab === "nodes") {
-    await loadNodes(host as unknown as OpenClawdApp);
-    await loadDevices(host as unknown as OpenClawdApp);
-    await loadConfig(host as unknown as OpenClawdApp);
-    await loadExecApprovals(host as unknown as OpenClawdApp);
+    await loadNodes(host as unknown as ClawdOsApp);
+    await loadDevices(host as unknown as ClawdOsApp);
+    await loadConfig(host as unknown as ClawdOsApp);
+    await loadExecApprovals(host as unknown as ClawdOsApp);
   }
   if (host.tab === "chat") {
     await refreshChat(host as unknown as Parameters<typeof refreshChat>[0]);
@@ -199,16 +199,16 @@ export async function refreshActiveTab(host: SettingsHost) {
     );
   }
   if (host.tab === "config") {
-    await loadConfigSchema(host as unknown as OpenClawdApp);
-    await loadConfig(host as unknown as OpenClawdApp);
+    await loadConfigSchema(host as unknown as ClawdOsApp);
+    await loadConfig(host as unknown as ClawdOsApp);
   }
   if (host.tab === "debug") {
-    await loadDebug(host as unknown as OpenClawdApp);
+    await loadDebug(host as unknown as ClawdOsApp);
     host.eventLog = host.eventLogBuffer;
   }
   if (host.tab === "logs") {
     host.logsAtBottom = true;
-    await loadLogs(host as unknown as OpenClawdApp, { reset: true });
+    await loadLogs(host as unknown as ClawdOsApp, { reset: true });
     scheduleLogsScroll(host as unknown as Parameters<typeof scheduleLogsScroll>[0], true);
   }
 }
@@ -217,7 +217,7 @@ export function inferBasePath() {
   if (typeof window === "undefined") {
     return "";
   }
-  const configured = window.__OPENCLAW_CONTROL_UI_BASE_PATH__;
+  const configured = window.__CLAWD_OS_UI_BASE_PATH__;
   if (typeof configured === "string" && configured.trim()) {
     return normalizeBasePath(configured);
   }
@@ -370,26 +370,26 @@ export function syncUrlWithSessionKey(host: SettingsHost, sessionKey: string, re
 
 export async function loadOverview(host: SettingsHost) {
   await Promise.all([
-    loadChannels(host as unknown as OpenClawdApp, false),
-    loadPresence(host as unknown as OpenClawdApp),
-    loadSessions(host as unknown as OpenClawdApp),
-    loadCronStatus(host as unknown as OpenClawdApp),
-    loadDebug(host as unknown as OpenClawdApp),
+    loadChannels(host as unknown as ClawdOsApp, false),
+    loadPresence(host as unknown as ClawdOsApp),
+    loadSessions(host as unknown as ClawdOsApp),
+    loadCronStatus(host as unknown as ClawdOsApp),
+    loadDebug(host as unknown as ClawdOsApp),
   ]);
 }
 
 export async function loadChannelsTab(host: SettingsHost) {
   await Promise.all([
-    loadChannels(host as unknown as OpenClawdApp, true),
-    loadConfigSchema(host as unknown as OpenClawdApp),
-    loadConfig(host as unknown as OpenClawdApp),
+    loadChannels(host as unknown as ClawdOsApp, true),
+    loadConfigSchema(host as unknown as ClawdOsApp),
+    loadConfig(host as unknown as ClawdOsApp),
   ]);
 }
 
 export async function loadCron(host: SettingsHost) {
   await Promise.all([
-    loadChannels(host as unknown as OpenClawdApp, false),
-    loadCronStatus(host as unknown as OpenClawdApp),
-    loadCronJobs(host as unknown as OpenClawdApp),
+    loadChannels(host as unknown as ClawdOsApp, false),
+    loadCronStatus(host as unknown as ClawdOsApp),
+    loadCronJobs(host as unknown as ClawdOsApp),
   ]);
 }

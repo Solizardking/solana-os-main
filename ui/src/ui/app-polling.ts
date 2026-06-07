@@ -1,4 +1,4 @@
-import type { OpenClawdApp } from "./app";
+import type { ClawdOsApp } from "./app";
 import { loadDebug } from "./controllers/debug";
 import { loadLogs } from "./controllers/logs";
 import { loadNodes } from "./controllers/nodes";
@@ -15,7 +15,7 @@ export function startNodesPolling(host: PollingHost) {
     return;
   }
   host.nodesPollInterval = window.setInterval(
-    () => void loadNodes(host as unknown as OpenClawdApp, { quiet: true }),
+    () => void loadNodes(host as unknown as ClawdOsApp, { quiet: true }),
     5000,
   );
 }
@@ -36,7 +36,7 @@ export function startLogsPolling(host: PollingHost) {
     if (host.tab !== "logs") {
       return;
     }
-    void loadLogs(host as unknown as OpenClawdApp, { quiet: true });
+    void loadLogs(host as unknown as ClawdOsApp, { quiet: true });
   }, 2000);
 }
 
@@ -56,7 +56,7 @@ export function startDebugPolling(host: PollingHost) {
     if (host.tab !== "debug") {
       return;
     }
-    void loadDebug(host as unknown as OpenClawdApp);
+    void loadDebug(host as unknown as ClawdOsApp);
   }, 3000);
 }
 

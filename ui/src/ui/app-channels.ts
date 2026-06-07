@@ -1,4 +1,4 @@
-import type { OpenClawdApp } from "./app";
+import type { ClawdOsApp } from "./app";
 import type { NostrProfile } from "./types";
 import {
   loadChannels,
@@ -9,28 +9,28 @@ import {
 import { loadConfig, saveConfig } from "./controllers/config";
 import { createNostrProfileFormState } from "./views/channels.nostr-profile-form";
 
-export async function handleWhatsAppStart(host: OpenClawdApp, force: boolean) {
+export async function handleWhatsAppStart(host: ClawdOsApp, force: boolean) {
   await startWhatsAppLogin(host, force);
   await loadChannels(host, true);
 }
 
-export async function handleWhatsAppWait(host: OpenClawdApp) {
+export async function handleWhatsAppWait(host: ClawdOsApp) {
   await waitWhatsAppLogin(host);
   await loadChannels(host, true);
 }
 
-export async function handleWhatsAppLogout(host: OpenClawdApp) {
+export async function handleWhatsAppLogout(host: ClawdOsApp) {
   await logoutWhatsApp(host);
   await loadChannels(host, true);
 }
 
-export async function handleChannelConfigSave(host: OpenClawdApp) {
+export async function handleChannelConfigSave(host: ClawdOsApp) {
   await saveConfig(host);
   await loadConfig(host);
   await loadChannels(host, true);
 }
 
-export async function handleChannelConfigReload(host: OpenClawdApp) {
+export async function handleChannelConfigReload(host: ClawdOsApp) {
   await loadConfig(host);
   await loadChannels(host, true);
 }
@@ -57,7 +57,7 @@ function parseValidationErrors(details: unknown): Record<string, string> {
   return errors;
 }
 
-function resolveNostrAccountId(host: OpenClawdApp): string {
+function resolveNostrAccountId(host: ClawdOsApp): string {
   const accounts = host.channelsSnapshot?.channelAccounts?.nostr ?? [];
   return accounts[0]?.accountId ?? host.nostrProfileAccountId ?? "default";
 }
@@ -67,7 +67,7 @@ function buildNostrProfileUrl(accountId: string, suffix = ""): string {
 }
 
 export function handleNostrProfileEdit(
-  host: OpenClawdApp,
+  host: ClawdOsApp,
   accountId: string,
   profile: NostrProfile | null,
 ) {
@@ -75,13 +75,13 @@ export function handleNostrProfileEdit(
   host.nostrProfileFormState = createNostrProfileFormState(profile ?? undefined);
 }
 
-export function handleNostrProfileCancel(host: OpenClawdApp) {
+export function handleNostrProfileCancel(host: ClawdOsApp) {
   host.nostrProfileFormState = null;
   host.nostrProfileAccountId = null;
 }
 
 export function handleNostrProfileFieldChange(
-  host: OpenClawdApp,
+  host: ClawdOsApp,
   field: keyof NostrProfile,
   value: string,
 ) {
@@ -102,7 +102,7 @@ export function handleNostrProfileFieldChange(
   };
 }
 
-export function handleNostrProfileToggleAdvanced(host: OpenClawdApp) {
+export function handleNostrProfileToggleAdvanced(host: ClawdOsApp) {
   const state = host.nostrProfileFormState;
   if (!state) {
     return;
@@ -113,7 +113,7 @@ export function handleNostrProfileToggleAdvanced(host: OpenClawdApp) {
   };
 }
 
-export async function handleNostrProfileSave(host: OpenClawdApp) {
+export async function handleNostrProfileSave(host: ClawdOsApp) {
   const state = host.nostrProfileFormState;
   if (!state || state.saving) {
     return;
@@ -184,7 +184,7 @@ export async function handleNostrProfileSave(host: OpenClawdApp) {
   }
 }
 
-export async function handleNostrProfileImport(host: OpenClawdApp) {
+export async function handleNostrProfileImport(host: ClawdOsApp) {
   const state = host.nostrProfileFormState;
   if (!state || state.importing) {
     return;

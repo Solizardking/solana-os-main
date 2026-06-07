@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { OpenClawdApp } from "./app";
+import { ClawdOsApp } from "./app";
 import "../styles.css";
 
 // oxlint-disable-next-line typescript/unbound-method
-const originalConnect = OpenClawdApp.prototype.connect;
+const originalConnect = ClawdOsApp.prototype.connect;
 
 function mountApp(pathname: string) {
   window.history.replaceState({}, "", pathname);
-  const app = document.createElement("openclawd-app") as OpenClawdApp;
+  const app = document.createElement("clawd-os-app") as ClawdOsApp;
   document.body.append(app);
   return app;
 }
@@ -19,17 +19,17 @@ function nextFrame() {
 }
 
 beforeEach(() => {
-  OpenClawdApp.prototype.connect = () => {
+  ClawdOsApp.prototype.connect = () => {
     // no-op: avoid real gateway WS connections in browser tests
   };
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  window.__CLAWD_OS_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });
 
 afterEach(() => {
-  OpenClawdApp.prototype.connect = originalConnect;
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  ClawdOsApp.prototype.connect = originalConnect;
+  window.__CLAWD_OS_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });
@@ -53,16 +53,16 @@ describe("control UI routing", () => {
   });
 
   it("infers nested base paths", async () => {
-    const app = mountApp("/apps/openclawd/cron");
+    const app = mountApp("/apps/clawd-os/cron");
     await app.updateComplete;
 
-    expect(app.basePath).toBe("/apps/openclawd");
+    expect(app.basePath).toBe("/apps/clawd-os");
     expect(app.tab).toBe("cron");
-    expect(window.location.pathname).toBe("/apps/openclawd/cron");
+    expect(window.location.pathname).toBe("/apps/clawd-os/cron");
   });
 
   it("honors explicit base path overrides", async () => {
-    window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = "/openclawd";
+    window.__CLAWD_OS_UI_BASE_PATH__ = "/openclawd";
     const app = mountApp("/openclawd/sessions");
     await app.updateComplete;
 

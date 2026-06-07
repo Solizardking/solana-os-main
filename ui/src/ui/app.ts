@@ -79,7 +79,7 @@ import { type ChatAttachment, type ChatQueueItem, type CronFormState } from "./u
 
 declare global {
   interface Window {
-    __OPENCLAW_CONTROL_UI_BASE_PATH__?: string;
+    __CLAWD_OS_UI_BASE_PATH__?: string;
   }
 }
 
@@ -98,8 +98,8 @@ function resolveOnboardingMode(): boolean {
   return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
 }
 
-@customElement("openclawd-app")
-export class OpenClawdApp extends LitElement {
+@customElement("clawd-os-app")
+export class ClawdOsApp extends LitElement {
   @state() settings: UiSettings = loadSettings();
   @state() password = "";
   @state() tab: Tab = "chat";

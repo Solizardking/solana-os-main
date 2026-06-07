@@ -1,4 +1,4 @@
-import type { OpenClawdApp } from "./app";
+import type { ClawdOsApp } from "./app";
 import type { GatewayHelloOk } from "./gateway";
 import type { ChatAttachment, ChatQueueItem } from "./ui-types";
 import { parseAgentSessionKey } from "../../../src/sessions/session-key-utils.js";
@@ -65,7 +65,7 @@ export async function handleAbortChat(host: ChatHost) {
     return;
   }
   host.chatMessage = "";
-  await abortChatRun(host as unknown as OpenClawdApp);
+  await abortChatRun(host as unknown as ClawdOsApp);
 }
 
 function enqueueChatMessage(
@@ -104,7 +104,7 @@ async function sendChatMessageNow(
   },
 ) {
   resetToolStream(host as unknown as Parameters<typeof resetToolStream>[0]);
-  const runId = await sendChatMessage(host as unknown as OpenClawdApp, message, opts?.attachments);
+  const runId = await sendChatMessage(host as unknown as ClawdOsApp, message, opts?.attachments);
   const ok = Boolean(runId);
   if (!ok && opts?.previousDraft != null) {
     host.chatMessage = opts.previousDraft;
@@ -204,8 +204,8 @@ export async function handleSendChat(
 
 export async function refreshChat(host: ChatHost) {
   await Promise.all([
-    loadChatHistory(host as unknown as OpenClawdApp),
-    loadSessions(host as unknown as OpenClawdApp, {
+    loadChatHistory(host as unknown as ClawdOsApp),
+    loadSessions(host as unknown as ClawdOsApp, {
       activeMinutes: CHAT_SESSIONS_ACTIVE_MINUTES,
     }),
     refreshChatAvatar(host),

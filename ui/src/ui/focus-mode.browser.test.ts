@@ -1,28 +1,28 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { OpenClawdApp } from "./app";
+import { ClawdOsApp } from "./app";
 
 // oxlint-disable-next-line typescript/unbound-method
-const originalConnect = OpenClawdApp.prototype.connect;
+const originalConnect = ClawdOsApp.prototype.connect;
 
 function mountApp(pathname: string) {
   window.history.replaceState({}, "", pathname);
-  const app = document.createElement("openclawd-app") as OpenClawdApp;
+  const app = document.createElement("clawd-os-app") as ClawdOsApp;
   document.body.append(app);
   return app;
 }
 
 beforeEach(() => {
-  OpenClawdApp.prototype.connect = () => {
+  ClawdOsApp.prototype.connect = () => {
     // no-op: avoid real gateway WS connections in browser tests
   };
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  window.__CLAWD_OS_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });
 
 afterEach(() => {
-  OpenClawdApp.prototype.connect = originalConnect;
-  window.__OPENCLAW_CONTROL_UI_BASE_PATH__ = undefined;
+  ClawdOsApp.prototype.connect = originalConnect;
+  window.__CLAWD_OS_UI_BASE_PATH__ = undefined;
   localStorage.clear();
   document.body.innerHTML = "";
 });

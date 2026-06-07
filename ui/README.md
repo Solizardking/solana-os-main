@@ -1,17 +1,17 @@
-# SolanaOS Control UI
+# Clawd OS Control UI
 
 Browser-based control panel for SolanaOS. Built with [Lit](https://lit.dev/) and [Vite](https://vite.dev/).
 
 ## Prerequisites
 
 - Node.js 18+
-- A running SolanaOS gateway (`solanaos gateway start`)
+- A running Clawd OS gateway (`clawd gateway start`)
 
 ## Quick Start
 
 ```bash
 # 1. Start the gateway (separate terminal)
-solanaos gateway start --bind 0.0.0.0
+clawd gateway start --bind 0.0.0.0
 
 # 2. Install dependencies
 cd ui
@@ -25,7 +25,7 @@ Open `http://localhost:5173` in your browser. The UI automatically connects to t
 
 ## How It Works
 
-The Vite dev server (port 5173) proxies WebSocket upgrade requests to the SolanaOS gateway (port 18790). Regular HTTP requests (HTML, JS, CSS) are served by Vite as usual. Vite's own HMR WebSocket is excluded from proxying.
+The Vite dev server (port 5173) proxies WebSocket upgrade requests to the Clawd OS gateway (port 18790). Regular HTTP requests (HTML, JS, CSS) are served by Vite as usual. Vite's own HMR WebSocket is excluded from proxying.
 
 The UI auto-detects the gateway URL from the page origin (`ws://<current host>`), so no manual URL configuration is needed during development.
 
@@ -35,7 +35,7 @@ The UI auto-detects the gateway URL from the page origin (`ws://<current host>`)
 |---|---|---|
 | `SOLANAOS_GATEWAY_HOST` | `127.0.0.1` | Gateway host for the dev proxy |
 | `SOLANAOS_GATEWAY_PORT` | `18790` | Gateway port for the dev proxy |
-| `OPENCLAW_CONTROL_UI_BASE_PATH` | `./` | Base path for the built assets |
+| `CLAWD_OS_UI_BASE_PATH` | `./` | Base path for the built assets |
 
 Example with a remote gateway:
 
