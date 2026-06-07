@@ -1,4 +1,4 @@
-<img width="100%" alt="CLAWD DESKTOP" src="previews/header.webp" />
+<img width="100%" alt="CLAWD DESKTOP" src="previews/logoperfect.jpeg" />
 
 <br/>
 <p align="center">

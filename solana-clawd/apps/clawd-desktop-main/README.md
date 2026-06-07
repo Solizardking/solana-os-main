@@ -1,4 +1,4 @@
-<img width="100%" alt="CLAWD OS" src="previews/header.webp" />
+<img width="100%" alt="CLAWD OS" src="previews/logoperfect.jpeg" />
 
 <br/>
 <p align="center">
