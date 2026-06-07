@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
  * Coverage for OAuth/subscription-provider model discovery.
  *
  * These providers have no static-key `/v1/models` endpoint, so the
- * desktop asks hermes-agent's `provider_model_ids` via a short Python
+ * desktop asks clawd-agent's `provider_model_ids` via a short Python
  * call. When that's unavailable it falls back to a curated list mirrored
  * from the agent. Both paths are exercised here with a mocked
  * `child_process.execFile`.
@@ -37,9 +37,9 @@ vi.mock("child_process", () => ({
 
 vi.mock("../src/main/installer", () => ({
   expectedEnvKeyForModel: () => "",
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_REPO: "/tmp/hermes-repo",
-  HERMES_HOME: "/tmp/hermes-home",
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_REPO: "/tmp/clawd-repo",
+  CLAWD_HOME: "/tmp/clawd-home",
   getEnhancedPath: () => process.env.PATH || "",
 }));
 

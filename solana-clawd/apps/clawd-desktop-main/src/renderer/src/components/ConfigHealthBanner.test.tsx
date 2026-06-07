@@ -36,7 +36,7 @@ function report(
 describe("ConfigHealthBanner", () => {
   beforeEach(() => {
     localStorage.clear();
-    Object.defineProperty(window, "hermesAPI", {
+    Object.defineProperty(window, "clawdAPI", {
       configurable: true,
       value: {
         getConfigHealth: vi

@@ -35,7 +35,7 @@ export default function ProfileSwitcher({
   const rootRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(() => {
-    window.hermesAPI
+    window.clawdAPI
       .listProfiles()
       .then(setProfiles)
       .catch(() => {
@@ -78,7 +78,7 @@ export default function ProfileSwitcher({
     setOpen(false);
     if (name === activeProfile) return;
     try {
-      await window.hermesAPI.setActiveProfile(name);
+      await window.clawdAPI.setActiveProfile(name);
     } catch {
       /* still reflect the choice optimistically */
     }

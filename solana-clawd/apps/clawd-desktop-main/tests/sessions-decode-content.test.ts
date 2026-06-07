@@ -10,12 +10,12 @@ const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
   return {
-    TEST_HOME: path.join(os.tmpdir(), `hermes-decode-test-${Date.now()}`),
+    TEST_HOME: path.join(os.tmpdir(), `clawd-decode-test-${Date.now()}`),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
+  CLAWD_HOME: TEST_HOME,
 }));
 
 vi.mock("better-sqlite3", () => ({

@@ -22,7 +22,7 @@ export function MemoryProfile({
 
   async function handleSave(): Promise<void> {
     setError("");
-    const result = await window.hermesAPI.writeUserProfile(userContent, profile);
+    const result = await window.clawdAPI.writeUserProfile(userContent, profile);
     if (result.success) {
       setUserEditing(false);
       setUserSaved(true);

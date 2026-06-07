@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { randomBytes } from "crypto";
 import { join } from "path";
-import { HERMES_HOME, expectedEnvKeyForModel } from "./installer";
+import { CLAWD_HOME, expectedEnvKeyForModel } from "./installer";
 import {
   escapeRegex,
   getActiveProfileNameSync,
@@ -46,9 +46,9 @@ export interface PublicConnectionConfig {
 }
 
 // Lazy getter — avoids circular dependency with installer.ts
-// (HERMES_HOME may not be assigned yet when this module first loads)
+// (CLAWD_HOME may not be assigned yet when this module first loads)
 function desktopConfigFile(): string {
-  return join(HERMES_HOME, "desktop.json");
+  return join(CLAWD_HOME, "desktop.json");
 }
 
 export function readDesktopConfig(): Record<string, unknown> {
@@ -62,8 +62,8 @@ export function readDesktopConfig(): Record<string, unknown> {
 }
 
 export function writeDesktopConfig(data: Record<string, unknown>): void {
-  if (!existsSync(HERMES_HOME)) {
-    mkdirSync(HERMES_HOME, { recursive: true });
+  if (!existsSync(CLAWD_HOME)) {
+    mkdirSync(CLAWD_HOME, { recursive: true });
   }
   writeFileSync(desktopConfigFile(), JSON.stringify(data, null, 2), "utf-8");
 }
@@ -434,7 +434,7 @@ export function setConfigValue(
 ): void {
   // Invalidate the apiServerKey cache when either of the two canonical
   // gateway-secret locations is written: the legacy top-level
-  // `API_SERVER_KEY` *or* the hermes-agent canonical `api_server.token`
+  // `API_SERVER_KEY` *or* the clawd-agent canonical `api_server.token`
   // path. Without the second check, editing `api_server.token` via the
   // desktop would leave the cached value stale for up to the 5s TTL.
   if (
@@ -612,7 +612,7 @@ export function getModelConfig(profile?: string): {
 
 /**
  * Mirror of the runtime key-resolution fallback for OpenAI-compatible /
- * custom endpoints (see `sendMessageViaCli` in hermes.ts): the gateway tries
+ * custom endpoints (see `sendMessageViaCli` in clawd.ts): the gateway tries
  * the URL-specific key, then `CUSTOM_API_KEY`, then `OPENAI_API_KEY`. Returns
  * true when any link in that chain is populated for `profile`.
  *
@@ -699,8 +699,8 @@ export function upsertBlockChild(
  * provider="custom" entry pointing at a known commercial host (DeepSeek,
  * Groq, Mistral, etc.).
  *
- * Workaround for an upstream hermes-agent bug
- * (NousResearch/hermes-agent #?? — see fathah/hermes-desktop#260): the
+ * Workaround for an upstream clawd-agent bug
+ * (NousResearch/clawd-agent #?? — see fathah/clawd-desktop#260): the
  * gateway's ``_resolve_openrouter_runtime`` fallback chain reaches
  * ``OPENAI_API_KEY``/``OPENROUTER_API_KEY`` when a bare ``custom``
  * provider's credential pool is empty, which leaks unrelated keys to
@@ -762,7 +762,7 @@ export function setModelConfig(
   const { configFile } = profilePaths(profile);
 
   // Bootstrap an empty config.yaml when it's missing — previously this
-  // function early-returned, so users on a custom HERMES_HOME where the
+  // function early-returned, so users on a custom CLAWD_HOME where the
   // file hadn't been created (issue #228) had their model selection
   // silently dropped: the desktop appeared to save it but config.yaml
   // never got written, and the Python gateway saw an empty model and
@@ -870,12 +870,12 @@ export function setModelConfig(
   safeWriteFile(configFile, content);
 }
 
-export function getHermesHome(profile?: string): string {
+export function getClawdHome(profile?: string): string {
   return profilePaths(profile).home;
 }
 
 /**
- * Resolve the API server's shared secret. Honoured by the local hermes
+ * Resolve the API server's shared secret. Honoured by the local clawd
  * gateway (`api_server.token` in `config.yaml` / `API_SERVER_KEY` in
  * `.env`) when present; the desktop must include it as
  * `Authorization: Bearer …` on every chat request, otherwise the gateway
@@ -888,12 +888,12 @@ export function getHermesHome(profile?: string): string {
  *   2. Default `config.yaml` top-level `API_SERVER_KEY` (legacy override)
  *   3. Profile `.env` `API_SERVER_KEY` (matches what the gateway reads)
  *   4. Default `.env` `API_SERVER_KEY`
- *   5. Profile `config.yaml` `api_server.token` (canonical hermes-agent
+ *   5. Profile `config.yaml` `api_server.token` (canonical clawd-agent
  *      gateway-secret location — issue #333)
  *   6. Default `config.yaml` `api_server.token`
  *
  * The `api_server.token` candidates are the bug fix for #333: users who
- * ran `hermes setup` (which writes `api_server.token` into `config.yaml`
+ * ran `clawd setup` (which writes `api_server.token` into `config.yaml`
  * but does not touch `.env`) would otherwise see chat fail on the
  * second message with *"Session continuation requires API key
  * authentication. Configure API_SERVER_KEY to enable this feature."*
@@ -971,8 +971,8 @@ export function getApiServerKey(profile?: string): string {
         from: source,
         to:
           profile && profile !== "default"
-            ? `~/.hermes/profiles/${profile}/.env`
-            : "~/.hermes/.env",
+            ? `~/.clawd/profiles/${profile}/.env`
+            : "~/.clawd/.env",
         profile: profile || "default",
         valueMasked: maskKey(value),
       });
@@ -1073,7 +1073,7 @@ export function maskKey(value: string): string {
 }
 
 /**
- * Append a JSONL entry to `~/.hermes/logs/config-fixes.log` recording
+ * Append a JSONL entry to `~/.clawd/logs/config-fixes.log` recording
  * an automated or user-initiated config migration. Auto-truncates the
  * log to the most-recent 1000 entries on each write so it doesn't grow
  * unbounded. Best-effort — any I/O error is silently swallowed so a
@@ -1094,7 +1094,7 @@ const CONFIG_FIX_LOG_MAX_LINES = 1000;
 
 export function appendConfigFixLog(entry: ConfigFixLogEntry): void {
   try {
-    const logDir = join(HERMES_HOME, "logs");
+    const logDir = join(CLAWD_HOME, "logs");
     if (!existsSync(logDir)) mkdirSync(logDir, { recursive: true });
     const logFile = join(logDir, "config-fixes.log");
     let existing = "";
@@ -1118,7 +1118,7 @@ export function appendConfigFixLog(entry: ConfigFixLogEntry): void {
 
 // ── Platform enabled/disabled ─────────────────────────────
 //
-// The Python hermes gateway (gateway/config.py) decides which messaging
+// The Python clawd gateway (gateway/config.py) decides which messaging
 // platforms to start from env vars in .env; it doesn't look at a fictional
 // `platforms:` YAML section. config.yaml only carries an override-disable
 // switch: `<platform>.enabled: false` at the top level. Earlier the desktop
@@ -1352,12 +1352,12 @@ function authFilePath(profile?: string): string {
 /**
  * Shape of a credential-pool entry as the upstream gateway expects it.
  *
- * The engine's resolver (`hermes_cli/auth.py` and the credential-pool
+ * The engine's resolver (`clawd_cli/auth.py` and the credential-pool
  * entry parser) reads `access_token` (not `key`), needs an
  * `auth_type` to distinguish OAuth from API-key entries inside the
  * same pool, and uses `id` / `priority` / `source` for rotation and
  * telemetry. Issue #367 — pool entries written by the desktop with
- * just `{key, label}` were rejected at runtime ("Hermes is not
+ * just `{key, label}` were rejected at runtime ("Clawd is not
  * logged into Nous Portal") because none of the canonical fields
  * were present.
  *

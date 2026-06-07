@@ -25,7 +25,7 @@ export function MemoryEntries({
   async function handleAddEntry(): Promise<void> {
     if (!newEntry.trim()) return;
     setError("");
-    const result = await window.hermesAPI.addMemoryEntry(newEntry.trim(), profile);
+    const result = await window.clawdAPI.addMemoryEntry(newEntry.trim(), profile);
     if (result.success) {
       setNewEntry("");
       setShowAdd(false);
@@ -38,7 +38,7 @@ export function MemoryEntries({
   async function handleSaveEdit(): Promise<void> {
     if (editingIndex === null) return;
     setError("");
-    const result = await window.hermesAPI.updateMemoryEntry(
+    const result = await window.clawdAPI.updateMemoryEntry(
       editingIndex,
       editContent.trim(),
       profile,
@@ -53,7 +53,7 @@ export function MemoryEntries({
   }
 
   async function handleDeleteEntry(index: number): Promise<void> {
-    await window.hermesAPI.removeMemoryEntry(index, profile);
+    await window.clawdAPI.removeMemoryEntry(index, profile);
     setConfirmDelete(null);
     onRefresh();
   }

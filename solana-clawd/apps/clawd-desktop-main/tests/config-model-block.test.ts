@@ -9,13 +9,13 @@ import { tmpdir } from "os";
 // against the whole file. Both `getModelConfig` and `setModelConfig`
 // should now scope strictly to the top-level `model:` block.
 
-const TEST_DIR = join(tmpdir(), `hermes-test-model-block-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-test-model-block-${Date.now()}`);
 
 async function importConfigWithHome(
   home: string,
 ): Promise<typeof import("../src/main/config")> {
   vi.resetModules();
-  process.env.HERMES_HOME = home;
+  process.env.CLAWD_HOME = home;
   return await import("../src/main/config");
 }
 
@@ -24,7 +24,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   rmSync(TEST_DIR, { recursive: true, force: true });
 });
@@ -259,7 +259,7 @@ describe("setModelConfig — scoped to model: block", () => {
 
   // Regression tests for #228: previously setModelConfig early-returned
   // when config.yaml didn't exist, so users on a fresh / custom
-  // HERMES_HOME had their model selection silently dropped — the desktop
+  // CLAWD_HOME had their model selection silently dropped — the desktop
   // appeared to save, but the Python gateway saw an empty model and
   // returned 404s. The fix bootstraps an empty config.yaml when missing
   // and threads through upsertBlockChild as usual.

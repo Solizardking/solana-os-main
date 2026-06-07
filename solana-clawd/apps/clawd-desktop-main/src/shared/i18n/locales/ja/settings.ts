@@ -1,14 +1,14 @@
 export default {
   title: "設定",
   sections: {
-    hermesAgent: "Hermes Agent",
+    clawdAgent: "Clawd Agent",
     appearance: "外観",
     privacy: "プライバシー",
     credentialPool: "認証情報プール",
   },
   analytics: {
     label: "匿名の利用状況分析を送信する",
-    hint: "プロジェクトの PostHog インスタンス（EU ホスト）に匿名・集計済みの利用状況データを送信することで Hermes の改善に役立てます。いつでもオフにできます。",
+    hint: "プロジェクトの PostHog インスタンス（EU ホスト）に匿名・集計済みの利用状況データを送信することで Clawd の改善に役立てます。いつでもオフにできます。",
     disclosure: {
       uuid: "このデバイスにのみ保存されるインストールごとのランダムな識別子（氏名・メールアドレス・アカウント情報は含まれません）。",
       platform: "ご利用の OS、Electron バージョン、Node.js バージョン。",
@@ -64,14 +64,14 @@ export default {
     "プロバイダのモデル一覧を取得できませんでした — モデル名を直接入力することもできます",
   customBaseUrlHint: "OpenAI 互換 API エンドポイント",
   poolHint:
-    "同じプロバイダの API キーを複数追加して自動ローテーション・負荷分散。Hermes が順に使い回します。",
+    "同じプロバイダの API キーを複数追加して自動ローテーション・負荷分散。Clawd が順に使い回します。",
   add: "追加",
   remove: "削除",
   keyLabel: "キー",
   empty: "（空）",
   dataSection: "データ",
   dataHint:
-    "Hermes の設定、セッション、スキル、メモリのエクスポート・インポートを行います。",
+    "Clawd の設定、セッション、スキル、メモリのエクスポート・インポートを行います。",
   backingUp: "バックアップ中...",
   exportBackup: "バックアップをエクスポート",
   importing: "インポート中...",
@@ -88,10 +88,10 @@ export default {
   debugDump: "デバッグダンプ",
   migrationDetected: "OpenClaw インストールを検出",
   migrationDesc:
-    "<code>{{path}}</code> に OpenClaw が見つかりました。設定・API キー・セッション・スキルを Hermes に移行できます。",
+    "<code>{{path}}</code> に OpenClaw が見つかりました。設定・API キー・セッション・スキルを Clawd に移行できます。",
   migrationDismiss: "再表示しない",
   migrating: "移行中...",
-  migrateToHermes: "Hermes に移行",
+  migrateToClawd: "Clawd に移行",
   skip: "スキップ",
   appearanceHint: "好みのインターフェース外観を選択",
   apiKeyPlaceholder: "API キー",
@@ -99,11 +99,11 @@ export default {
   connectionSection: "接続",
   modeLocal: "ローカル",
   modeRemote: "リモート",
-  modeLocalHint: "このデバイスにインストールされた Hermes を使用",
-  modeRemoteHint: "ネットワークまたはクラウド上の Hermes API サーバに接続",
+  modeLocalHint: "このデバイスにインストールされた Clawd を使用",
+  modeRemoteHint: "ネットワークまたはクラウド上の Clawd API サーバに接続",
   remoteUrl: "リモート URL",
   remoteUrlHint:
-    "Hermes API サーバの URL（/health と /v1/chat/completions を公開している必要あり）",
+    "Clawd API サーバの URL（/health と /v1/chat/completions を公開している必要あり）",
   remoteApiKey: "API キー",
   remoteApiKeyHint:
     "リモートホストの API_SERVER_KEY と一致させてください。サーバが認証なしリクエストを受け付ける場合は空欄で OK。",
@@ -112,7 +112,7 @@ export default {
   save: "保存",
   serverConfigTitle: "サーバ設定",
   serverConfigHint:
-    "リモート Hermes サーバに接続中です。モデル選択、プロバイダ API キー、認証情報はサーバ側の <code>~/.hermes/.env</code> と <code>config.yaml</code> で管理されます。ホスト側で編集（例：<code>docker exec -it hermes vi /opt/data/.env</code>）してコンテナを再起動してください。",
+    "リモート Clawd サーバに接続中です。モデル選択、プロバイダ API キー、認証情報はサーバ側の <code>~/.clawd/.env</code> と <code>config.yaml</code> で管理されます。ホスト側で編集（例：<code>docker exec -it clawd vi /opt/data/.env</code>）してコンテナを再起動してください。",
   connectionMode: "モード",
   switchedToLocal: "ローカルモードに切り替えました",
 } as const;

@@ -12,7 +12,7 @@
  *      both checks should clear.
  *
  * Pre-fix (the gap this commit closes): all checks fail open and the
- * user gets no warning until the chat itself errors with "Hermes is
+ * user gets no warning until the chat itself errors with "Clawd is
  * not logged into Nous Portal".
  */
 const { attach } = require("./e2e-attach");
@@ -20,10 +20,10 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const HERMES_HOME = path.join(os.homedir(), "AppData", "Local", "hermes");
-const CONFIG = path.join(HERMES_HOME, "config.yaml");
-const ENV_FILE = path.join(HERMES_HOME, ".env");
-const AUTH = path.join(HERMES_HOME, "auth.json");
+const CLAWD_HOME = path.join(os.homedir(), "AppData", "Local", "clawd");
+const CONFIG = path.join(CLAWD_HOME, "config.yaml");
+const ENV_FILE = path.join(CLAWD_HOME, ".env");
+const AUTH = path.join(CLAWD_HOME, "auth.json");
 
 const CONFIG_BAK = CONFIG + ".nous-test-bk";
 const ENV_BAK = ENV_FILE + ".nous-test-bk";
@@ -59,7 +59,7 @@ function restore() {
     const cfg = fs.readFileSync(CONFIG, "utf-8");
     const cfgNew = cfg
       .replace(/^( *provider: ).*$/m, '$1"nous"')
-      .replace(/^( *default: ).*$/m, '$1"hermes-4"');
+      .replace(/^( *default: ).*$/m, '$1"clawd-4"');
     fs.writeFileSync(CONFIG, cfgNew);
     // Strip NOUS_API_KEY if present
     const env = fs.readFileSync(ENV_FILE, "utf-8");
@@ -76,25 +76,25 @@ function restore() {
 
     // Bust the readEnv/getModelConfig caches by writing a dummy env entry
     await page.evaluate(async () => {
-      await window.hermesAPI.setEnv("__NOUS_PROBE__", String(Date.now()));
+      await window.clawdAPI.setEnv("__NOUS_PROBE__", String(Date.now()));
       // Also trigger a model config reload — getModelConfig is cached
       // for 5s; invalidating it requires either a write or a wait.
     });
     // Trigger model config write to bust mc cache
     await page.evaluate(async () => {
-      const mc = await window.hermesAPI.getModelConfig();
-      await window.hermesAPI.setModelConfig(mc.provider, mc.model, mc.baseUrl);
+      const mc = await window.clawdAPI.getModelConfig();
+      await window.clawdAPI.setModelConfig(mc.provider, mc.model, mc.baseUrl);
     });
 
     // 1. validateChatReadiness
     const readiness = await page.evaluate(async () => {
-      return await window.hermesAPI.validateChatReadiness();
+      return await window.clawdAPI.validateChatReadiness();
     });
     console.log("[A] validateChatReadiness:", JSON.stringify(readiness));
 
     // 2. getConfigHealth
     const health = await page.evaluate(async () => {
-      return await window.hermesAPI.getConfigHealth();
+      return await window.clawdAPI.getConfigHealth();
     });
     const modelKeyIssue = (health.issues || []).find(
       (i) => i.code === "MODEL_KEY_MISSING",
@@ -122,13 +122,13 @@ function restore() {
     fs.writeFileSync(AUTH, JSON.stringify(auth, null, 2));
     // Cache bust again
     await page.evaluate(async () => {
-      await window.hermesAPI.setEnv("__NOUS_PROBE2__", String(Date.now()));
+      await window.clawdAPI.setEnv("__NOUS_PROBE2__", String(Date.now()));
     });
     const readinessAfter = await page.evaluate(async () => {
-      return await window.hermesAPI.validateChatReadiness();
+      return await window.clawdAPI.validateChatReadiness();
     });
     const healthAfter = await page.evaluate(async () => {
-      return await window.hermesAPI.rerunConfigHealth();
+      return await window.clawdAPI.rerunConfigHealth();
     });
     const modelKeyIssueAfter = (healthAfter.issues || []).find(
       (i) => i.code === "MODEL_KEY_MISSING",

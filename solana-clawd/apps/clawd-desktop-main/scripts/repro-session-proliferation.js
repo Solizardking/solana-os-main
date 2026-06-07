@@ -26,7 +26,7 @@ const STATE_DB = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   "state.db",
 );
 

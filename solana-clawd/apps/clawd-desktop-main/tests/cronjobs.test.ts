@@ -17,19 +17,19 @@ vi.mock("child_process", () => ({
 }));
 
 vi.mock("../src/main/utils", () => ({
-  profileHome: () => "C:/hermes",
+  profileHome: () => "C:/clawd",
 }));
 
-vi.mock("../src/main/hermes", () => ({
+vi.mock("../src/main/clawd", () => ({
   isRemoteMode: () => false,
   getApiUrl: () => "http://127.0.0.1:8642",
   getRemoteAuthHeader: () => ({}),
 }));
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: "C:/hermes",
-  HERMES_PYTHON: "C:/hermes/hermes-agent/venv/Scripts/pythonw.exe",
-  hermesCliArgs: (args: string[] = []) => ["-m", "hermes_cli.main", ...args],
+  CLAWD_HOME: "C:/clawd",
+  CLAWD_PYTHON: "C:clawd/clawd-agent/venv/Scripts/pythonw.exe",
+  clawdCliArgs: (args: string[] = []) => ["-m", "clawd_cli.main", ...args],
 }));
 
 describe("createCronJob", () => {
@@ -50,7 +50,7 @@ describe("createCronJob", () => {
     expect(execFileSpy).toHaveBeenCalledTimes(1);
     expect(execFileSpy.mock.calls[0][1]).toEqual([
       "-m",
-      "hermes_cli.main",
+      "clawd_cli.main",
       "cron",
       "create",
       "7 17 * * *",

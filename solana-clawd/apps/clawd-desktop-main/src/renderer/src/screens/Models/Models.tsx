@@ -49,7 +49,7 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
   const [providerAutoFilled, setProviderAutoFilled] = useState(false);
 
   const loadModels = useCallback(async () => {
-    const list = await window.hermesAPI.listModels();
+    const list = await window.clawdAPI.listModels();
     setModels(list);
     setLoading(false);
   }, []);
@@ -107,7 +107,7 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
     // unknown hosts).
     setFormApiKey("");
     const envKey = expectedEnvKeyForUrl(m.baseUrl);
-    window.hermesAPI
+    window.clawdAPI
       .getEnv()
       .then((env) => {
         const saved = env[envKey];
@@ -177,12 +177,12 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
       // trip refreshes `config.yaml`. Library edits should "take" on
       // the active configuration when the entry being edited IS the
       // active one.
-      const activeBefore = await window.hermesAPI.getModelConfig();
+      const activeBefore = await window.clawdAPI.getModelConfig();
       const editedWasActive =
         activeBefore.provider === editingModel.provider &&
         activeBefore.model === editingModel.model;
 
-      await window.hermesAPI.updateModel(editingModel.id, {
+      await window.clawdAPI.updateModel(editingModel.id, {
         name,
         provider: formProvider,
         model,
@@ -196,14 +196,14 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
       if (editedWasActive) {
         const effectiveBaseUrl =
           formProvider === "custom" ? formBaseUrl.trim() : "";
-        await window.hermesAPI.setModelConfig(
+        await window.clawdAPI.setModelConfig(
           formProvider,
           model,
           effectiveBaseUrl,
         );
       }
     } else {
-      await window.hermesAPI.addModel(
+      await window.clawdAPI.addModel(
         name,
         formProvider,
         model,
@@ -213,7 +213,7 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
 
     if (formApiKey.trim() && formProvider === "custom") {
       const envKey = expectedEnvKeyForUrl(formBaseUrl.trim());
-      await window.hermesAPI.setEnv(envKey, formApiKey.trim());
+      await window.clawdAPI.setEnv(envKey, formApiKey.trim());
     }
 
     closeModal();
@@ -221,7 +221,7 @@ function Models({ visible }: ModelsProps = {}): React.JSX.Element {
   }
 
   async function handleDelete(id: string): Promise<void> {
-    await window.hermesAPI.removeModel(id);
+    await window.clawdAPI.removeModel(id);
     setConfirmDelete(null);
     await loadModels();
   }

@@ -2,7 +2,7 @@
 
 **Status:** Approved (brainstorming) — pending implementation plan
 **Date:** 2026-04-30
-**Branch target:** `Aiacos/hermes-desktop:feat/winget-rpm-release` → PR upstream `fathah/hermes-desktop:main`
+**Branch target:** `Aiacos/clawd-desktop:feat/winget-rpm-release` → PR upstream `fathah/clawd-desktop:main`
 
 ## Goal
 
@@ -46,11 +46,11 @@ The default-true on dispatch is a safety net: a stray click in the Actions UI ca
 
 ### Identifiers and naming
 
-- **Winget `PackageIdentifier`:** `NousResearch.HermesDesktop` (stable, never renamed)
-- **Winget `Publisher`:** `Nous Research` (free-text; binaries hosted under `fathah/hermes-desktop`, which the moderation review will verify against the `InstallerUrl`)
-- **Winget `PackageName`:** `Hermes Agent` (matches `productName` in `electron-builder.yml`)
-- **NSIS scope:** `oneClick: true`, `perMachine: false` — installs into `%LOCALAPPDATA%`, no UAC prompt, aligns with `winget install` default user scope and with the app's existing `~/.hermes` user-state model.
-- **RPM artifact name:** `hermes-desktop-<version>.rpm` (no spaces, no arch suffix — consistent with the existing `.deb` and `.AppImage` naming. The default `${productName}` would produce `Hermes Agent-...rpm` which breaks `dnf install ./file.rpm`. We explicitly only build `x86_64`, so the missing arch suffix is unambiguous in practice.).
+- **Winget `PackageIdentifier`:** `NousResearch.ClawdDesktop` (stable, never renamed)
+- **Winget `Publisher`:** `Nous Research` (free-text; binaries hosted under `fathah/clawd-desktop`, which the moderation review will verify against the `InstallerUrl`)
+- **Winget `PackageName`:** `Clawd Agent` (matches `productName` in `electron-builder.yml`)
+- **NSIS scope:** `oneClick: true`, `perMachine: false` — installs into `%LOCALAPPDATA%`, no UAC prompt, aligns with `winget install` default user scope and with the app's existing `~/.clawd` user-state model.
+- **RPM artifact name:** `clawd-desktop-<version>.rpm` (no spaces, no arch suffix — consistent with the existing `.deb` and `.AppImage` naming. The default `${productName}` would produce `Clawd Agent-...rpm` which breaks `dnf install ./file.rpm`. We explicitly only build `x86_64`, so the missing arch suffix is unambiguous in practice.).
 
 ## File changes
 
@@ -99,7 +99,7 @@ YAML manifest with placeholders: `{{VERSION}}`, `{{INSTALLER_URL}}`, `{{INSTALLE
 
 #### `build/winget/Locale.en-US.template.yaml`
 
-Locale manifest with placeholders: `{{VERSION}}`, `{{RELEASE_NOTES_URL}}`. Includes `Publisher: Nous Research`, `PublisherUrl: https://github.com/fathah/hermes-desktop`, `PackageName: Hermes Agent`, `License: MIT`, `LicenseUrl: https://github.com/fathah/hermes-desktop/blob/main/LICENSE`, `ShortDescription`, `Tags: [ai, agent, desktop, electron, llm]`.
+Locale manifest with placeholders: `{{VERSION}}`, `{{RELEASE_NOTES_URL}}`. Includes `Publisher: Nous Research`, `PublisherUrl: https://github.com/fathah/clawd-desktop`, `PackageName: Clawd Agent`, `License: MIT`, `LicenseUrl: https://github.com/fathah/clawd-desktop/blob/main/LICENSE`, `ShortDescription`, `Tags: [ai, agent, desktop, electron, llm]`.
 
 #### `build/winget/Version.template.yaml`
 
@@ -107,11 +107,11 @@ Root version manifest with placeholders: `{{VERSION}}`. Trivial: `PackageIdentif
 
 #### `scripts/generate-winget-manifests.mjs`
 
-Node ESM script (~50 lines, zero external deps). Reads `package.json` to get `version` and `name`. Locates `dist/<name>-<version>-setup.exe`. Computes SHA256 with `node:crypto` `createHash('sha256')` over the file. Reads each `*.template.yaml` from `build/winget/`. Replaces all `{{KEY}}` placeholders by string `replaceAll`. Writes output to `dist/winget/manifests/n/NousResearch/HermesDesktop/<version>/`:
+Node ESM script (~50 lines, zero external deps). Reads `package.json` to get `version` and `name`. Locates `dist/<name>-<version>-setup.exe`. Computes SHA256 with `node:crypto` `createHash('sha256')` over the file. Reads each `*.template.yaml` from `build/winget/`. Replaces all `{{KEY}}` placeholders by string `replaceAll`. Writes output to `dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/`:
 
-- `NousResearch.HermesDesktop.installer.yaml`
-- `NousResearch.HermesDesktop.locale.en-US.yaml`
-- `NousResearch.HermesDesktop.yaml`
+- `NousResearch.ClawdDesktop.installer.yaml`
+- `NousResearch.ClawdDesktop.locale.en-US.yaml`
+- `NousResearch.ClawdDesktop.yaml`
 
 The path mirrors the directory layout in `microsoft/winget-pkgs`, so the operator submitting the PR can `cp -r` directly.
 
@@ -123,10 +123,10 @@ Add script `"build:rpm": "npm run build && electron-builder --linux rpm"` for lo
 
 #### `README.md`
 
-Update the Install section's platform table to add Windows (`.exe` and, once accepted into winget-pkgs, `winget install NousResearch.HermesDesktop`) and Fedora (`.rpm`). Add a note that:
+Update the Install section's platform table to add Windows (`.exe` and, once accepted into winget-pkgs, `winget install NousResearch.ClawdDesktop`) and Fedora (`.rpm`). Add a note that:
 
 - The Windows build is unsigned; Windows SmartScreen will warn on first launch.
-- The `.rpm` is unsigned; install with `sudo dnf install ./hermes-desktop-<version>.x86_64.rpm` (or use `--nogpgcheck` if a system policy enforces signature checking).
+- The `.rpm` is unsigned; install with `sudo dnf install ./clawd-desktop-<version>.x86_64.rpm` (or use `--nogpgcheck` if a system policy enforces signature checking).
 - Auto-update on Linux is supported only for `.AppImage` builds; `.rpm` and `.deb` users must download new releases manually.
 
 ## Data flow
@@ -138,8 +138,8 @@ checkout
   → npm ci                  → node_modules + electron-builder install-app-deps
   → npm run build           → out/main + out/preload + out/renderer
   → electron-builder --win nsis --x64
-                            → dist/hermes-desktop-<version>-setup.exe
-                            → dist/hermes-desktop-<version>-setup.exe.blockmap
+                            → dist/clawd-desktop-<version>-setup.exe
+                            → dist/clawd-desktop-<version>-setup.exe.blockmap
                             → dist/latest.yml
   → upload-artifact "windows-artifacts"
 ```
@@ -149,9 +149,9 @@ checkout
 ```
 download-artifact "windows-artifacts" → dist/
 node scripts/generate-winget-manifests.mjs
-  → SHA256(dist/hermes-desktop-<version>-setup.exe)
+  → SHA256(dist/clawd-desktop-<version>-setup.exe)
   → fill 3 templates with VERSION, INSTALLER_URL, INSTALLER_SHA256, RELEASE_DATE
-  → write dist/winget/manifests/n/NousResearch/HermesDesktop/<version>/*.yaml
+  → write dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/*.yaml
 upload-artifact "winget-manifests-<version>"
 ```
 
@@ -163,9 +163,9 @@ checkout
   → npm run build
   → apt install rpm
   → electron-builder --linux AppImage deb rpm
-                            → dist/hermes-desktop-<version>.AppImage
-                            → dist/hermes-desktop-<version>.deb
-                            → dist/hermes-desktop-<version>.x86_64.rpm
+                            → dist/clawd-desktop-<version>.AppImage
+                            → dist/clawd-desktop-<version>.deb
+                            → dist/clawd-desktop-<version>.x86_64.rpm
                             → dist/latest-linux.yml
   → upload-artifact "linux-artifacts"
 ```
@@ -205,7 +205,7 @@ softprops/action-gh-release files=artifacts/* (excludes winget/ subdir)
 
 ### CI on fork
 
-9. Push `feat/winget-rpm-release` to `Aiacos/hermes-desktop`.
+9. Push `feat/winget-rpm-release` to `Aiacos/clawd-desktop`.
 10. Trigger `workflow_dispatch` from the Actions UI on `feat/winget-rpm-release` with `dry_run=true`.
 11. Verify all build jobs succeed:
     - `prepare` ✓

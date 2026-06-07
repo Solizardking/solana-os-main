@@ -9,13 +9,13 @@ async function loadLocaleModule(): Promise<
   typeof import("../src/main/locale")
 > {
   vi.resetModules();
-  vi.stubEnv("HERMES_HOME", testHome);
+  vi.stubEnv("CLAWD_HOME", testHome);
   return await import("../src/main/locale");
 }
 
 describe("app locale persistence", () => {
   beforeEach(() => {
-    testHome = mkdtempSync(join(tmpdir(), "hermes-locale-"));
+    testHome = mkdtempSync(join(tmpdir(), "clawd-locale-"));
   });
 
   afterEach(() => {

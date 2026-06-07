@@ -9,17 +9,17 @@ import {
 import { join, win32 } from "path";
 import { homedir } from "os";
 import { createConnection } from "net";
-import { getEnhancedPath, HERMES_HOME } from "./installer";
+import { getEnhancedPath, CLAWD_HOME } from "./installer";
 import { stripAnsi, safeWriteFile } from "./utils";
 import { getApiServerKey, getConnectionConfig, getModelConfig } from "./config";
 import http from "http";
 
-const HERMES_OFFICE_REPO = "https://github.com/fathah/hermes-office";
-const HERMES_OFFICE_DIR = join(HERMES_HOME, "hermes-office");
-const DEV_PID_FILE = join(HERMES_HOME, "claw3d-dev.pid");
-const ADAPTER_PID_FILE = join(HERMES_HOME, "claw3d-adapter.pid");
-const PORT_FILE = join(HERMES_HOME, "claw3d-port");
-const WS_URL_FILE = join(HERMES_HOME, "claw3d-ws-url");
+const CLAWD_OFFICE_REPO = "https://github.com/fathah/clawd-office";
+const CLAWD_OFFICE_DIR = join(CLAWD_HOME, "clawd-office");
+const DEV_PID_FILE = join(CLAWD_HOME, "claw3d-dev.pid");
+const ADAPTER_PID_FILE = join(CLAWD_HOME, "claw3d-adapter.pid");
+const PORT_FILE = join(CLAWD_HOME, "claw3d-port");
+const WS_URL_FILE = join(CLAWD_HOME, "claw3d-ws-url");
 const DEFAULT_PORT = 3000;
 const DEFAULT_WS_URL = "ws://localhost:18789";
 const CLAW3D_SETTINGS_DIR = join(homedir(), ".openclawd", "claw3d");
@@ -47,11 +47,11 @@ interface NpmInvocationOptions {
   fileExists?: (path: string) => boolean;
 }
 
-type Claw3dScript = "dev" | "hermes-adapter";
+type Claw3dScript = "dev" | "clawd-adapter";
 
 const CLAW3D_SCRIPT_ARGS: Record<Claw3dScript, string[]> = {
   dev: ["server/index.js", "--dev"],
-  "hermes-adapter": ["server/hermes-gateway-adapter.js"],
+  "clawd-adapter": ["server/clawd-gateway-adapter.js"],
 };
 
 export function isWindowsCommandScript(command: string): boolean {
@@ -240,10 +240,10 @@ export function getClaw3dWsUrl(): string {
 }
 
 /**
- * The model Hermes Office should default to. Office runs against the same
+ * The model Clawd Office should default to. Office runs against the same
  * gateway as the desktop chat, so it should use the same configured model
- * rather than a generic `hermes` agent the user never selected (issue
- * #256). Falls back to `hermes` only when no model is configured.
+ * rather than a generic `clawd` agent the user never selected (issue
+ * #256). Falls back to `clawd` only when no model is configured.
  */
 function resolveOfficeModel(): string {
   try {
@@ -252,12 +252,12 @@ function resolveOfficeModel(): string {
   } catch {
     /* no model configured — fall through to the default */
   }
-  return "hermes";
+  return "clawd";
 }
 
 /**
- * Build the `.env` Hermes Desktop writes into the hermes-office directory.
- * Exported so the contents (notably `HERMES_MODEL`, issue #256) can be
+ * Build the `.env` Clawd Desktop writes into the clawd-office directory.
+ * Exported so the contents (notably `CLAWD_MODEL`, issue #256) can be
  * unit tested without a live Office install.
  */
 export function buildOfficeEnv(opts: {
@@ -267,16 +267,16 @@ export function buildOfficeEnv(opts: {
   model: string;
 }): string {
   return [
-    "# Auto-configured by Hermes Desktop",
+    "# Auto-configured by Clawd Desktop",
     `PORT=${opts.port}`,
     `HOST=127.0.0.1`,
     `NEXT_PUBLIC_GATEWAY_URL=${opts.url}`,
     `CLAW3D_GATEWAY_URL=${opts.url}`,
     `CLAW3D_GATEWAY_TOKEN=${opts.apiKey}`,
-    `HERMES_API_KEY=${opts.apiKey}`,
-    `HERMES_ADAPTER_PORT=18789`,
-    `HERMES_MODEL=${opts.model || "hermes"}`,
-    `HERMES_AGENT_NAME=Hermes`,
+    `CLAWD_API_KEY=${opts.apiKey}`,
+    `CLAWD_ADAPTER_PORT=18789`,
+    `CLAWD_MODEL=${opts.model || "clawd"}`,
+    `CLAWD_AGENT_NAME=Clawd`,
     "",
   ].join("\n");
 }
@@ -305,7 +305,7 @@ function writeClaw3dSettings(wsUrl?: string): void {
 
     const settings = {
       ...existing,
-      adapter: "hermes",
+      adapter: "clawd",
       url,
       token: apiKey,
     };
@@ -316,8 +316,8 @@ function writeClaw3dSettings(wsUrl?: string): void {
 
   // Write .env in claw3d directory
   try {
-    if (existsSync(HERMES_OFFICE_DIR)) {
-      const envPath = join(HERMES_OFFICE_DIR, ".env");
+    if (existsSync(CLAWD_OFFICE_DIR)) {
+      const envPath = join(CLAWD_OFFICE_DIR, ".env");
       safeWriteFile(
         envPath,
         buildOfficeEnv({
@@ -362,7 +362,7 @@ export interface Claw3dStatus {
   portInUse: boolean;
   wsUrl: string;
   error: string; // last error from either process
-  // Populated in SSH tunnel mode when a Claw3D / hermes-office service is
+  // Populated in SSH tunnel mode when a Claw3D / clawd-office service is
   // running on the remote host. Renderer should prefer this over launching
   // a local dev server. Null/undefined when not in SSH mode or when the
   // remote service is unreachable.
@@ -426,7 +426,7 @@ function isAdapterRunning(): boolean {
 
 // Probe an HTTP endpoint with a short timeout. Returns true if any response
 // arrives (we don't care about the status code — even a 404 confirms a
-// listener). Used to detect remote Claw3D / hermes-office without dragging
+// listener). Used to detect remote Claw3D / clawd-office without dragging
 // in the SSH tunnel machinery.
 function probeHttp(url: string, timeoutMs = 1500): Promise<boolean> {
   return new Promise((resolve) => {
@@ -448,8 +448,8 @@ function probeHttp(url: string, timeoutMs = 1500): Promise<boolean> {
 }
 
 export async function getClaw3dStatus(): Promise<Claw3dStatus> {
-  const cloned = existsSync(join(HERMES_OFFICE_DIR, "package.json"));
-  const installed = existsSync(join(HERMES_OFFICE_DIR, "node_modules"));
+  const cloned = existsSync(join(CLAWD_OFFICE_DIR, "package.json"));
+  const installed = existsSync(join(CLAWD_OFFICE_DIR, "node_modules"));
   const port = getSavedPort();
   const devRunning = isDevServerRunning();
   // Only check port conflict when dev server is NOT running
@@ -457,7 +457,7 @@ export async function getClaw3dStatus(): Promise<Claw3dStatus> {
   const adapterUp = isAdapterRunning();
   const error = devServerError || adapterError;
 
-  // SSH tunnel mode: probe the remote host for a Claw3D / hermes-office
+  // SSH tunnel mode: probe the remote host for a Claw3D / clawd-office
   // service. The official systemd unit binds Next.js to :3000 by default,
   // so we try the SSH host at the saved Claw3D port. When reachable, the
   // renderer can point its webview at it instead of asking the user to
@@ -592,15 +592,15 @@ export async function setupClaw3d(
   const git = resolveCommand("git", env.PATH);
 
   // Step 1: Clone (or pull if already cloned)
-  const cloned = existsSync(join(HERMES_OFFICE_DIR, "package.json"));
+  const cloned = existsSync(join(CLAWD_OFFICE_DIR, "package.json"));
 
   if (!cloned) {
     emit(1, "Cloning Claw3D repository...", "Cloning from GitHub...\n");
     await new Promise<void>((resolve, reject) => {
       const gitClone = createCommandInvocation(git, [
         "clone",
-        HERMES_OFFICE_REPO,
-        HERMES_OFFICE_DIR,
+        CLAWD_OFFICE_REPO,
+        CLAWD_OFFICE_DIR,
       ]);
       const proc = spawn(gitClone.command, gitClone.args, {
         cwd: homedir(),
@@ -638,7 +638,7 @@ export async function setupClaw3d(
     await new Promise<void>((resolve) => {
       const gitPull = createCommandInvocation(git, ["pull", "--ff-only"]);
       const proc = spawn(gitPull.command, gitPull.args, {
-        cwd: HERMES_OFFICE_DIR,
+        cwd: CLAWD_OFFICE_DIR,
         env,
         stdio: ["ignore", "pipe", "pipe"],
         windowsHide: true,
@@ -666,7 +666,7 @@ export async function setupClaw3d(
 
   await new Promise<void>((resolve, reject) => {
     const proc = spawn(npm.command, npm.args, {
-      cwd: HERMES_OFFICE_DIR,
+      cwd: CLAWD_OFFICE_DIR,
       env,
       stdio: ["ignore", "pipe", "pipe"],
       windowsHide: true,
@@ -725,7 +725,7 @@ function killProcessTree(proc: ChildProcess): void {
 
 export function startDevServer(): boolean {
   if (isDevServerRunning()) return true;
-  if (!existsSync(join(HERMES_OFFICE_DIR, "node_modules"))) return false;
+  if (!existsSync(join(CLAWD_OFFICE_DIR, "node_modules"))) return false;
 
   devServerError = "";
   devServerLogs = "";
@@ -735,13 +735,13 @@ export function startDevServer(): boolean {
     PATH: getEnhancedPath(),
     HOME: homedir(),
     TERM: "dumb",
-    HERMES_API_KEY: getApiServerKey(),
+    CLAWD_API_KEY: getApiServerKey(),
     PORT: String(port),
   };
   const node = resolveCommand("node", env.PATH);
   const devScript = createClaw3dScriptInvocation("dev", node.command);
   const proc = spawn(devScript.command, devScript.args, {
-    cwd: HERMES_OFFICE_DIR,
+    cwd: CLAWD_OFFICE_DIR,
     env,
     stdio: ["ignore", "pipe", "pipe"],
     detached: true,
@@ -806,27 +806,27 @@ export function stopDevServer(): void {
 
 export function startAdapter(): boolean {
   if (isAdapterRunning()) return true;
-  if (!existsSync(join(HERMES_OFFICE_DIR, "node_modules"))) return false;
+  if (!existsSync(join(CLAWD_OFFICE_DIR, "node_modules"))) return false;
 
   adapterError = "";
   adapterLogs = "";
-  // The hermes-gateway-adapter authenticates to the Hermes gateway with
-  // `Authorization: Bearer ${HERMES_API_KEY}`. Without it, a gateway that
+  // The clawd-gateway-adapter authenticates to the Clawd gateway with
+  // `Authorization: Bearer ${CLAWD_API_KEY}`. Without it, a gateway that
   // has an API_SERVER_KEY configured rejects the Office chat with HTTP 401.
   const env = {
     ...process.env,
     PATH: getEnhancedPath(),
     HOME: homedir(),
     TERM: "dumb",
-    HERMES_API_KEY: getApiServerKey(),
+    CLAWD_API_KEY: getApiServerKey(),
   };
   const node = resolveCommand("node", env.PATH);
   const adapterScript = createClaw3dScriptInvocation(
-    "hermes-adapter",
+    "clawd-adapter",
     node.command,
   );
   const proc = spawn(adapterScript.command, adapterScript.args, {
-    cwd: HERMES_OFFICE_DIR,
+    cwd: CLAWD_OFFICE_DIR,
     env,
     stdio: ["ignore", "pipe", "pipe"],
     detached: true,
@@ -856,7 +856,7 @@ export function startAdapter(): boolean {
 
   proc.on("close", (code) => {
     if (code && code !== 0 && !adapterError) {
-      adapterError = `Hermes adapter exited with code ${code}`;
+      adapterError = `Clawd adapter exited with code ${code}`;
     }
     adapterProcess = null;
     cleanupPid(ADAPTER_PID_FILE);
@@ -888,7 +888,7 @@ export function stopAdapter(): void {
 }
 
 export function startAll(): { success: boolean; error?: string } {
-  if (!existsSync(join(HERMES_OFFICE_DIR, "node_modules"))) {
+  if (!existsSync(join(CLAWD_OFFICE_DIR, "node_modules"))) {
     return {
       success: false,
       error: "Claw3D is not installed. Please install it first.",
@@ -914,7 +914,7 @@ export function startAll(): { success: boolean; error?: string } {
   // Start adapter
   const adapterOk = startAdapter();
   if (!adapterOk) {
-    return { success: false, error: "Failed to start Hermes adapter" };
+    return { success: false, error: "Failed to start Clawd adapter" };
   }
 
   return { success: true };

@@ -14,7 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const AUTH = path.join(os.homedir(), "AppData", "Local", "hermes", "auth.json");
+const AUTH = path.join(os.homedir(), "AppData", "Local", "clawd", "auth.json");
 
 (async () => {
   const { browser, page } = await attach();
@@ -61,7 +61,7 @@ const AUTH = path.join(os.homedir(), "AppData", "Local", "hermes", "auth.json");
   while (status === "running" && Date.now() - startTs < MAX_WAIT_MS) {
     await new Promise((r) => setTimeout(r, 1500));
     const snap = await page.evaluate(() => {
-      const pre = document.querySelector(".settings-hermes-doctor");
+      const pre = document.querySelector(".settings-clawd-doctor");
       const log = pre ? pre.textContent || "" : "";
       const ok = document.querySelector(".oauth-login-result-success");
       const err = document.querySelector(".oauth-login-result-error");

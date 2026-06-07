@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { validateImportArchivePath } from "../src/main/installer";
 
-const TEST_DIR = join(tmpdir(), `hermes-import-validation-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-import-validation-${Date.now()}`);
 
 describe("validateImportArchivePath", () => {
   it("requires a non-empty path", () => {

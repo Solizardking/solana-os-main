@@ -14,7 +14,7 @@ const MULTIPLEXING_ENABLED = [
   "-o",
   "ControlMaster=auto",
   "-o",
-  "ControlPath=~/.ssh/cm-hermes-%r@%h:%p",
+  "ControlPath=~/.ssh/cm-clawd-%r@%h:%p",
   "-o",
   "ControlPersist=60s",
 ];

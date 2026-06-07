@@ -8,7 +8,7 @@
  * Each issue carries an `autoFixable` flag and a fix description; the
  * renderer's Diagnose UI renders a per-issue "Fix" button for those.
  *
- * Audit log: every auto-fix appends to `~/.hermes/logs/config-fixes.log`
+ * Audit log: every auto-fix appends to `~/.clawd/logs/config-fixes.log`
  * via `appendConfigFixLog` (capped at 1000 entries).
  */
 
@@ -29,10 +29,10 @@ import {
   upsertBlockChild,
 } from "./config";
 import { safeWriteFile } from "./utils";
-import { HERMES_HOME } from "./installer";
+import { CLAWD_HOME } from "./installer";
 import { expectedEnvKeyForModel } from "./installer";
 import { expectedEnvKeyForUrl, isLocalBaseUrl } from "../shared/url-key-map";
-import { findSiblingHermesHomes } from "./wsl-detection";
+import { findSiblingClawdHomes } from "./wsl-detection";
 
 export type Severity = "error" | "warning" | "info";
 
@@ -43,7 +43,7 @@ export type IssueCode =
   | "MODEL_KEY_MISSING"
   | "UI_RUNTIME_ENVKEY_MISMATCH"
   | "NON_ASCII_CREDENTIAL"
-  | "SIBLING_HERMES_HOME_DRIFT"
+  | "SIBLING_CLAWD_HOME_DRIFT"
   | "LEGACY_TOOLSET_NAME";
 
 export interface ConfigHealthIssue {
@@ -87,7 +87,7 @@ export function runConfigHealthCheck(profile?: string): ConfigHealthReport {
     checkActiveModelKeyPresence,
     checkRuntimeEnvKeyMismatch,
     checkNonAsciiCredentials,
-    checkSiblingHermesHomeDrift,
+    checkSiblingClawdHomeDrift,
     checkLegacyToolsetName,
   ];
 
@@ -128,8 +128,8 @@ export function autoFixIssue(
         return fixRuntimeEnvKeyMismatch(profile, context);
       case "NON_ASCII_CREDENTIAL":
         return fixNonAsciiCredential(profile, context);
-      case "SIBLING_HERMES_HOME_DRIFT":
-        return fixSiblingHermesHomeDrift(profile, context);
+      case "SIBLING_CLAWD_HOME_DRIFT":
+        return fixSiblingClawdHomeDrift(profile, context);
       case "LEGACY_TOOLSET_NAME":
         return fixLegacyToolsetName(profile);
       default:
@@ -479,25 +479,25 @@ function fixNonAsciiCredential(
 }
 
 // ───────────────────────────────────────────────────────
-//  Sibling-hermes-home drift check (Windows + WSL)
+//  Sibling-clawd-home drift check (Windows + WSL)
 //
-//  Hermes Desktop reads its config from %LocalAppData%\hermes\. Users
-//  who also run the `hermes` CLI inside a WSL distro have a second,
-//  separate ~/.hermes/ at /home/<user>/.hermes/ on the WSL fs. The
+//  Clawd Desktop reads its config from %LocalAppData%\clawd\. Users
+//  who also run the `clawd` CLI inside a WSL distro have a second,
+//  separate ~/.clawd/ at /home/<user>/.clawd/ on the WSL fs. The
 //  two are independent. When they drift (a key set on one side but
 //  not the other, two different keys, etc.), the user gets confusing
 //  errors like "Invalid token payload" because chat goes through the
 //  Windows-side config but they configured the WSL-side. Issue #384
 //  is a textbook case.
 //
-//  The check enumerates accessible WSL ~/.hermes/ directories
+//  The check enumerates accessible WSL ~/.clawd/ directories
 //  (fail-soft — no WSL, no result), compares a curated set of
 //  fields, and emits one issue per drifting field. Auto-fix is
 //  offered ONLY when the direction is unambiguous (one side empty,
 //  the other has a value).
 // ───────────────────────────────────────────────────────
 
-/** Fields we compare across sibling hermes-homes. Each entry is
+/** Fields we compare across sibling clawd-homes. Each entry is
  *  `{ source, field, label }`:
  *   - `source` — `env` (reads from `.env`) or `config` (reads
  *     from `config.yaml` via dotted-path getConfigValue equivalent)
@@ -597,7 +597,7 @@ interface SiblingEnv {
   configFile: string;
 }
 
-/** Read the curated subset of fields from a sibling hermes-home. */
+/** Read the curated subset of fields from a sibling clawd-home. */
 function readSiblingFields(home: string): SiblingEnv {
   const envFile = join(home, ".env");
   const configFile = join(home, "config.yaml");
@@ -665,15 +665,15 @@ function readCurrentFields(profile: string | undefined): SiblingEnv {
   return readSiblingFields(profilePaths(profile).home);
 }
 
-function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
-  const siblings = findSiblingHermesHomes();
+function checkSiblingClawdHomeDrift(profile?: string): ConfigHealthIssue[] {
+  const siblings = findSiblingClawdHomes();
   if (siblings.length === 0) return [];
 
   const current = readCurrentFields(profile);
   const issues: ConfigHealthIssue[] = [];
 
   for (const sibling of siblings) {
-    const siblingFields = readSiblingFields(sibling.hermesHome);
+    const siblingFields = readSiblingFields(sibling.clawdHome);
 
     for (const { field, label } of DRIFT_FIELDS) {
       const winValue = current.values[field] ?? "";
@@ -683,23 +683,23 @@ function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
       const isSecret = isSecretField(label);
       const winMasked = isSecret ? maskKey(winValue) : winValue;
       const wslMasked = isSecret ? maskKey(wslValue) : wslValue;
-      const where = `${sibling.distro}:/home/${sibling.user}/.hermes`;
+      const where = `${sibling.distro}:/home/${sibling.user}/.clawd`;
 
       // Direction A: one side empty, the other has a value →
       // unambiguous, auto-fixable. Default direction WSL → Windows
-      // (assumption: Hermes Desktop is the broken side, the user's
+      // (assumption: Clawd Desktop is the broken side, the user's
       // CLI on WSL is the working setup). If reverse direction is
       // ever needed, expose a second fixId.
       if (!winValue && wslValue) {
         issues.push({
-          code: "SIBLING_HERMES_HOME_DRIFT",
+          code: "SIBLING_CLAWD_HOME_DRIFT",
           severity: "warning",
-          message: `${label} is set on WSL (${sibling.distro}) but not on the Windows side that Hermes Desktop reads.`,
+          message: `${label} is set on WSL (${sibling.distro}) but not on the Windows side that Clawd Desktop reads.`,
           detail:
             `WSL value (${where}): ${wslMasked}\n` +
             `Windows value: (not set)\n\n` +
-            `Hermes Desktop reads only ${current.envFile.replace(/\\\.env$/, "")} — your CLI on WSL works, the desktop doesn't, because the value never made it across. Auto-fix copies the WSL value into the Windows-side file.`,
-          locations: [current.configFile, current.envFile, sibling.hermesHome],
+            `Clawd Desktop reads only ${current.envFile.replace(/\\\.env$/, "")} — your CLI on WSL works, the desktop doesn't, because the value never made it across. Auto-fix copies the WSL value into the Windows-side file.`,
+          locations: [current.configFile, current.envFile, sibling.clawdHome],
           autoFixable: true,
           fixDescription: `Copy ${label} from WSL (${sibling.distro}) → Windows side.`,
           fixLocation: ".env",
@@ -707,7 +707,7 @@ function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
             field,
             distro: sibling.distro,
             user: sibling.user,
-            wslHome: sibling.hermesHome,
+            wslHome: sibling.clawdHome,
             direction: "wsl-to-windows",
           },
         });
@@ -717,14 +717,14 @@ function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
         // broken). Surface as info, not auto-fixable from here
         // (we don't want to write to WSL silently).
         issues.push({
-          code: "SIBLING_HERMES_HOME_DRIFT",
+          code: "SIBLING_CLAWD_HOME_DRIFT",
           severity: "info",
           message: `${label} is set on Windows but not on WSL (${sibling.distro}).`,
           detail:
             `Windows value: ${winMasked}\n` +
             `WSL value (${where}): (not set)\n\n` +
-            `Hermes Desktop reads the Windows side, so this isn't blocking the desktop. Just a heads-up that your CLI on WSL is missing this value if you also use it there.`,
-          locations: [current.envFile, sibling.hermesHome],
+            `Clawd Desktop reads the Windows side, so this isn't blocking the desktop. Just a heads-up that your CLI on WSL is missing this value if you also use it there.`,
+          locations: [current.envFile, sibling.clawdHome],
           autoFixable: false,
           context: {
             field,
@@ -738,14 +738,14 @@ function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
         // intentional (separate billing accounts, dev vs prod
         // keys). Surface as info, no auto-fix.
         issues.push({
-          code: "SIBLING_HERMES_HOME_DRIFT",
+          code: "SIBLING_CLAWD_HOME_DRIFT",
           severity: "info",
           message: `${label} has different values on Windows and WSL (${sibling.distro}).`,
           detail:
             `Windows value: ${winMasked}\n` +
             `WSL value (${where}): ${wslMasked}\n\n` +
-            `Hermes Desktop reads only the Windows side. If these were supposed to be the same, copy whichever value is current to the other side. If they're intentionally different, this notice is informational.`,
-          locations: [current.envFile, sibling.hermesHome],
+            `Clawd Desktop reads only the Windows side. If these were supposed to be the same, copy whichever value is current to the other side. If they're intentionally different, this notice is informational.`,
+          locations: [current.envFile, sibling.clawdHome],
           autoFixable: false,
           context: {
             field,
@@ -761,7 +761,7 @@ function checkSiblingHermesHomeDrift(profile?: string): ConfigHealthIssue[] {
   return issues;
 }
 
-function fixSiblingHermesHomeDrift(
+function fixSiblingClawdHomeDrift(
   profile: string | undefined,
   context: Record<string, string> | undefined,
 ): { ok: boolean; message?: string } {
@@ -822,13 +822,13 @@ function fixSiblingHermesHomeDrift(
     }
     appendConfigFixLog({
       ts: Date.now(),
-      issueCode: "SIBLING_HERMES_HOME_DRIFT",
+      issueCode: "SIBLING_CLAWD_HOME_DRIFT",
       action: "autofix",
       from: `wsl:${wslHome}/${fieldDef.source === "env" ? ".env" : "config.yaml"}`,
       to:
         fieldDef.source === "env"
-          ? "%LocalAppData%/hermes/.env"
-          : "%LocalAppData%/hermes/config.yaml",
+          ? "%LocalAppData%clawd/.env"
+          : "%LocalAppData%clawd/config.yaml",
       profile: profile || "default",
       valueMasked: isSecretField(fieldDef.label) ? maskKey(value) : value,
       detail: field,
@@ -844,22 +844,22 @@ function fixSiblingHermesHomeDrift(
 
 // Re-export for tests that want to call the check directly without
 // going through `runConfigHealthCheck`.
-export { checkSiblingHermesHomeDrift, fixSiblingHermesHomeDrift };
+export { checkSiblingClawdHomeDrift, fixSiblingClawdHomeDrift };
 
 // ───────────────────────────────────────────────────────
-//  LEGACY_TOOLSET_NAME — `toolsets:` list still has "hermes"
+//  LEGACY_TOOLSET_NAME — `toolsets:` list still has "clawd"
 // ───────────────────────────────────────────────────────
 
 /**
- * The bundled hermes-agent CLI renamed its default toolset alias from
- * "hermes" (legacy) to "hermes-cli". Configs written by older versions —
- * either an older bundled engine or a prior standalone hermes CLI install —
+ * The bundled clawd-agent CLI renamed its default toolset alias from
+ * "clawd" (legacy) to "clawd-cli". Configs written by older versions —
+ * either an older bundled engine or a prior standalone clawd CLI install —
  * still reference the legacy name in their top-level `toolsets:` block.
- * The current engine's validator no longer recognises `"hermes"` and
- * prints `Warning: Unknown toolsets: hermes` on every agent invocation
+ * The current engine's validator no longer recognises `"clawd"` and
+ * prints `Warning: Unknown toolsets: clawd` on every agent invocation
  * (issues #353, fresh #385/Telegram reports).
  *
- * The fix is a one-line YAML rewrite: `- hermes` → `- hermes-cli`. The
+ * The fix is a one-line YAML rewrite: `- clawd` → `- clawd-cli`. The
  * agent still functions today — it's a cosmetic warning — but it
  * clutters every chat session and looks broken to new users.
  */
@@ -881,28 +881,28 @@ function checkLegacyToolsetName(profile?: string): ConfigHealthIssue[] {
     code: "LEGACY_TOOLSET_NAME",
     severity: "warning",
     message:
-      'config.yaml references the legacy toolset name "hermes" — the current engine expects "hermes-cli".',
+      'config.yaml references the legacy toolset name "clawd" — the current engine expects "clawd-cli".',
     detail:
-      "The bundled hermes-agent CLI renamed the default toolset alias " +
-      'from "hermes" to "hermes-cli". The agent still runs, but every ' +
-      "invocation prints `Warning: Unknown toolsets: hermes` until the " +
+      "The bundled clawd-agent CLI renamed the default toolset alias " +
+      'from "clawd" to "clawd-cli". The agent still runs, but every ' +
+      "invocation prints `Warning: Unknown toolsets: clawd` until the " +
       "entry is updated. Auto-fix rewrites the line in place.",
     locations: [configFile],
     autoFixable: true,
-    fixDescription: "Rewrite `- hermes` → `- hermes-cli` in config.yaml.",
+    fixDescription: "Rewrite `- clawd` → `- clawd-cli` in config.yaml.",
     fixLocation: "config.yaml",
   });
   return issues;
 }
 
 /**
- * Scan the top-level `toolsets:` block for a literal `- hermes` entry
+ * Scan the top-level `toolsets:` block for a literal `- clawd` entry
  * (the legacy alias). Returns true on the first match. Indentation-
  * aware: stops at the first top-level (non-indented) line after the
- * `toolsets:` header. Tolerates quoted forms (`- "hermes"`, `- 'hermes'`)
+ * `toolsets:` header. Tolerates quoted forms (`- "clawd"`, `- 'clawd'`)
  * and trailing comments.
  *
- * Does NOT match `hermes-cli` / `hermes-telegram` / `hermes-discord` /
+ * Does NOT match `clawd-cli` / `clawd-telegram` / `clawd-discord` /
  * etc. — those are the current canonical names and must not be touched.
  */
 function findLegacyToolsetEntry(content: string): boolean {
@@ -916,7 +916,7 @@ function findLegacyToolsetEntry(content: string): boolean {
     if (!inToolsets) continue;
     // Exit the block on the next un-indented (top-level) non-empty line
     // that ISN'T a list item. YAML allows `- foo` at zero indent under
-    // a parent key (and that's what `hermes setup` actually writes), so
+    // a parent key (and that's what `clawd setup` actually writes), so
     // a line starting with `-` is still part of the block.
     if (/^[^\s-]/.test(line) && line.trim() !== "") {
       inToolsets = false;
@@ -924,16 +924,16 @@ function findLegacyToolsetEntry(content: string): boolean {
     }
     // List item shape: optional whitespace, dash, whitespace, optional
     // quote, NAME, optional matching quote, optional trailing comment.
-    // NAME captured tightly so `hermes-cli` doesn't match `hermes`.
+    // NAME captured tightly so `clawd-cli` doesn't match `clawd`.
     const m = line.match(/^\s*-\s+(["']?)([\w-]+)\1\s*(#.*)?$/);
-    if (m && m[2] === "hermes") return true;
+    if (m && m[2] === "clawd") return true;
   }
   return false;
 }
 
 /**
- * Rewrite every `- hermes` entry inside the top-level `toolsets:` block
- * to `- hermes-cli`, preserving indentation, quoting style, and any
+ * Rewrite every `- clawd` entry inside the top-level `toolsets:` block
+ * to `- clawd-cli`, preserving indentation, quoting style, and any
  * trailing comment. Re-runs `findLegacyToolsetEntry` on the result so
  * the function is a no-op if there's nothing to fix.
  */
@@ -968,14 +968,14 @@ function fixLegacyToolsetName(profile?: string): {
           out.push(line);
           continue;
         }
-        // Rewrite the legacy entry only — leave hermes-cli et al alone.
-        // Accept both zero-indent (`- hermes`) and indented (`  - hermes`).
-        const m = line.match(/^(\s*-\s+)(["']?)hermes\2(\s*(?:#.*)?)$/);
+        // Rewrite the legacy entry only — leave clawd-cli et al alone.
+        // Accept both zero-indent (`- clawd`) and indented (`  - clawd`).
+        const m = line.match(/^(\s*-\s+)(["']?)clawd\2(\s*(?:#.*)?)$/);
         if (m) {
           const prefix = m[1];
           const quote = m[2];
           const suffix = m[3];
-          out.push(`${prefix}${quote}hermes-cli${quote}${suffix}`);
+          out.push(`${prefix}${quote}clawd-cli${quote}${suffix}`);
           changed = true;
           continue;
         }
@@ -995,14 +995,14 @@ function fixLegacyToolsetName(profile?: string): {
       ts: Date.now(),
       issueCode: "LEGACY_TOOLSET_NAME",
       action: "autofix",
-      from: "hermes",
-      to: "hermes-cli",
+      from: "clawd",
+      to: "clawd-cli",
       profile: profile || "default",
       detail: "toolsets[] entry",
     });
     return {
       ok: true,
-      message: "Rewrote `- hermes` → `- hermes-cli` in config.yaml.",
+      message: "Rewrote `- clawd` → `- clawd-cli` in config.yaml.",
     };
   } catch (err) {
     return { ok: false, message: (err as Error).message };
@@ -1018,7 +1018,7 @@ export { checkLegacyToolsetName, fixLegacyToolsetName };
  * filesystem from the renderer.
  */
 export function configFixLogPath(): string {
-  return join(HERMES_HOME, "logs", "config-fixes.log");
+  return join(CLAWD_HOME, "logs", "config-fixes.log");
 }
 
 /**

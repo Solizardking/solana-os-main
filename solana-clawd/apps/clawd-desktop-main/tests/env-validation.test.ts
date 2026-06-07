@@ -9,7 +9,7 @@ async function loadConfigModule(): Promise<
   typeof import("../src/main/config")
 > {
   vi.resetModules();
-  vi.stubEnv("HERMES_HOME", testHome);
+  vi.stubEnv("CLAWD_HOME", testHome);
   return await import("../src/main/config");
 }
 
@@ -19,7 +19,7 @@ function readEnvFile(): string {
 
 describe("environment variable write validation", () => {
   beforeEach(() => {
-    testHome = mkdtempSync(join(tmpdir(), "hermes-env-validation-"));
+    testHome = mkdtempSync(join(tmpdir(), "clawd-env-validation-"));
   });
 
   afterEach(() => {

@@ -1,12 +1,12 @@
 import { execFile, ExecFileOptions } from "child_process";
 import { join } from "path";
 import {
-  HERMES_HOME,
-  HERMES_PYTHON,
-  hermesCliArgs,
+  CLAWD_HOME,
+  CLAWD_PYTHON,
+  clawdCliArgs,
   getEnhancedPath,
 } from "./installer";
-import { isRemoteOnlyMode } from "./hermes";
+import { isRemoteOnlyMode } from "./clawd";
 import { getConnectionConfig } from "./config";
 import { sshRunKanban, sshListClaw3dHqTasks } from "./ssh-remote";
 
@@ -109,7 +109,7 @@ async function runKanban(
   args: string[],
   opts: RunOpts = {},
 ): Promise<KanbanResult<unknown>> {
-  // SSH tunnel mode: dispatch to the remote Hermes CLI over SSH.
+  // SSH tunnel mode: dispatch to the remote Clawd CLI over SSH.
   const conn = getConnectionConfig();
   if (conn.mode === "ssh" && conn.ssh) {
     return sshRunKanban(conn.ssh, args, {
@@ -119,21 +119,21 @@ async function runKanban(
     });
   }
 
-  const cliArgs = hermesCliArgs();
+  const cliArgs = clawdCliArgs();
   if (opts.profile && opts.profile !== "default") {
     cliArgs.push("-p", opts.profile);
   }
   cliArgs.push("kanban", ...args);
 
   const execOpts: ExecFileOptions = {
-    cwd: join(HERMES_HOME, "hermes-agent"),
+    cwd: join(CLAWD_HOME, "clawd-agent"),
     timeout: opts.timeoutMs ?? KANBAN_TIMEOUT_MS,
     env: { ...process.env, PATH: getEnhancedPath() },
     maxBuffer: 16 * 1024 * 1024,
   };
 
   return new Promise((resolve) => {
-    execFile(HERMES_PYTHON, cliArgs, execOpts, (err, stdout, stderr) => {
+    execFile(CLAWD_PYTHON, cliArgs, execOpts, (err, stdout, stderr) => {
       const out = (stdout || "").toString();
       if (err) {
         resolve({
@@ -149,7 +149,7 @@ async function runKanban(
         } catch (parseErr) {
           resolve({
             success: false,
-            error: `Failed to parse JSON from 'hermes kanban': ${(parseErr as Error).message}`,
+            error: `Failed to parse JSON from 'clawd kanban': ${(parseErr as Error).message}`,
             stdout: out,
           });
         }
@@ -165,9 +165,9 @@ export function unsupportedInRemote<T>(): KanbanResult<T> {
     success: false,
     unsupportedMode: true,
     error:
-      "Kanban requires either a local Hermes install or SSH tunnel mode. " +
+      "Kanban requires either a local Clawd install or SSH tunnel mode. " +
       "Plain remote (HTTP+API key) mode does not yet expose the kanban API. " +
-      "Switch to SSH tunnel mode in Settings to use the board against a remote Hermes.",
+      "Switch to SSH tunnel mode in Settings to use the board against a remote Clawd.",
   };
 }
 
@@ -395,7 +395,7 @@ export async function commentTask(
 // Read-only virtual board: Claw3D's headquarters task board, stored at
 // ~/.openclawd/claw3d/task-manager/tasks.json on the remote. The renderer
 // surfaces this as a second board in the Kanban picker alongside the real
-// hermes-agent boards. Only available in SSH tunnel mode — there is no
+// clawd-agent boards. Only available in SSH tunnel mode — there is no
 // equivalent local store for the Claw3D HQ list.
 export async function listClaw3dHqTasks(): Promise<KanbanResult<KanbanTask[]>> {
   const conn = getConnectionConfig();

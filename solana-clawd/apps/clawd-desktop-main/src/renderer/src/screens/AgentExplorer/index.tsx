@@ -413,7 +413,7 @@ function MintTab() {
       </div>
 
       <Field label="Agent Name" required>
-        <input className={inputCls} placeholder="e.g. HERMES-01" value={name} onChange={(e) => setName(e.target.value)} />
+        <input className={inputCls} placeholder="e.g. CLAWD-01" value={name} onChange={(e) => setName(e.target.value)} />
       </Field>
 
       <Field label="Description">

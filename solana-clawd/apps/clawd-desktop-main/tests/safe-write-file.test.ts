@@ -4,7 +4,7 @@ import { join } from "path";
 import { tmpdir } from "os";
 import { safeWriteFile } from "../src/main/utils";
 
-const TEST_DIR = join(tmpdir(), `hermes-safe-write-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-safe-write-${Date.now()}`);
 
 describe("safeWriteFile", () => {
   it("creates parent directories before writing", () => {

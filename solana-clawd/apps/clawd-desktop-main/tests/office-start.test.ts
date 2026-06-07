@@ -29,7 +29,7 @@ function sshConnection(): ConnectionConfig {
     ssh: {
       host: "office.example.com",
       port: 22,
-      username: "hermes",
+      username: "clawd",
       keyPath: "C:\\keys\\id_rsa",
       remotePort: 8642,
       localPort: 18642,

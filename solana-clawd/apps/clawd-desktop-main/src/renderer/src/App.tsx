@@ -35,29 +35,29 @@ function App(): React.JSX.Element {
     let isRemote = false;
 
     try {
-      const conn = await window.hermesAPI.getConnectionConfig();
+      const conn = await window.clawdAPI.getConnectionConfig();
       isRemote = conn.mode === "remote" || conn.mode === "ssh";
       setConnectionMode(conn.mode);
 
       if (conn.mode === "ssh" && conn.ssh) {
         // Start (or ensure) the SSH tunnel, then go straight to main
         try {
-          await window.hermesAPI.startSshTunnel();
+          await window.clawdAPI.startSshTunnel();
           next = "main";
         } catch (tunnelErr) {
           error = `SSH tunnel failed to start: ${(tunnelErr as Error).message}`;
           next = "welcome";
         }
       } else if (conn.mode === "remote" && conn.remoteUrl) {
-        const ok = await window.hermesAPI.testRemoteConnection(conn.remoteUrl);
+        const ok = await window.clawdAPI.testRemoteConnection(conn.remoteUrl);
         if (ok) {
           next = "main";
         } else {
-          error = `Cannot reach remote Hermes at ${conn.remoteUrl}. Check the URL or switch to local mode.`;
+          error = `Cannot reach remote Clawd at ${conn.remoteUrl}. Check the URL or switch to local mode.`;
           next = "welcome";
         }
       } else {
-        const status = await window.hermesAPI.checkInstall();
+        const status = await window.clawdAPI.checkInstall();
         if (!status.installed) {
           next = "welcome";
         } else if (!status.hasApiKey) {
@@ -83,12 +83,12 @@ function App(): React.JSX.Element {
     // install is broken, surface the warning then — don't block startup.
     //
     // Skip for remote-mode connections: verifyInstall() probes the LOCAL
-    // Python + script paths (HERMES_PYTHON / HERMES_SCRIPT in installer.ts),
+    // Python + script paths (CLAWD_PYTHON / CLAWD_SCRIPT in installer.ts),
     // which don't exist on machines that only use a remote backend. Without
     // this guard the user is bounced back to Welcome with an "installBroken"
     // error immediately after a successful remote connect. (#47, #41, #30)
     if ((next === "main" || next === "setup") && !isRemote) {
-      window.hermesAPI.verifyInstall().then((ok) => {
+      window.clawdAPI.verifyInstall().then((ok) => {
         // Files exist (checkInstall passed) but the probe failed. Surface
         // a soft warning instead of bouncing to Welcome — see #130.
         if (!ok) setVerifyWarning(true);
@@ -131,7 +131,7 @@ function App(): React.JSX.Element {
   }
 
   async function handleSwitchToLocal(): Promise<void> {
-    await window.hermesAPI.setConnectionConfig("local", "", "");
+    await window.clawdAPI.setConnectionConfig("local", "", "");
     setConnectionMode("local");
     handleRecheck();
   }

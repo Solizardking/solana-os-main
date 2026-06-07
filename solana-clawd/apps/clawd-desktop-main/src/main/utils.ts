@@ -8,7 +8,7 @@ import {
   unlinkSync,
   writeFileSync,
 } from "fs";
-import { HERMES_HOME } from "./installer";
+import { CLAWD_HOME } from "./installer";
 
 const PROFILE_NAME_RE = /^[a-z0-9_][a-z0-9_-]{0,63}$/;
 export const PROFILE_NAME_ERROR =
@@ -16,7 +16,7 @@ export const PROFILE_NAME_ERROR =
 
 /**
  * Strip ANSI escape codes from terminal output.
- * Used by hermes.ts, claw3d.ts, and installer.ts when processing
+ * Used by clawd.ts, claw3d.ts, and installer.ts when processing
  * child process output for display in the renderer.
  */
 // eslint-disable-next-line no-control-regex
@@ -48,12 +48,12 @@ export function normalizeProfileName(profile?: unknown): string | undefined {
 
 /**
  * Resolve the home directory for a given profile.
- * 'default' or undefined maps to ~/.hermes; named profiles
- * live under ~/.hermes/profiles/<name>.
+ * 'default' or undefined maps to ~/.clawd; named profiles
+ * live under ~/.clawd/profiles/<name>.
  */
 export function profileHome(profile?: unknown): string {
   const normalized = normalizeProfileName(profile);
-  return normalized ? join(HERMES_HOME, "profiles", normalized) : HERMES_HOME;
+  return normalized ? join(CLAWD_HOME, "profiles", normalized) : CLAWD_HOME;
 }
 
 /**
@@ -78,7 +78,7 @@ export function profilePaths(profile?: unknown): {
  * we can't open it". `process.kill(pid, 0)` is the POSIX-idiomatic check,
  * but on Windows libuv requests PROCESS_TERMINATE access to issue the kill
  * call — and a detached subprocess started by a different console (e.g. the
- * Python hermes CLI launching the gateway as `pythonw` with `--replace`)
+ * Python clawd CLI launching the gateway as `pythonw` with `--replace`)
  * commonly refuses that handle, raising EPERM. EPERM means the process
  * exists; only ESRCH means it doesn't. The previous catch-all `try/catch
  * return false` conflated those, so the desktop reported the gateway as
@@ -104,7 +104,7 @@ export function pidIsAlive(pid: number): boolean {
  * "some Windows process exists at this PID" — it doesn't confirm that
  * process is ours.
  *
- * Important for the WSL coexistence case: when HERMES_HOME points into WSL
+ * Important for the WSL coexistence case: when CLAWD_HOME points into WSL
  * via UNC, the PID file contains a Linux PID. `process.kill(linuxPid, 0)`
  * runs against Windows' PID space; if a random Windows process happens to
  * own that number, EPERM would lie. Verifying the image name (e.g. starts
@@ -157,13 +157,13 @@ export function pidIsAliveAs(
 }
 
 /**
- * Read the active profile name from ~/.hermes/active_profile. Returns "default"
+ * Read the active profile name from ~/.clawd/active_profile. Returns "default"
  * when the file is missing, empty, or unreadable. Shared sync helper used by
  * installer.ts and config.ts; profiles.ts's async wrapper delegates here.
  */
 export function getActiveProfileNameSync(): string {
   try {
-    const activeFile = join(HERMES_HOME, "active_profile");
+    const activeFile = join(CLAWD_HOME, "active_profile");
     if (!existsSync(activeFile)) return "default";
     const name = readFileSync(activeFile, "utf-8").trim();
     return name || "default";
@@ -174,8 +174,8 @@ export function getActiveProfileNameSync(): string {
 
 /**
  * Resolve the session database for the currently active profile. The
- * default profile uses ~/.hermes/state.db; named profiles use
- * ~/.hermes/profiles/<name>/state.db. The desktop's Sessions feature
+ * default profile uses ~/.clawd/state.db; named profiles use
+ * ~/.clawd/profiles/<name>/state.db. The desktop's Sessions feature
  * used to read the root state.db unconditionally, so named-profile users
  * saw an empty or wrong session list (issue #311).
  */
@@ -193,7 +193,7 @@ export function escapeRegex(str: string): string {
 
 /**
  * Write a file, creating parent directories if they don't exist.
- * Prevents ENOENT crashes when ~/.hermes has been deleted or doesn't exist yet.
+ * Prevents ENOENT crashes when ~/.clawd has been deleted or doesn't exist yet.
  */
 export function safeWriteFile(filePath: string, content: string): void {
   const dir = dirname(filePath);

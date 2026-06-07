@@ -1,6 +1,6 @@
 /**
  * Shared types for the "Discover" community marketplace. The catalog is served
- * from the hermes-registry GitHub repo and consumed by both the main process
+ * from the clawd-registry GitHub repo and consumed by both the main process
  * (fetch + install) and the renderer (browse UI).
  */
 
@@ -20,7 +20,7 @@ export interface RegistryItem {
   platforms?: string[];
   /** Folder for this entry within the registry repo (e.g. "skills/apple/apple-notes"). */
   path?: string;
-  /** Bundled skills only: install identifier for `hermes skills install`. */
+  /** Bundled skills only: install identifier for `clawd skills install`. */
   source?: string;
 }
 

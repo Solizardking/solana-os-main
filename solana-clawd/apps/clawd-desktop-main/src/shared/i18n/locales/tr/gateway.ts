@@ -5,5 +5,5 @@ export default {
   status: "Durum",
   running: "Çalışıyor",
   stopped: "Durduruldu",
-  gatewayHint: "Hermes'i Telegram, Discord, Slack ve diğer platformlara bağlar",
+  gatewayHint: "Clawd'i Telegram, Discord, Slack ve diğer platformlara bağlar",
 } as const;

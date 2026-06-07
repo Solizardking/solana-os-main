@@ -61,7 +61,7 @@ export default {
     model: "檢視或切換目前模型",
     memory: "檢視 Agent 記憶",
     persona: "檢視目前人格",
-    version: "檢視 Hermes 版本",
+    version: "檢視 Clawd 版本",
   },
   queued: "{{count}} 則訊息已排隊 — 代理完成後將自動傳送",
   worktree: {

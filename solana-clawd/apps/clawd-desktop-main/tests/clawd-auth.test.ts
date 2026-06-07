@@ -2,13 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EventEmitter } from "events";
 
 /**
- * Coverage for the in-app OAuth login feature (`src/main/hermes-auth.ts`):
+ * Coverage for the in-app OAuth login feature (`src/main/clawd-auth.ts`):
  *
  *   - provider allowlist (`isOAuthLoginProvider`)
- *   - `runHermesAuthLogin` spawns `hermes auth add <provider> --type
+ *   - `runClawdAuthLogin` spawns `clawd auth add <provider> --type
  *     oauth`, streams output, and maps exit code → success/failure
  *   - the single-flight guard rejects a second concurrent login
- *   - `cancelHermesAuthLogin` kills the in-flight subprocess
+ *   - `cancelClawdAuthLogin` kills the in-flight subprocess
  */
 
 interface FakeProc extends EventEmitter {
@@ -35,10 +35,10 @@ const { spawnSpy, fakeProcs } = vi.hoisted(() => {
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_REPO: "/tmp/hermes-repo",
-  HERMES_HOME: "/tmp/hermes-home",
-  hermesCliArgs: (args: string[]) => args,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_REPO: "/tmp/clawd-repo",
+  CLAWD_HOME: "/tmp/clawd-home",
+  clawdCliArgs: (args: string[]) => args,
   getEnhancedPath: () => process.env.PATH || "",
 }));
 
@@ -50,7 +50,7 @@ vi.mock("../src/main/utils", () => ({
   stripAnsi: (s: string) => s,
 }));
 
-// hermes-auth.ts only consumes `spawn` from child_process, so a minimal
+// clawd-auth.ts only consumes `spawn` from child_process, so a minimal
 // replacement is enough. Both the named export and a `default` are
 // provided so the CJS↔ESM interop layer is satisfied.
 vi.mock("child_process", () => ({
@@ -59,12 +59,12 @@ vi.mock("child_process", () => ({
 }));
 
 import {
-  runHermesAuthLogin,
-  cancelHermesAuthLogin,
+  runClawdAuthLogin,
+  cancelClawdAuthLogin,
   isOAuthLoginProvider,
   detectDeviceCode,
   OAUTH_LOGIN_PROVIDERS,
-} from "../src/main/hermes-auth";
+} from "../src/main/clawd-auth";
 
 function lastProc(): FakeProc {
   return fakeProcs[fakeProcs.length - 1];
@@ -154,14 +154,14 @@ describe("isOAuthLoginProvider", () => {
   });
 });
 
-describe("runHermesAuthLogin", () => {
+describe("runClawdAuthLogin", () => {
   beforeEach(() => {
     spawnSpy.mockClear();
     fakeProcs.length = 0;
   });
 
   it("refuses an unsupported provider without spawning", async () => {
-    const result = await runHermesAuthLogin("openrouter", () => {});
+    const result = await runClawdAuthLogin("openrouter", () => {});
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/unsupported/i);
     expect(spawnSpy).not.toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe("runHermesAuthLogin", () => {
 
   it("spawns `auth add <provider> --type oauth` and streams output", async () => {
     const chunks: string[] = [];
-    const promise = runHermesAuthLogin("google-gemini-cli", (c) =>
+    const promise = runClawdAuthLogin("google-gemini-cli", (c) =>
       chunks.push(c),
     );
 
@@ -199,7 +199,7 @@ describe("runHermesAuthLogin", () => {
   });
 
   it("passes the profile flag when a named profile is given", async () => {
-    const promise = runHermesAuthLogin("xai-oauth", () => {}, "work");
+    const promise = runClawdAuthLogin("xai-oauth", () => {}, "work");
     const args = spawnSpy.mock.calls[0][1] as string[];
     expect(args).toEqual([
       "-p",
@@ -215,7 +215,7 @@ describe("runHermesAuthLogin", () => {
   });
 
   it("reports failure on a non-zero exit code", async () => {
-    const promise = runHermesAuthLogin("qwen-oauth", () => {});
+    const promise = runClawdAuthLogin("qwen-oauth", () => {});
     lastProc().emit("close", 1, null);
     const result = await promise;
     expect(result.success).toBe(false);
@@ -223,7 +223,7 @@ describe("runHermesAuthLogin", () => {
   });
 
   it("reports cancellation when the process is killed by signal", async () => {
-    const promise = runHermesAuthLogin("minimax-oauth", () => {});
+    const promise = runClawdAuthLogin("minimax-oauth", () => {});
     lastProc().emit("close", null, "SIGTERM");
     const result = await promise;
     expect(result.success).toBe(false);
@@ -231,8 +231,8 @@ describe("runHermesAuthLogin", () => {
   });
 
   it("rejects a second concurrent login while one is in flight", async () => {
-    const first = runHermesAuthLogin("openai-codex", () => {});
-    const second = await runHermesAuthLogin("xai-oauth", () => {});
+    const first = runClawdAuthLogin("openai-codex", () => {});
+    const second = await runClawdAuthLogin("xai-oauth", () => {});
     expect(second.success).toBe(false);
     expect(second.error).toMatch(/already in progress/i);
     // Only the first login spawned a process.
@@ -242,27 +242,27 @@ describe("runHermesAuthLogin", () => {
   });
 });
 
-describe("cancelHermesAuthLogin", () => {
+describe("cancelClawdAuthLogin", () => {
   beforeEach(() => {
     spawnSpy.mockClear();
     fakeProcs.length = 0;
   });
 
   it("returns false when no login is running", () => {
-    expect(cancelHermesAuthLogin()).toBe(false);
+    expect(cancelClawdAuthLogin()).toBe(false);
   });
 
   it("kills the in-flight subprocess and returns true", async () => {
-    const promise = runHermesAuthLogin("openai-codex", () => {});
+    const promise = runClawdAuthLogin("openai-codex", () => {});
     const proc = lastProc();
 
-    expect(cancelHermesAuthLogin()).toBe(true);
+    expect(cancelClawdAuthLogin()).toBe(true);
     expect(proc.kill).toHaveBeenCalled();
 
     // Real kill would fire a close with a signal; emulate so the
     // promise settles and the single-flight slot is released.
     proc.emit("close", null, "SIGTERM");
     await promise;
-    expect(cancelHermesAuthLogin()).toBe(false);
+    expect(cancelClawdAuthLogin()).toBe(false);
   });
 });

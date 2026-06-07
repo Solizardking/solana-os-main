@@ -1,8 +1,8 @@
 /**
- * Live verify the SIBLING_HERMES_HOME_DRIFT check.
+ * Live verify the SIBLING_CLAWD_HOME_DRIFT check.
  *
  * Prerequisites set up by the harness operator before running:
- *   1. WSL has a ~/.hermes/ with at least one drifting field vs the
+ *   1. WSL has a ~/.clawd/ with at least one drifting field vs the
  *      Windows-side. (E.g. CUSTOM_API_KEY in WSL .env, absent on
  *      Windows side; or model.api_key in WSL config.yaml, absent on
  *      Windows side.)
@@ -12,7 +12,7 @@
  *
  * The probe:
  *   1. Calls getConfigHealth() via IPC.
- *   2. Filters for SIBLING_HERMES_HOME_DRIFT issues.
+ *   2. Filters for SIBLING_CLAWD_HOME_DRIFT issues.
  *   3. Prints each one's field + direction + autoFixable.
  *   4. Picks an autoFixable one and calls autofixConfigIssue() on it.
  *   5. Re-runs the audit; asserts that the same issue is no longer
@@ -23,7 +23,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const WIN_ENV = path.join(os.homedir(), "AppData", "Local", "hermes", ".env");
+const WIN_ENV = path.join(os.homedir(), "AppData", "Local", "clawd", ".env");
 const WIN_ENV_BAK = WIN_ENV + ".wsl-drift-test-bk";
 
 (async () => {
@@ -35,10 +35,10 @@ const WIN_ENV_BAK = WIN_ENV + ".wsl-drift-test-bk";
 
     // ── A. Run audit, look for drift issues ─────────────────────
     const report = await page.evaluate(async () => {
-      return await window.hermesAPI.getConfigHealth();
+      return await window.clawdAPI.getConfigHealth();
     });
     const drifts = (report.issues || []).filter(
-      (i) => i.code === "SIBLING_HERMES_HOME_DRIFT",
+      (i) => i.code === "SIBLING_CLAWD_HOME_DRIFT",
     );
     console.log(
       `[A] config-health report — ${report.issues.length} total issues, ${drifts.length} drift issues`,
@@ -52,7 +52,7 @@ const WIN_ENV_BAK = WIN_ENV + ".wsl-drift-test-bk";
     if (drifts.length === 0) {
       console.log();
       console.log(
-        "[VERDICT] 🔴 No drift detected. Either the WSL ~/.hermes/ doesn't exist, doesn't differ from Windows, OR the check isn't running.",
+        "[VERDICT] 🔴 No drift detected. Either the WSL ~/.clawd/ doesn't exist, doesn't differ from Windows, OR the check isn't running.",
       );
       await browser.close();
       process.exit(2);
@@ -73,7 +73,7 @@ const WIN_ENV_BAK = WIN_ENV + ".wsl-drift-test-bk";
     console.log(`[B] applying auto-fix for ${target.context?.field}...`);
     const fixResult = await page.evaluate(
       async (issue) => {
-        return await window.hermesAPI.autofixConfigIssue(
+        return await window.clawdAPI.autofixConfigIssue(
           issue.code,
           undefined,
           issue.context,
@@ -96,11 +96,11 @@ const WIN_ENV_BAK = WIN_ENV + ".wsl-drift-test-bk";
 
     // ── D. Re-run audit — the same drift should be gone ────────
     const reportAfter = await page.evaluate(async () => {
-      return await window.hermesAPI.rerunConfigHealth();
+      return await window.clawdAPI.rerunConfigHealth();
     });
     const sameDriftStillPresent = (reportAfter.issues || []).some(
       (i) =>
-        i.code === "SIBLING_HERMES_HOME_DRIFT" &&
+        i.code === "SIBLING_CLAWD_HOME_DRIFT" &&
         i.context?.field === fieldName &&
         i.context?.direction === "wsl-to-windows",
     );

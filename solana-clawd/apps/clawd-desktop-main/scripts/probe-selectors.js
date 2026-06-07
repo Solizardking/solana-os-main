@@ -1,5 +1,5 @@
 /**
- * Probe the running Hermes Desktop renderer for selectors needed by the
+ * Probe the running Clawd Desktop renderer for selectors needed by the
  * symptom repro scripts. Prints a small inventory of relevant DOM elements
  * so we don't have to guess class names / aria labels.
  */

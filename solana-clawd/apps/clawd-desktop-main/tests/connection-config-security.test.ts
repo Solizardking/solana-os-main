@@ -11,7 +11,7 @@ async function loadConnectionConfigModule(): Promise<
   typeof import("../src/main/config")
 > {
   vi.resetModules();
-  vi.stubEnv("HERMES_HOME", testHome);
+  vi.stubEnv("CLAWD_HOME", testHome);
   return await import("../src/main/config");
 }
 
@@ -26,7 +26,7 @@ function listen(server: http.Server): Promise<string> {
 
 describe("connection config secret exposure", () => {
   beforeEach(() => {
-    testHome = mkdtempSync(join(tmpdir(), "hermes-connection-config-"));
+    testHome = mkdtempSync(join(tmpdir(), "clawd-connection-config-"));
   });
 
   afterEach(() => {
@@ -44,7 +44,7 @@ describe("connection config secret exposure", () => {
 
     setConnectionConfig({
       mode: "remote",
-      remoteUrl: "https://hermes.example",
+      remoteUrl: "https://clawd.example",
       apiKey: "remote-secret",
     });
 
@@ -53,7 +53,7 @@ describe("connection config secret exposure", () => {
     const publicConfig = getPublicConnectionConfig();
     expect(publicConfig).toMatchObject({
       mode: "remote",
-      remoteUrl: "https://hermes.example",
+      remoteUrl: "https://clawd.example",
       hasApiKey: true,
       // Length is intentionally exposed so the renderer can render a
       // mask that matches the stored key's width. The secret itself
@@ -68,7 +68,7 @@ describe("connection config secret exposure", () => {
       resolveConnectionApiKeyUpdate(
         existing,
         "remote",
-        "https://hermes.example",
+        "https://clawd.example",
       ),
     ).toBe("remote-secret");
     expect(
@@ -82,7 +82,7 @@ describe("connection config secret exposure", () => {
 
   it("uses the stored remote API key for main-process connection tests", async () => {
     const { setConnectionConfig } = await loadConnectionConfigModule();
-    const { testRemoteConnection } = await import("../src/main/hermes");
+    const { testRemoteConnection } = await import("../src/main/clawd");
     const server = http.createServer((req, res) => {
       res.statusCode =
         req.headers.authorization === "Bearer remote-secret" ? 200 : 401;
@@ -118,7 +118,7 @@ describe("connection config secret exposure", () => {
       ssh: {
         host: "example.internal",
         port: 22,
-        username: "hermes",
+        username: "clawd",
         keyPath: "~/.ssh/id_rsa",
         remotePort: 8642,
         localPort: 18642,

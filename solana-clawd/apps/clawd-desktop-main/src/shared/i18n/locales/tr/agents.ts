@@ -1,7 +1,7 @@
 export default {
   title: "Profiller",
   subtitle:
-    "Her profil, kendi yapılandırması, belleği ve yetenekleriyle izole bir Hermes çalışma alanıdır",
+    "Her profil, kendi yapılandırması, belleği ve yetenekleriyle izole bir Clawd çalışma alanıdır",
   newAgent: "Yeni Ajan",
   namePlaceholder: "Ajan adı (örn. kodcu)",
   cloneConfig: "Varsayılandan yapılandırma ve API anahtarlarını kopyala",

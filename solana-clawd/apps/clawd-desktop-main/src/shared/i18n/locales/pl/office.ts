@@ -24,7 +24,7 @@ export default {
   startingClaw3dService: "Uruchamianie usługi Claw3D...",
   clickToStart: 'Kliknij "Uruchom", aby uruchomić Claw3D',
   setupDesc1:
-    "Claw3D to środowisko wizualizacji 3D dla agentów Hermes. Pozwala obserwować pracę agentów w interaktywnej przestrzeni biurowej.",
+    "Claw3D to środowisko wizualizacji 3D dla agentów Clawd. Pozwala obserwować pracę agentów w interaktywnej przestrzeni biurowej.",
   setupDesc2:
     "Kliknij poniżej, aby automatycznie pobrać i skonfigurować Claw3D. Repozytorium zostanie sklonowane, a zależności zainstalowane.",
 } as const;

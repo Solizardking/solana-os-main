@@ -10,7 +10,7 @@ import type { ChatMessage } from "../src/renderer/src/screens/Chat/types";
  * Two cases drive the design:
  *
  *   1. Today — DeepSeek (and o1/o3) emit `reasoning_content` over SSE
- *      but the gateway (NousResearch/hermes-agent#30449) doesn't
+ *      but the gateway (NousResearch/clawd-agent#30449) doesn't
  *      forward it. So reasoning + tool rows only exist in state.db.
  *      The merge must ADD those rows so the user sees them without
  *      a window-focus dance.

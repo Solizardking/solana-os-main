@@ -8,7 +8,7 @@ import {
 
 interface UseChatIPCArgs {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-  setHermesSessionId: (id: string) => void;
+  setClawdSessionId: (id: string) => void;
   setToolProgress: (tool: string | null) => void;
   setIsLoading: (loading: boolean) => void;
   setUsage: React.Dispatch<React.SetStateAction<UsageState | null>>;
@@ -22,13 +22,13 @@ interface UseChatIPCArgs {
  */
 export function useChatIPC({
   setMessages,
-  setHermesSessionId,
+  setClawdSessionId,
   setToolProgress,
   setIsLoading,
   setUsage,
 }: UseChatIPCArgs): void {
   useEffect(() => {
-    const cleanupChunk = window.hermesAPI.onChatChunk((chunk) => {
+    const cleanupChunk = window.clawdAPI.onChatChunk((chunk) => {
       setMessages((prev) => {
         const last = prev[prev.length - 1];
         if (
@@ -58,7 +58,7 @@ export function useChatIPC({
     // message) and append to it. If no such row exists yet, create one
     // and place it BEFORE any assistant content bubbles in the same
     // turn so the visual order is reasoning → answer.
-    const cleanupReasoning = window.hermesAPI.onChatReasoningChunk((chunk) => {
+    const cleanupReasoning = window.clawdAPI.onChatReasoningChunk((chunk) => {
       if (!chunk) return;
       setMessages((prev) => {
         let insertAt = prev.length;
@@ -91,13 +91,13 @@ export function useChatIPC({
       });
     });
 
-    const cleanupDone = window.hermesAPI.onChatDone(async (sessionId) => {
-      if (sessionId) setHermesSessionId(sessionId);
+    const cleanupDone = window.clawdAPI.onChatDone(async (sessionId) => {
+      if (sessionId) setClawdSessionId(sessionId);
       setToolProgress(null);
       setIsLoading(false);
       // End-of-stream merge from state.db. The gateway doesn't forward
       // streaming reasoning_content / tool deltas over the OpenAI-compatible
-      // SSE (NousResearch/hermes-agent#30449) — the agent writes them to
+      // SSE (NousResearch/clawd-agent#30449) — the agent writes them to
       // state.db at finalisation instead. Without this merge, the
       // reasoning / tool bubbles only materialise when something else
       // triggers a re-sync (window focus change, tab switch). Doing it
@@ -109,7 +109,7 @@ export function useChatIPC({
       // `reconcileStreamedWithDb` does the matching — see its doc block.
       if (!sessionId) return;
       try {
-        const items = (await window.hermesAPI.getSessionMessages(
+        const items = (await window.clawdAPI.getSessionMessages(
           sessionId,
         )) as DbHistoryItem[];
         const dbMessages = dbItemsToChatMessages(items);
@@ -120,7 +120,7 @@ export function useChatIPC({
       }
     });
 
-    const cleanupError = window.hermesAPI.onChatError((error) => {
+    const cleanupError = window.clawdAPI.onChatError((error) => {
       setMessages((prev) => [
         ...prev,
         {
@@ -133,11 +133,11 @@ export function useChatIPC({
       setIsLoading(false);
     });
 
-    const cleanupToolProgress = window.hermesAPI.onChatToolProgress((tool) => {
+    const cleanupToolProgress = window.clawdAPI.onChatToolProgress((tool) => {
       setToolProgress(tool);
     });
 
-    const cleanupUsage = window.hermesAPI.onChatUsage((u) => {
+    const cleanupUsage = window.clawdAPI.onChatUsage((u) => {
       setUsage((prev) => ({
         promptTokens: (prev?.promptTokens || 0) + u.promptTokens,
         completionTokens: (prev?.completionTokens || 0) + u.completionTokens,
@@ -160,7 +160,7 @@ export function useChatIPC({
     };
   }, [
     setMessages,
-    setHermesSessionId,
+    setClawdSessionId,
     setToolProgress,
     setIsLoading,
     setUsage,

@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
-import { HERMES_HOME } from "./installer";
+import { CLAWD_HOME } from "./installer";
 import { normalizeProfileName } from "./utils";
 import { getConfigValue, setConfigValue } from "./config";
 
@@ -15,7 +15,7 @@ const PORT_RANGE_END = 8742;
 const API_SERVER_PORT_PATH = "platforms.api_server.extra.port";
 
 function listNamedProfiles(): string[] {
-  const dir = join(HERMES_HOME, "profiles");
+  const dir = join(CLAWD_HOME, "profiles");
   if (!existsSync(dir)) return [];
   try {
     return readdirSync(dir).filter((name) => {

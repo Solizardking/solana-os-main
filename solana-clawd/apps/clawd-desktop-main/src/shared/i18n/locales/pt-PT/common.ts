@@ -1,5 +1,5 @@
 export default {
-  appName: "Agente Hermes",
+  appName: "Agente Clawd",
   continue: "Continuar",
   cancel: "Cancelar",
   retry: "Tentar novamente",

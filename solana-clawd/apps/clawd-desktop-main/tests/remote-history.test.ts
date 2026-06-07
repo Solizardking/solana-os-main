@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 
 const ROOT = join(__dirname, "..");
-const hermesSrc = readFileSync(join(ROOT, "src/main/hermes.ts"), "utf-8");
+const clawdSrc = readFileSync(join(ROOT, "src/main/clawd.ts"), "utf-8");
 
 /**
  * Test that sendMessage passes history parameter in remote mode.
@@ -15,7 +15,7 @@ const hermesSrc = readFileSync(join(ROOT, "src/main/hermes.ts"), "utf-8");
 describe("Remote/SSH Mode History Preservation", () => {
   it("sendMessage passes history to sendMessageViaApi in remote mode", () => {
     // Extract the sendMessage function's remote mode branch
-    const remoteModeBranch = hermesSrc.match(
+    const remoteModeBranch = clawdSrc.match(
       /\/\/ Remote mode: always use API, no CLI fallback[\s\S]*?if \(isRemoteMode\(\)\) \{[\s\S]*?return sendMessageViaApi\([\s\S]*?\);[\s\S]*?\}/,
     );
 
@@ -49,7 +49,7 @@ describe("Remote/SSH Mode History Preservation", () => {
     // Extract sendMessageViaApi function body.  The content-type element is
     // intentionally not pinned to a literal — the type widened to a union
     // when multimodal support landed.
-    const funcMatch = hermesSrc.match(
+    const funcMatch = clawdSrc.match(
       /function sendMessageViaApi\([\s\S]*?\): ChatHandle \{[\s\S]*?const messages: Array<[\s\S]*?> = \[\];[\s\S]*?if \(history && history\.length > 0\) \{[\s\S]*?for \(const msg of history\) \{[\s\S]*?messages\.push\(\{[\s\S]*?role: msg\.role === "agent" \? "assistant" : msg\.role,[\s\S]*?content: msg\.content,[\s\S]*?\}\);[\s\S]*?\}[\s\S]*?\}[\s\S]*?messages\.push\(\{ role: "user", content: [^}]+\}\);/,
     );
 
@@ -77,7 +77,7 @@ describe("Remote/SSH Mode History Preservation", () => {
 
   it("local API available branch also passes history", () => {
     // Extract the local API available branch
-    const localApiBranch = hermesSrc.match(
+    const localApiBranch = clawdSrc.match(
       /if \(apiServerAvailable\) \{[\s\S]*?return sendMessageViaApi\([\s\S]*?\);[\s\S]*?\}/,
     );
 
@@ -106,11 +106,11 @@ describe("Remote/SSH Mode History Preservation", () => {
 
   it("all sendMessageViaApi calls in sendMessage include history parameter", () => {
     // Find the sendMessage function - use a more flexible regex
-    const startMatch = hermesSrc.indexOf("export async function sendMessage(");
+    const startMatch = clawdSrc.indexOf("export async function sendMessage(");
     expect(startMatch).toBeGreaterThan(-1);
 
     // Extract from "export async function sendMessage" to the next "export function" or end
-    const remainingCode = hermesSrc.substring(startMatch);
+    const remainingCode = clawdSrc.substring(startMatch);
     const endMatch = remainingCode.indexOf("\nexport function ");
     const funcCode =
       endMatch > 0 ? remainingCode.substring(0, endMatch) : remainingCode;

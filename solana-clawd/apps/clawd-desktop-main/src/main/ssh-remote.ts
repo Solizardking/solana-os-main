@@ -1,5 +1,5 @@
 /**
- * SSH-proxied implementations of all hermes operations.
+ * SSH-proxied implementations of all clawd operations.
  * Used when connection mode is "ssh" — every feature that normally reads/writes
  * local files is instead executed on the remote host via SSH.
  */
@@ -173,7 +173,7 @@ export async function sshListInstalledSkills(
 import os, json, sys
 payload = json.load(sys.stdin)
 profile = payload.get("profile")
-skills_dir = os.path.expanduser(f"~/.hermes/profiles/{profile}/skills" if profile and profile != "default" else "~/.hermes/skills")
+skills_dir = os.path.expanduser(f"~/.clawd/profiles/{profile}/skills" if profile and profile != "default" else "~/.clawd/skills")
 skills = []
 
 def read_meta(skill_path):
@@ -243,7 +243,7 @@ export async function sshInstallSkill(
   try {
     const stdout = await sshExec(
       config,
-      `hermes skills install ${shellQuote(identifier)} --yes 2>&1`,
+      `clawd skills install ${shellQuote(identifier)} --yes 2>&1`,
       undefined,
       120000,
     );
@@ -260,7 +260,7 @@ export async function sshUninstallSkill(
   try {
     const stdout = await sshExec(
       config,
-      `hermes skills uninstall ${shellQuote(name)} 2>&1`,
+      `clawd skills uninstall ${shellQuote(name)} 2>&1`,
     );
     return classifySkillCliOutput(stdout ?? "");
   } catch (err) {
@@ -275,7 +275,7 @@ export async function sshSearchSkills(
   try {
     const out = await sshExec(
       config,
-      `hermes skills browse --query ${shellQuote(query)} --json 2>/dev/null || echo "[]"`,
+      `clawd skills browse --query ${shellQuote(query)} --json 2>/dev/null || echo "[]"`,
     );
     const parsed = JSON.parse(out.trim() || "[]");
     if (Array.isArray(parsed)) {
@@ -323,16 +323,16 @@ function serializeEntries(
 
 function remoteMemoryPath(profile?: string): string {
   if (profile && profile !== "default") {
-    return `~/.hermes/profiles/${profile}/memories/MEMORY.md`;
+    return `~/.clawd/profiles/${profile}/memories/MEMORY.md`;
   }
-  return "~/.hermes/memories/MEMORY.md";
+  return "~/.clawd/memories/MEMORY.md";
 }
 
 function remoteUserPath(profile?: string): string {
   if (profile && profile !== "default") {
-    return `~/.hermes/profiles/${profile}/memories/USER.md`;
+    return `~/.clawd/profiles/${profile}/memories/USER.md`;
   }
-  return "~/.hermes/memories/USER.md";
+  return "~/.clawd/memories/USER.md";
 }
 
 async function sshGetSessionStats(
@@ -343,7 +343,7 @@ async function sshGetSessionStats(
 import sqlite3, json, os, sys
 payload = json.load(sys.stdin)
 profile = payload.get("profile")
-db = os.path.expanduser(f"~/.hermes/profiles/{profile}/state.db" if profile and profile != "default" else "~/.hermes/state.db")
+db = os.path.expanduser(f"~/.clawd/profiles/{profile}/state.db" if profile and profile != "default" else "~/.clawd/state.db")
 if not os.path.exists(db):
     print(json.dumps({"totalSessions": 0, "totalMessages": 0}))
     sys.exit(0)
@@ -470,7 +470,7 @@ export async function sshWriteUserProfile(
 
 // ── Soul ─────────────────────────────────────────────────────────────────────
 
-const DEFAULT_SOUL = `You are Hermes, a helpful AI assistant. You are friendly, knowledgeable, and always eager to help.
+const DEFAULT_SOUL = `You are Clawd, a helpful AI assistant. You are friendly, knowledgeable, and always eager to help.
 
 You communicate clearly and concisely. When asked to perform tasks, you think step-by-step and explain your reasoning. You are honest about your limitations and ask for clarification when needed.
 
@@ -479,8 +479,8 @@ You strive to be helpful while being safe and responsible. You respect the user'
 
 function remoteSoulPath(profile?: string): string {
   if (profile && profile !== "default")
-    return `~/.hermes/profiles/${profile}/SOUL.md`;
-  return "~/.hermes/SOUL.md";
+    return `~/.clawd/profiles/${profile}/SOUL.md`;
+  return "~/.clawd/SOUL.md";
 }
 
 export async function sshReadSoul(
@@ -627,8 +627,8 @@ function localizeToolDefs(
 
 function remoteConfigPath(profile?: string): string {
   if (profile && profile !== "default")
-    return `$HOME/.hermes/profiles/${profile}/config.yaml`;
-  return `$HOME/.hermes/config.yaml`;
+    return `$HOME/.clawd/profiles/${profile}/config.yaml`;
+  return `$HOME/.clawd/config.yaml`;
 }
 
 export async function sshGetToolsets(
@@ -716,8 +716,8 @@ export async function sshSetToolsetEnabled(
 
 function remoteEnvPath(profile?: string): string {
   if (profile && profile !== "default")
-    return `~/.hermes/profiles/${profile}/.env`;
-  return "~/.hermes/.env";
+    return `~/.clawd/profiles/${profile}/.env`;
+  return "~/.clawd/.env";
 }
 
 export async function sshReadEnv(
@@ -739,7 +739,7 @@ export async function sshReadEnv(
       v = v.slice(1, -1);
     if (v) result[k] = v;
   }
-  // Home Assistant has accumulated three naming conventions across hermes
+  // Home Assistant has accumulated three naming conventions across clawd
   // versions: HASS_* (what gateway/config.py currently reads), HOMEASSISTANT_*
   // (legacy), and HA_* (older desktop builds). Mirror all three so the UI
   // can display the value regardless of which one the remote server uses.
@@ -1012,9 +1012,9 @@ export async function sshSetConfigValue(
   await sshWriteFile(config, configPath, updated);
 }
 
-export function sshGetHermesHome(_config: SshConfig, profile?: string): string {
-  if (profile && profile !== "default") return `~/.hermes/profiles/${profile}`;
-  return "~/.hermes";
+export function sshGetClawdHome(_config: SshConfig, profile?: string): string {
+  if (profile && profile !== "default") return `~/.clawd/profiles/${profile}`;
+  return "~/.clawd";
 }
 
 export async function sshGetModelConfig(
@@ -1078,7 +1078,7 @@ payload = json.load(sys.stdin)
 profile = payload.get("profile")
 limit = max(1, min(200, int(payload.get("limit") or 30)))
 offset = max(0, int(payload.get("offset") or 0))
-db = os.path.expanduser(f"~/.hermes/profiles/{profile}/state.db" if profile and profile != "default" else "~/.hermes/state.db")
+db = os.path.expanduser(f"~/.clawd/profiles/{profile}/state.db" if profile and profile != "default" else "~/.clawd/state.db")
 if not os.path.exists(db):
     print("[]"); sys.exit(0)
 conn = sqlite3.connect(db)
@@ -1126,7 +1126,7 @@ import sqlite3, json, os, sys
 payload = json.load(sys.stdin)
 profile = payload.get("profile")
 session_id = payload.get("sessionId") or ""
-db = os.path.expanduser(f"~/.hermes/profiles/{profile}/state.db" if profile and profile != "default" else "~/.hermes/state.db")
+db = os.path.expanduser(f"~/.clawd/profiles/{profile}/state.db" if profile and profile != "default" else "~/.clawd/state.db")
 if not os.path.exists(db):
     print("[]"); sys.exit(0)
 conn = sqlite3.connect(db)
@@ -1259,7 +1259,7 @@ payload = json.load(sys.stdin)
 profile = payload.get("profile")
 query = payload.get("query") or ""
 limit = max(1, min(200, int(payload.get("limit") or 20)))
-db = os.path.expanduser(f"~/.hermes/profiles/{profile}/state.db" if profile and profile != "default" else "~/.hermes/state.db")
+db = os.path.expanduser(f"~/.clawd/profiles/{profile}/state.db" if profile and profile != "default" else "~/.clawd/state.db")
 if not os.path.exists(db):
     print("[]"); sys.exit(0)
 conn = sqlite3.connect(db)
@@ -1308,8 +1308,8 @@ export async function sshListProfiles(
 ): Promise<SshProfileInfo[]> {
   const script = `
 import os, json
-hermes_home = os.path.expanduser("~/.hermes")
-profiles_dir = os.path.join(hermes_home, "profiles")
+clawd_home = os.path.expanduser("~/.clawd")
+profiles_dir = os.path.join(clawd_home, "profiles")
 profiles = []
 
 def read_config(path):
@@ -1347,14 +1347,14 @@ def gw_running(path):
         return False
 
 # Default profile
-model, provider = read_config(hermes_home)
+model, provider = read_config(clawd_home)
 profiles.append({
-    "name": "default", "path": hermes_home, "isDefault": True, "isActive": True,
+    "name": "default", "path": clawd_home, "isDefault": True, "isActive": True,
     "model": model, "provider": provider,
-    "hasEnv": os.path.exists(os.path.join(hermes_home, ".env")),
-    "hasSoul": os.path.exists(os.path.join(hermes_home, "SOUL.md")),
-    "skillCount": count_skills(hermes_home),
-    "gatewayRunning": gw_running(hermes_home)
+    "hasEnv": os.path.exists(os.path.join(clawd_home, ".env")),
+    "hasSoul": os.path.exists(os.path.join(clawd_home, "SOUL.md")),
+    "skillCount": count_skills(clawd_home),
+    "gatewayRunning": gw_running(clawd_home)
 })
 
 if os.path.isdir(profiles_dir):
@@ -1380,7 +1380,7 @@ print(json.dumps(profiles))
     return [
       {
         name: "default",
-        path: "~/.hermes",
+        path: "~/.clawd",
         isDefault: true,
         isActive: true,
         model: "",
@@ -1406,12 +1406,12 @@ export async function sshCreateProfile(
     if (clone) {
       await sshExec(
         config,
-        `hermes profiles create ${quoted} --clone-from default 2>&1 || mkdir -p ~/.hermes/profiles/${quoted}`,
+        `clawd profiles create ${quoted} --clone-from default 2>&1 || mkdir -p ~/.clawd/profiles/${quoted}`,
       );
     } else {
       await sshExec(
         config,
-        `hermes profiles create ${quoted} 2>&1 || mkdir -p ~/.hermes/profiles/${quoted}`,
+        `clawd profiles create ${quoted} 2>&1 || mkdir -p ~/.clawd/profiles/${quoted}`,
       );
     }
     return true;
@@ -1430,7 +1430,7 @@ export async function sshDeleteProfile(
     const quoted = shellQuote(safe);
     await sshExec(
       config,
-      `hermes profiles delete ${quoted} --yes 2>&1 || rm -rf ~/.hermes/profiles/${quoted}`,
+      `clawd profiles delete ${quoted} --yes 2>&1 || rm -rf ~/.clawd/profiles/${quoted}`,
     );
     return true;
   } catch {
@@ -1440,7 +1440,7 @@ export async function sshDeleteProfile(
 
 // ── Gateway ───────────────────────────────────────────────────────────────────
 //
-// In SSH mode the remote gateway may be owned by a systemd `hermes.service`
+// In SSH mode the remote gateway may be owned by a systemd `clawd.service`
 // unit — the standard VPS installer sets this up. Starting our own detached
 // `nohup` gateway then strands that unit in a restart crash-loop (issue
 // #285). Each operation below therefore asks the remote, in a single shell
@@ -1450,19 +1450,19 @@ export async function sshDeleteProfile(
 // tested without a live host.
 
 /**
- * Shell test that succeeds when a systemd `hermes.service` unit file is
+ * Shell test that succeeds when a systemd `clawd.service` unit file is
  * installed on the remote. Safe on hosts without systemd: a missing
  * `systemctl` yields empty output, so the test simply fails and callers
  * fall back to the plain (`nohup` / pidfile) path.
  */
-const SYSTEMD_HERMES_UNIT_TEST =
-  "systemctl list-unit-files hermes.service 2>/dev/null | " +
-  "grep -q '^hermes\\.service'";
+const SYSTEMD_CLAWD_UNIT_TEST =
+  "systemctl list-unit-files clawd.service 2>/dev/null | " +
+  "grep -q '^clawd\\.service'";
 
 /**
  * Command to start the remote gateway (issue #285). When a systemd
- * `hermes.service` exists it owns the lifecycle, so the request is handed
- * to systemd — `hermes.service` is a system unit, so `sudo` is tried first,
+ * `clawd.service` exists it owns the lifecycle, so the request is handed
+ * to systemd — `clawd.service` is a system unit, so `sudo` is tried first,
  * then a direct call for when the SSH user is root. If neither works the
  * command does nothing on purpose: an unmanaged `nohup` orphan that
  * crash-loops the systemd unit is worse than a gateway that simply did not
@@ -1471,31 +1471,31 @@ const SYSTEMD_HERMES_UNIT_TEST =
  */
 export function buildGatewayStartCommand(): string {
   return (
-    `if ${SYSTEMD_HERMES_UNIT_TEST}; then ` +
-    `sudo -n systemctl start hermes.service 2>/dev/null || ` +
-    `systemctl start hermes.service 2>/dev/null || true; ` +
+    `if ${SYSTEMD_CLAWD_UNIT_TEST}; then ` +
+    `sudo -n systemctl start clawd.service 2>/dev/null || ` +
+    `systemctl start clawd.service 2>/dev/null || true; ` +
     `else ` +
-    `(nohup hermes gateway start > $HOME/.hermes/gateway.log 2>&1 &); ` +
+    `(nohup clawd gateway start > $HOME/.clawd/gateway.log 2>&1 &); ` +
     `fi`
   );
 }
 
 /**
  * Command to stop the remote gateway (issue #285). Routed through systemd
- * when a `hermes.service` unit exists, so the unit is left cleanly inactive
+ * when a `clawd.service` unit exists, so the unit is left cleanly inactive
  * rather than the desktop killing a process systemd would just restart;
- * otherwise it falls back to `hermes gateway stop` and, last resort, the
+ * otherwise it falls back to `clawd gateway stop` and, last resort, the
  * recorded pid.
  */
 export function buildGatewayStopCommand(): string {
   return (
-    `if ${SYSTEMD_HERMES_UNIT_TEST}; then ` +
-    `sudo -n systemctl stop hermes.service 2>/dev/null || ` +
-    `systemctl stop hermes.service 2>/dev/null || true; ` +
+    `if ${SYSTEMD_CLAWD_UNIT_TEST}; then ` +
+    `sudo -n systemctl stop clawd.service 2>/dev/null || ` +
+    `systemctl stop clawd.service 2>/dev/null || true; ` +
     `else ` +
-    `hermes gateway stop 2>/dev/null || ` +
-    `(if [ -f $HOME/.hermes/gateway.pid ]; then ` +
-    `pid=$(python3 -c "import json; d=json.load(open('$HOME/.hermes/gateway.pid')); print(d['pid'] if isinstance(d,dict) else d)" 2>/dev/null); ` +
+    `clawd gateway stop 2>/dev/null || ` +
+    `(if [ -f $HOME/.clawd/gateway.pid ]; then ` +
+    `pid=$(python3 -c "import json; d=json.load(open('$HOME/.clawd/gateway.pid')); print(d['pid'] if isinstance(d,dict) else d)" 2>/dev/null); ` +
     `[ -n "$pid" ] && kill $pid 2>/dev/null; fi); true; ` +
     `fi`
   );
@@ -1509,11 +1509,11 @@ export function buildGatewayStopCommand(): string {
  */
 export function buildGatewayStatusCommand(): string {
   return (
-    `if ${SYSTEMD_HERMES_UNIT_TEST}; then ` +
-    `systemctl is-active hermes.service 2>/dev/null || true; ` +
+    `if ${SYSTEMD_CLAWD_UNIT_TEST}; then ` +
+    `systemctl is-active clawd.service 2>/dev/null || true; ` +
     `else ` +
-    `if [ -f $HOME/.hermes/gateway.pid ]; then ` +
-    `pid=$(python3 -c "import json,sys; d=json.load(open('$HOME/.hermes/gateway.pid')); print(d.get('pid',d) if isinstance(d,dict) else d)" 2>/dev/null || cat $HOME/.hermes/gateway.pid); ` +
+    `if [ -f $HOME/.clawd/gateway.pid ]; then ` +
+    `pid=$(python3 -c "import json,sys; d=json.load(open('$HOME/.clawd/gateway.pid')); print(d.get('pid',d) if isinstance(d,dict) else d)" 2>/dev/null || cat $HOME/.clawd/gateway.pid); ` +
     `kill -0 $pid 2>/dev/null && echo "running" || echo "stopped"; ` +
     `else echo "stopped"; fi; ` +
     `fi`
@@ -1559,17 +1559,17 @@ export async function sshReadRemoteApiKey(config: SshConfig): Promise<string> {
 
 // ── Versions ──────────────────────────────────────────────────────────────────
 
-export async function sshGetHermesVersion(
+export async function sshGetClawdVersion(
   config: SshConfig,
 ): Promise<string | null> {
   try {
     // Use the venv-probe path so the version string is the real multi-line
     // output (Engine / Released / Python / OpenAI SDK) the Settings UI
-    // parses, not an empty string when the /usr/local/bin/hermes wrapper
-    // refuses to run as the hermes user. See buildRemoteHermesCmd notes.
+    // parses, not an empty string when the /usr/local/bin/clawd wrapper
+    // refuses to run as the clawd user. See buildRemoteClawdCmd notes.
     const out = await sshExec(
       config,
-      buildRemoteHermesCmd(["--version"], " 2>/dev/null"),
+      buildRemoteClawdCmd(["--version"], " 2>/dev/null"),
     );
     return out.trim() || null;
   } catch {
@@ -1577,7 +1577,7 @@ export async function sshGetHermesVersion(
   }
 }
 
-// Run a Hermes Kanban CLI subcommand over SSH and return a structured result.
+// Run a Clawd Kanban CLI subcommand over SSH and return a structured result.
 export interface SshKanbanResult<T = unknown> {
   success: boolean;
   data?: T;
@@ -1595,7 +1595,7 @@ export async function sshRunKanban<T = unknown>(
     cliArgs.push("-p", opts.profile);
   }
   cliArgs.push("kanban", ...args);
-  const cmd = buildRemoteHermesCmd(cliArgs);
+  const cmd = buildRemoteClawdCmd(cliArgs);
   try {
     const stdout = await sshExec(
       config,
@@ -1609,7 +1609,7 @@ export async function sshRunKanban<T = unknown>(
       } catch (err) {
         return {
           success: false,
-          error: `Failed to parse JSON from remote 'hermes kanban': ${(err as Error).message}`,
+          error: `Failed to parse JSON from remote 'clawd kanban': ${(err as Error).message}`,
           stdout,
         };
       }
@@ -1625,11 +1625,11 @@ export async function sshRunKanban<T = unknown>(
 
 // ── Claw3D HQ board (read-only) ───────────────────────────────────────────────
 //
-// Claw3D ("hermes-office") maintains its own headquarters task board independent
-// of `hermes kanban`. It stores tasks at
+// Claw3D ("clawd-office") maintains its own headquarters task board independent
+// of `clawd kanban`. It stores tasks at
 // `<state-dir>/claw3d/task-manager/tasks.json`, where <state-dir> resolves to
 // `~/.openclawd` (new) or `~/.clawdbot` / `~/.moltbot` (legacy) — see
-// hermes-office/src/lib/clawdbot/paths.ts. We surface it as a virtual,
+// clawd-office/src/lib/clawdbot/paths.ts. We surface it as a virtual,
 // read-only second board in the desktop's Kanban tab so the Claw3D HQ cards
 // are visible alongside the agent dispatcher's own board.
 
@@ -1688,7 +1688,7 @@ function mapClaw3dTaskToKanbanTask(raw: Claw3dSharedTaskRecord): KanbanTask {
   };
 }
 
-// Candidate state dirs mirror hermes-office's resolveStateDir() precedence:
+// Candidate state dirs mirror clawd-office's resolveStateDir() precedence:
 // new `.openclawd` first, then legacy `.clawdbot` / `.moltbot`.
 const CLAW3D_TASKS_PATHS = [
   "~/.openclawd/claw3d/task-manager/tasks.json",
@@ -1750,7 +1750,7 @@ export async function sshReadLogs(
 ): Promise<{ content: string; path: string }> {
   const allowed = ["agent.log", "errors.log", "gateway.log"];
   const file = logFile && allowed.includes(logFile) ? logFile : "agent.log";
-  const remotePath = `$HOME/.hermes/logs/${file}`;
+  const remotePath = `$HOME/.clawd/logs/${file}`;
   try {
     const safeLines = Math.max(
       1,
@@ -1760,9 +1760,9 @@ export async function sshReadLogs(
       config,
       `bash -c 'case "$2" in "~/"*) p="$HOME/\${2#~/}" ;; "\\$HOME/"*) p="$HOME/\${2#\\$HOME/}" ;; *) p="$2" ;; esac; tail -n "$1" -- "$p" 2>/dev/null || echo ""' -- ${shellQuote(String(safeLines))} ${shellQuote(remotePath)}`,
     );
-    return { content: content.trim(), path: `~/.hermes/logs/${file}` };
+    return { content: content.trim(), path: `~/.clawd/logs/${file}` };
   } catch {
-    return { content: "", path: `~/.hermes/logs/${file}` };
+    return { content: "", path: `~/.clawd/logs/${file}` };
   }
 }
 
@@ -1798,7 +1798,7 @@ export async function sshGetPlatformEnabled(
 ): Promise<Record<string, boolean>> {
   void profile;
   try {
-    const raw = await sshReadFile(config, "$HOME/.hermes/gateway_state.json");
+    const raw = await sshReadFile(config, "$HOME/.clawd/gateway_state.json");
     if (raw.trim()) {
       const state = JSON.parse(raw);
       const platforms = state.platforms || {};
@@ -1882,54 +1882,54 @@ export async function sshListCachedSessions(
 
 // ── Doctor / diagnostics ──────────────────────────────────────────────────────
 
-// Build a remote shell command that invokes the Hermes CLI, bypassing the
-// common `/usr/local/bin/hermes` sudo-wrapper that production installs ship.
-// That wrapper does `sudo -u hermes <venv>/bin/hermes "$@"`, and the sudoers
-// policy refuses to let the hermes service user run it as itself ("Sorry,
-// user hermes is not allowed to execute … as hermes"). The wrapper writes the
-// refusal to stderr and exits non-zero, breaking `hermes doctor`,
-// `hermes update`, `hermes dump`, and `hermes --version` when called over
-// SSH as the hermes user.
+// Build a remote shell command that invokes the Clawd CLI, bypassing the
+// common `/usr/local/bin/clawd` sudo-wrapper that production installs ship.
+// That wrapper does `sudo -u clawd <venv>/bin/clawd "$@"`, and the sudoers
+// policy refuses to let the clawd service user run it as itself ("Sorry,
+// user clawd is not allowed to execute … as clawd"). The wrapper writes the
+// refusal to stderr and exits non-zero, breaking `clawd doctor`,
+// `clawd update`, `clawd dump`, and `clawd --version` when called over
+// SSH as the clawd user.
 //
-// Probe the well-known venv install paths first; fall back to bare `hermes`
+// Probe the well-known venv install paths first; fall back to bare `clawd`
 // on PATH only if none of those exist, preserving the old behavior for
 // non-installer deployments.
 //
 // Each install base is probed with both `.venv` and `venv` — the venv
 // directory name is not fixed, and an install that uses the un-dotted
 // `venv` was otherwise invisible even when fully working (issue #284).
-// `~/.local/bin/hermes` is also probed, where `pip install --user` flows
-// place a wrapper. `command -v hermes` alone is not enough: the desktop's
+// `~/.local/bin/clawd` is also probed, where `pip install --user` flows
+// place a wrapper. `command -v clawd` alone is not enough: the desktop's
 // non-interactive SSH does not source `~/.profile`/`~/.bashrc`, so any
 // PATH additions made there are not visible.
 //
 // Exported for unit testing the probe list without a live remote host.
-export function buildRemoteHermesCmd(args: string[], extraShell = ""): string {
+export function buildRemoteClawdCmd(args: string[], extraShell = ""): string {
   const candidates = [
-    "$HOME/hermes-agent/.venv/bin/hermes",
-    "$HOME/hermes-agent/venv/bin/hermes",
-    "$HOME/.hermes/hermes-agent/.venv/bin/hermes",
-    "$HOME/.hermes/hermes-agent/venv/bin/hermes",
-    "/opt/hermes/hermes-agent/.venv/bin/hermes",
-    "/opt/hermes/hermes-agent/venv/bin/hermes",
-    "$HOME/.local/bin/hermes",
+    "$HOME/clawd-agent/.venv/bin/clawd",
+    "$HOME/clawd-agent/venv/bin/clawd",
+    "$HOME/.clawd/clawd-agent/.venv/bin/clawd",
+    "$HOME/.clawd/clawd-agent/venv/bin/clawd",
+    "/optclawd/clawd-agent/.venv/bin/clawd",
+    "/optclawd/clawd-agent/venv/bin/clawd",
+    "$HOME/.local/bin/clawd",
   ];
   const quotedArgs = args.map((a) => shellQuote(a)).join(" ");
   const probe = candidates
     .map((p) => `[ -x ${p} ] && exec ${p} ${quotedArgs}${extraShell}`)
     .join("; ");
-  const script = `${probe}; command -v hermes >/dev/null && exec hermes ${quotedArgs}${extraShell}; echo "ERR: hermes CLI not found on remote PATH or in any known venv location" >&2; exit 1`;
+  const script = `${probe}; command -v clawd >/dev/null && exec clawd ${quotedArgs}${extraShell}; echo "ERR: clawd CLI not found on remote PATH or in any known venv location" >&2; exit 1`;
   return `bash -c ${shellQuote(script)}`;
 }
 
 export async function sshRunDoctor(config: SshConfig): Promise<string> {
   try {
-    // `hermes doctor` writes diagnostics to stdout; redirect stderr too so
+    // `clawd doctor` writes diagnostics to stdout; redirect stderr too so
     // any wrapper-refusal output is visible to the user rather than silently
     // dropped.
     const out = await sshExec(
       config,
-      buildRemoteHermesCmd(["doctor"], " 2>&1"),
+      buildRemoteClawdCmd(["doctor"], " 2>&1"),
     );
     return out.trim() || "No output from doctor.";
   } catch (err) {
@@ -1940,7 +1940,7 @@ export async function sshRunDoctor(config: SshConfig): Promise<string> {
 export async function sshRunUpdate(config: SshConfig): Promise<void> {
   await sshExec(
     config,
-    buildRemoteHermesCmd(["update"], " 2>&1"),
+    buildRemoteClawdCmd(["update"], " 2>&1"),
     undefined,
     120000,
   );
@@ -1950,7 +1950,7 @@ export async function sshRunDump(config: SshConfig): Promise<string> {
   try {
     const out = await sshExec(
       config,
-      buildRemoteHermesCmd(["dump"], " 2>&1"),
+      buildRemoteClawdCmd(["dump"], " 2>&1"),
       undefined,
       60000,
     );
@@ -1979,9 +1979,9 @@ known = {
     "byterover": {"description": "memory.providers.byterover", "envVars": ["BRV_API_KEY"]},
 }
 roots = [
-    os.path.expanduser("~/.hermes/plugins/memory"),
-    os.path.expanduser("~/hermes/plugins/memory"),
-    os.path.expanduser("~/hermes-agent/plugins/memory"),
+    os.path.expanduser("~/.clawd/plugins/memory"),
+    os.path.expanduser("~clawd/plugins/memory"),
+    os.path.expanduser("~/clawd-agent/plugins/memory"),
 ]
 names = set(known)
 for root in roots:
@@ -2013,7 +2013,7 @@ print(json.dumps(result))
 
 export async function sshListModels(config: SshConfig): Promise<SavedModel[]> {
   try {
-    const raw = await sshReadFile(config, "$HOME/.hermes/models.json");
+    const raw = await sshReadFile(config, "$HOME/.clawd/models.json");
     if (raw.trim()) return JSON.parse(raw);
   } catch {
     // no models.json on remote yet
@@ -2027,13 +2027,13 @@ export async function sshSaveModels(
 ): Promise<void> {
   await sshWriteFile(
     config,
-    "$HOME/.hermes/models.json",
+    "$HOME/.clawd/models.json",
     JSON.stringify(models, null, 2),
   );
 }
 
 // Mirror the local CRUD helpers in models.ts against the remote
-// ~/.hermes/models.json. Each operation does a full read/mutate/write so the
+// ~/.clawd/models.json. Each operation does a full read/mutate/write so the
 // SSH cost is the same as a manual edit — there is no remote API to call
 // instead, and the file is small (a few KB at most).
 

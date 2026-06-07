@@ -1,7 +1,7 @@
 export default {
   title: "Ustawienia",
   sections: {
-    hermesAgent: "Hermes Agent",
+    clawdAgent: "Clawd Agent",
     appearance: "Wygląd",
     privacy: "Prywatność",
     credentialPool: "Pula poświadczeń",
@@ -24,7 +24,7 @@ export default {
   },
   analytics: {
     label: "Wysyłaj anonimową analitykę użycia",
-    hint: "Pomaga ulepszać Hermes Desktop przez wysyłanie anonimowych, zagregowanych danych użycia do instancji PostHog projektu. Możesz to wyłączyć w dowolnym momencie.",
+    hint: "Pomaga ulepszać Clawd Desktop przez wysyłanie anonimowych, zagregowanych danych użycia do instancji PostHog projektu. Możesz to wyłączyć w dowolnym momencie.",
     disclosure: {
       uuid: "Losowy identyfikator instalacji przechowywany tylko na tym urządzeniu (bez imienia, e-maila ani danych konta).",
       platform: "Twój system operacyjny, wersja Electron i wersja Node.js.",
@@ -38,7 +38,7 @@ export default {
   },
   notDetected: "Nie wykryto",
   updatedSuccessfully: "Zaktualizowano pomyślnie!",
-  updateSuccess: "Hermes został pomyślnie zaktualizowany.",
+  updateSuccess: "Clawd został pomyślnie zaktualizowany.",
   updateFailed: "Aktualizacja nie powiodła się.",
   version: "v{{version}}",
   proxyPlaceholder: "np. socks5://127.0.0.1:1080 lub http://proxy:8080",
@@ -68,14 +68,14 @@ export default {
     "Nie udało się połączyć z listą modeli dostawcy — nadal możesz wpisać nazwę modelu ręcznie",
   customBaseUrlHint: "Endpoint API zgodny z OpenAI",
   poolHint:
-    "Dodaj wiele kluczy API dla tego samego dostawcy, aby automatycznie rotować i równoważyć obciążenie. Hermes będzie ich używał cyklicznie.",
+    "Dodaj wiele kluczy API dla tego samego dostawcy, aby automatycznie rotować i równoważyć obciążenie. Clawd będzie ich używał cyklicznie.",
   add: "Dodaj",
   remove: "Usuń",
   keyLabel: "Klucz",
   empty: "(puste)",
   dataSection: "Dane",
   dataHint:
-    "Eksportuj lub importuj konfigurację Hermes, sesje, umiejętności i pamięć.",
+    "Eksportuj lub importuj konfigurację Clawd, sesje, umiejętności i pamięć.",
   backingUp: "Tworzenie kopii...",
   exportBackup: "Eksportuj kopię zapasową",
   importing: "Importowanie...",
@@ -92,10 +92,10 @@ export default {
   debugDump: "Zrzut debugowania",
   migrationDetected: "Wykryto instalację OpenClaw",
   migrationDesc:
-    "Znaleziono OpenClaw w <code>{{path}}</code>. Możesz przenieść konfigurację, klucze API, sesje i umiejętności do Hermes.",
+    "Znaleziono OpenClaw w <code>{{path}}</code>. Możesz przenieść konfigurację, klucze API, sesje i umiejętności do Clawd.",
   migrationDismiss: "Nie pokazuj ponownie",
   migrating: "Migrowanie...",
-  migrateToHermes: "Migruj do Hermes",
+  migrateToClawd: "Migruj do Clawd",
   skip: "Pomiń",
   appearanceHint: "Wybierz preferowany wygląd interfejsu",
   apiKeyPlaceholder: "Klucz API",
@@ -103,11 +103,11 @@ export default {
   connectionSection: "Połączenie",
   modeLocal: "Lokalny",
   modeRemote: "Zdalny",
-  modeLocalHint: "Używasz Hermes zainstalowanego na tym urządzeniu",
-  modeRemoteHint: "Połącz z serwerem API Hermes w sieci lub chmurze",
+  modeLocalHint: "Używasz Clawd zainstalowanego na tym urządzeniu",
+  modeRemoteHint: "Połącz z serwerem API Clawd w sieci lub chmurze",
   remoteUrl: "Zdalny URL",
   remoteUrlHint:
-    "URL serwera API Hermes (musi wystawiać /health i /v1/chat/completions)",
+    "URL serwera API Clawd (musi wystawiać /health i /v1/chat/completions)",
   remoteApiKey: "Klucz API",
   remoteApiKeyHint:
     "Musi odpowiadać API_SERVER_KEY na zdalnym hoście. Zostaw puste, jeśli serwer akceptuje żądania nieuwierzytelnione.",
@@ -116,7 +116,7 @@ export default {
   save: "Zapisz",
   serverConfigTitle: "Konfiguracja serwera",
   serverConfigHint:
-    "Jesteś połączony ze zdalnym serwerem Hermes. Wybór modelu, klucze API dostawców i poświadczenia są zarządzane na serwerze w <code>~/.hermes/.env</code> oraz <code>config.yaml</code>. Edytuj je na hoście (np. <code>docker exec -it hermes vi /opt/data/.env</code>) i zrestartuj kontener.",
+    "Jesteś połączony ze zdalnym serwerem Clawd. Wybór modelu, klucze API dostawców i poświadczenia są zarządzane na serwerze w <code>~/.clawd/.env</code> oraz <code>config.yaml</code>. Edytuj je na hoście (np. <code>docker exec -it clawd vi /opt/data/.env</code>) i zrestartuj kontener.",
   connectionMode: "Tryb",
   switchedToLocal: "Przełączono na tryb lokalny",
 } as const;

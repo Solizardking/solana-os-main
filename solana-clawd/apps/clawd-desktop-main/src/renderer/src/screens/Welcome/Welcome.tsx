@@ -1,5 +1,5 @@
 import { useState } from "react";
-import HermesLogo from "../../components/common/HermesLogo";
+import ClawdLogo from "../../components/common/ClawdLogo";
 import {
   ArrowRight,
   Refresh,
@@ -56,13 +56,13 @@ function Welcome({
     setRemoteTesting(true);
     setRemoteError(null);
     try {
-      const ok = await window.hermesAPI.testRemoteConnection(url, key);
+      const ok = await window.clawdAPI.testRemoteConnection(url, key);
       if (ok) {
-        await window.hermesAPI.setConnectionConfig("remote", url, key);
+        await window.clawdAPI.setConnectionConfig("remote", url, key);
         onRecheck();
       } else {
         setRemoteError(
-          "Could not reach Hermes at this URL. Check the URL and API key.\n\nLeave the key empty if the server accepts unauthenticated requests (e.g. via SSH tunnel to localhost).",
+          "Could not reach Clawd at this URL. Check the URL and API key.\n\nLeave the key empty if the server accepts unauthenticated requests (e.g. via SSH tunnel to localhost).",
         );
       }
     } catch {
@@ -84,7 +84,7 @@ function Welcome({
     setSshTesting(true);
     setSshError(null);
     try {
-      const ok = await window.hermesAPI.testSshConnection(
+      const ok = await window.clawdAPI.testSshConnection(
         host,
         port,
         user,
@@ -92,7 +92,7 @@ function Welcome({
         remotePort,
       );
       if (ok) {
-        await window.hermesAPI.setSshConfig(
+        await window.clawdAPI.setSshConfig(
           host,
           port,
           user,
@@ -103,7 +103,7 @@ function Welcome({
         onRecheck();
       } else {
         setSshError(
-          "Could not connect via SSH or reach Hermes on the remote. Make sure:\n• SSH key is correct (or default ~/.ssh/id_rsa works)\n• Hermes gateway is running on the remote\n• The remote port is correct (default 8642)",
+          "Could not connect via SSH or reach Clawd on the remote. Make sure:\n• SSH key is correct (or default ~/.ssh/id_rsa works)\n• Clawd gateway is running on the remote\n• The remote port is correct (default 8642)",
         );
       }
     } catch (e) {
@@ -116,7 +116,7 @@ function Welcome({
   if (panel === "remote") {
     return (
       <div className="screen welcome-screen">
-        <HermesLogo size={36} />
+        <ClawdLogo size={36} />
         <h1 className="welcome-title" style={{ fontSize: 22 }}>
           {t("welcome.connectRemoteTitle")}
         </h1>
@@ -196,12 +196,12 @@ function Welcome({
   if (panel === "ssh") {
     return (
       <div className="screen welcome-screen">
-        <HermesLogo size={36} />
+        <ClawdLogo size={36} />
         <h1 className="welcome-title" style={{ fontSize: 22 }}>
           Connect via SSH
         </h1>
         <p className="welcome-subtitle" style={{ marginBottom: 24 }}>
-          Tunnel to a remote Hermes over SSH — no exposed ports or API keys
+          Tunnel to a remote Clawd over SSH — no exposed ports or API keys
           needed.
         </p>
 
@@ -236,7 +236,7 @@ function Welcome({
           <input
             type="text"
             className="welcome-remote-input"
-            placeholder="hermes"
+            placeholder="clawd"
             value={sshUser}
             onChange={(e) => setSshUser(e.target.value)}
           />
@@ -256,7 +256,7 @@ function Welcome({
           />
 
           <label className="welcome-remote-label" style={{ marginTop: 12 }}>
-            Remote Hermes Port{" "}
+            Remote Clawd Port{" "}
             <span style={{ fontWeight: 400, opacity: 0.6 }}>
               (default 8642)
             </span>
@@ -321,7 +321,7 @@ function Welcome({
 
   return (
     <div className="screen welcome-screen">
-      <HermesLogo size={40} />
+      <ClawdLogo size={40} />
 
       {error ? (
         <>
@@ -383,7 +383,7 @@ function Welcome({
               onClick={() => setPanel("remote")}
             >
               <Globe size={16} />
-              Connect to Remote Hermes
+              Connect to Remote Clawd
             </button>
           </div>
         </>

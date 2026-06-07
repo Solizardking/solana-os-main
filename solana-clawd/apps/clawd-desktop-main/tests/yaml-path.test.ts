@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { getYamlPath } from "../src/main/yaml-path";
 
-const HERMES_LIKE_CONFIG = `
-# A real-world-shaped Hermes config.yaml fragment.
+const CLAWD_LIKE_CONFIG = `
+# A real-world-shaped Clawd config.yaml fragment.
 memory:
   memory_enabled: true
   user_profile_enabled: true
@@ -32,15 +32,15 @@ model:
 
 describe("getYamlPath", () => {
   it("returns the leaf scalar for a nested dotted-path key", () => {
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "memory.provider")).toBe("honcho");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "model.provider")).toBe("openai");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "model.default")).toBe("gpt-4o");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "model.base_url")).toBe(
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "memory.provider")).toBe("honcho");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "model.provider")).toBe("openai");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "model.default")).toBe("gpt-4o");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "model.base_url")).toBe(
       "https://api.openai.com/v1",
     );
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "agent.service_tier")).toBe("");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "network.force_ipv4")).toBe("false");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "security.redact_secrets")).toBe(
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "agent.service_tier")).toBe("");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "network.force_ipv4")).toBe("false");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "security.redact_secrets")).toBe(
       "true",
     );
   });
@@ -48,20 +48,20 @@ describe("getYamlPath", () => {
   it("disambiguates same-name keys at different nesting levels", () => {
     // Both memory.provider AND model.provider exist. Plain regex would match
     // whichever appears first; dotted-path must return the requested one.
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "memory.provider")).toBe("honcho");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "model.provider")).toBe("openai");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "delegation.provider")).toBe("");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "memory.provider")).toBe("honcho");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "model.provider")).toBe("openai");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "delegation.provider")).toBe("");
   });
 
   it("returns null for keys that don't exist", () => {
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "memory.nonexistent")).toBeNull();
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "nonexistent.provider")).toBeNull();
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "")).toBeNull();
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "memory.nonexistent")).toBeNull();
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "nonexistent.provider")).toBeNull();
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "")).toBeNull();
   });
 
   it("handles inline empty maps and lists by returning the literal", () => {
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "providers")).toBe("{}");
-    expect(getYamlPath(HERMES_LIKE_CONFIG, "fallback_providers")).toBe("[]");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "providers")).toBe("{}");
+    expect(getYamlPath(CLAWD_LIKE_CONFIG, "fallback_providers")).toBe("[]");
   });
 
   it("strips quotes from quoted scalar values", () => {
@@ -80,7 +80,7 @@ describe("getYamlPath", () => {
   it("returns null when an intermediate parent isn't a map", () => {
     // memory.provider.something doesn't exist — `provider: honcho` is a scalar
     expect(
-      getYamlPath(HERMES_LIKE_CONFIG, "memory.provider.something"),
+      getYamlPath(CLAWD_LIKE_CONFIG, "memory.provider.something"),
     ).toBeNull();
   });
 

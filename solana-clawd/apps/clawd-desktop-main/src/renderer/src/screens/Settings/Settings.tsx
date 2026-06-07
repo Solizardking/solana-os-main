@@ -17,7 +17,7 @@ import {
 } from "../../utils/analytics";
 import { ConfigHealth } from "./ConfigHealth";
 
-const TELEGRAM_COMMUNITY_URL = "https://t.me/hermes_agent_desktop";
+const TELEGRAM_COMMUNITY_URL = "https://t.me/clawd_agent_desktop";
 
 const LANGUAGE_NATIVE_NAMES: Record<AppLocale, string> = {
   en: "English",
@@ -46,7 +46,7 @@ function makeApiKeyMask(length: number): string {
 // Read cached values from localStorage for instant display
 function getCachedVersion(): string | null {
   try {
-    return localStorage.getItem("hermes-version-cache");
+    return localStorage.getItem("clawd-version-cache");
   } catch {
     return null;
   }
@@ -54,7 +54,7 @@ function getCachedVersion(): string | null {
 
 function getCachedOpenClaw(): { found: boolean; path: string | null } | null {
   try {
-    const raw = localStorage.getItem("hermes-openclaw-cache");
+    const raw = localStorage.getItem("clawd-openclaw-cache");
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -63,11 +63,11 @@ function getCachedOpenClaw(): { found: boolean; path: string | null } | null {
 
 function Settings({ profile }: { profile?: string }): React.JSX.Element {
   const { t, locale, setLocale } = useI18n();
-  const [hermesHome, setHermesHome] = useState("");
+  const [clawdHome, setClawdHome] = useState("");
   const { theme, setTheme } = useTheme();
 
-  // Hermes engine info — initialize from localStorage cache for instant display
-  const [hermesVersion, setHermesVersion] = useState<string | null>(
+  // Clawd engine info — initialize from localStorage cache for instant display
+  const [clawdVersion, setClawdVersion] = useState<string | null>(
     getCachedVersion,
   );
   const [appVersion, setAppVersion] = useState("");
@@ -88,7 +88,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     cachedClaw?.path ?? null,
   );
   const [migrationDismissed, setMigrationDismissed] = useState(
-    () => localStorage.getItem("hermes-openclaw-dismissed") === "true",
+    () => localStorage.getItem("clawd-openclaw-dismissed") === "true",
   );
   const [migrating, setMigrating] = useState(false);
   const [migrationLog, setMigrationLog] = useState("");
@@ -146,12 +146,12 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
   const loadConfig = useCallback(async (): Promise<void> => {
     // Load fast config first (cached in main process)
     const [home, aVersion, conn, keyStatus] = await Promise.all([
-      window.hermesAPI.getHermesHome(profile),
-      window.hermesAPI.getAppVersion(),
-      window.hermesAPI.getConnectionConfig(),
-      window.hermesAPI.getApiServerKeyStatus(profile),
+      window.clawdAPI.getClawdHome(profile),
+      window.clawdAPI.getAppVersion(),
+      window.clawdAPI.getConnectionConfig(),
+      window.clawdAPI.getApiServerKeyStatus(profile),
     ]);
-    setHermesHome(home);
+    setClawdHome(home);
     setAppVersion(aVersion);
     setConnMode(conn.mode);
     setConnRemoteUrl(conn.remoteUrl);
@@ -168,31 +168,31 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     connLoaded.current = true;
 
     // Load network settings from config.yaml
-    window.hermesAPI.getConfig("network.force_ipv4", profile).then((v) => {
+    window.clawdAPI.getConfig("network.force_ipv4", profile).then((v) => {
       setForceIpv4(v === "true" || v === "True");
     });
-    window.hermesAPI.getConfig("network.proxy", profile).then((v) => {
+    window.clawdAPI.getConfig("network.proxy", profile).then((v) => {
       setHttpProxy(v || "");
     });
 
     // Defer slow calls — background refresh, cached values show instantly
-    window.hermesAPI.getHermesVersion().then((v) => {
-      setHermesVersion(v);
+    window.clawdAPI.getClawdVersion().then((v) => {
+      setClawdVersion(v);
       if (v) {
         try {
-          localStorage.setItem("hermes-version-cache", v);
+          localStorage.setItem("clawd-version-cache", v);
         } catch {
           /* ignore */
         }
       }
     });
 
-    if (localStorage.getItem("hermes-openclaw-dismissed") !== "true") {
-      window.hermesAPI.checkOpenClaw().then((claw) => {
+    if (localStorage.getItem("clawd-openclaw-dismissed") !== "true") {
+      window.clawdAPI.checkOpenClaw().then((claw) => {
         setOpenclawFound(claw.found);
         setOpenclawPath(claw.path);
         try {
-          localStorage.setItem("hermes-openclaw-cache", JSON.stringify(claw));
+          localStorage.setItem("clawd-openclaw-cache", JSON.stringify(claw));
         } catch {
           /* ignore */
         }
@@ -209,12 +209,12 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     setMigrationLog("");
     setMigrationResult(null);
 
-    const cleanup = window.hermesAPI.onInstallProgress((p) => {
+    const cleanup = window.clawdAPI.onInstallProgress((p) => {
       setMigrationLog(p.log);
     });
 
     try {
-      const result = await window.hermesAPI.runClawMigrate();
+      const result = await window.clawdAPI.runClawMigrate();
       cleanup();
       if (result.success) {
         setMigrationResult(t("settings.migrationComplete"));
@@ -235,7 +235,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
   }
 
   function handleDismissMigration(): void {
-    localStorage.setItem("hermes-openclaw-dismissed", "true");
+    localStorage.setItem("clawd-openclaw-dismissed", "true");
     setMigrationDismissed(true);
   }
 
@@ -254,7 +254,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
 
   async function handleSaveConnection(): Promise<void> {
     if (connMode === "ssh") {
-      await window.hermesAPI.setSshConfig(
+      await window.clawdAPI.setSshConfig(
         sshHost.trim(),
         parseInt(sshPort, 10) || 22,
         sshUser.trim(),
@@ -264,7 +264,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
       );
     } else {
       const apiKey = getConnectionApiKeyForSave();
-      await window.hermesAPI.setConnectionConfig(
+      await window.clawdAPI.setConnectionConfig(
         connMode,
         connRemoteUrl,
         apiKey,
@@ -293,7 +293,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
       }
       setConnTesting(true);
       setConnStatus(null);
-      const ok = await window.hermesAPI.testSshConnection(
+      const ok = await window.clawdAPI.testSshConnection(
         sshHost.trim(),
         parseInt(sshPort, 10) || 22,
         sshUser.trim(),
@@ -310,7 +310,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
       }
       setConnTesting(true);
       setConnStatus(null);
-      const ok = await window.hermesAPI.testRemoteConnection(
+      const ok = await window.clawdAPI.testRemoteConnection(
         url,
         getConnectionApiKeyForSave(),
       );
@@ -325,7 +325,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     setConnApiKey("");
     setConnApiKeyMask("");
     setConnHasApiKey(false);
-    await window.hermesAPI.setConnectionConfig("local", "", "");
+    await window.clawdAPI.setConnectionConfig("local", "", "");
     setConnStatus(t("settings.switchedToLocal"));
     setTimeout(() => setConnStatus(null), 2000);
   }
@@ -333,7 +333,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
   async function handleBackup(): Promise<void> {
     setBackingUp(true);
     setBackupResult(null);
-    const result = await window.hermesAPI.runHermesBackup(profile);
+    const result = await window.clawdAPI.runClawdBackup(profile);
     setBackingUp(false);
     if (result.success) {
       setBackupResult(`Backup created: ${result.path || "success"}`);
@@ -352,7 +352,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
       setImporting(true);
       setImportResult(null);
       const filePath = (file as File & { path: string }).path;
-      const result = await window.hermesAPI.runHermesImport(filePath, profile);
+      const result = await window.clawdAPI.runClawdImport(filePath, profile);
       setImporting(false);
       if (result.success) {
         setImportResult(t("settings.migrationComplete"));
@@ -364,7 +364,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
   }
 
   async function loadLogs(): Promise<void> {
-    const result = await window.hermesAPI.readLogs(logFile, 300);
+    const result = await window.clawdAPI.readLogs(logFile, 300);
     setLogContent(result.content);
     setLogPath(result.path);
   }
@@ -372,18 +372,18 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
   async function handleDoctor(): Promise<void> {
     setDoctorRunning(true);
     setDoctorOutput(null);
-    const output = await window.hermesAPI.runHermesDoctor();
+    const output = await window.clawdAPI.runClawdDoctor();
     setDoctorOutput(output);
     setDoctorRunning(false);
   }
 
   // Helper to fetch fresh version, clear backend cache, and update localStorage
   function refreshVersion(): void {
-    window.hermesAPI.refreshHermesVersion().then((v) => {
-      setHermesVersion(v);
+    window.clawdAPI.refreshClawdVersion().then((v) => {
+      setClawdVersion(v);
       if (v) {
         try {
-          localStorage.setItem("hermes-version-cache", v);
+          localStorage.setItem("clawd-version-cache", v);
         } catch {
           /* ignore */
         }
@@ -391,10 +391,10 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     });
   }
 
-  async function handleUpdateHermes(): Promise<void> {
+  async function handleUpdateClawd(): Promise<void> {
     setUpdating(true);
     setUpdateResult(null);
-    const result = await window.hermesAPI.runHermesUpdate();
+    const result = await window.clawdAPI.runClawdUpdate();
     setUpdating(false);
     if (result.success) {
       setUpdateResult(t("settings.updateSuccess"));
@@ -406,10 +406,10 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
     }
   }
 
-  // Parse "Hermes Agent v0.7.0 (2026.4.3) Project: ... Python: 3.11.15 OpenAI SDK: 2.30.0 Update available: ..."
+  // Parse "Clawd Agent v0.7.0 (2026.4.3) Project: ... Python: 3.11.15 OpenAI SDK: 2.30.0 Update available: ..."
   const parsedVersion = (() => {
-    if (!hermesVersion) return null;
-    const v = hermesVersion;
+    if (!clawdVersion) return null;
+    const v = clawdVersion;
     const version = v.match(/v([\d.]+)/)?.[1] || "";
     const date = v.match(/\(([\d.]+)\)/)?.[1] || "";
     const python = v.match(/Python:\s*([\d.]+)/)?.[1] || "";
@@ -427,89 +427,89 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
 
       <div className="settings-section">
         <div className="settings-section-title">
-          {t("settings.sections.hermesAgent")}
+          {t("settings.sections.clawdAgent")}
         </div>
-        <div className="settings-hermes-info">
-          <div className="settings-hermes-row">
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">
+        <div className="settings-clawd-info">
+          <div className="settings-clawd-row">
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">
                 {t("common.engine")}
               </span>
-              {hermesVersion === null ? (
+              {clawdVersion === null ? (
                 <span className="skeleton skeleton-sm" />
               ) : (
-                <span className="settings-hermes-value">
+                <span className="settings-clawd-value">
                   {parsedVersion
                     ? `v${parsedVersion.version}`
                     : t("settings.notDetected")}
                 </span>
               )}
             </div>
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">
                 {t("common.released")}
               </span>
-              {hermesVersion === null ? (
+              {clawdVersion === null ? (
                 <span className="skeleton skeleton-sm" />
               ) : (
-                <span className="settings-hermes-value">
+                <span className="settings-clawd-value">
                   {parsedVersion?.date || "—"}
                 </span>
               )}
             </div>
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">
                 {t("common.desktop")}
               </span>
               {!appVersion ? (
                 <span className="skeleton skeleton-sm" />
               ) : (
-                <span className="settings-hermes-value">
+                <span className="settings-clawd-value">
                   {t("settings.version", { version: appVersion })}
                 </span>
               )}
             </div>
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">Python</span>
-              {hermesVersion === null ? (
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">Python</span>
+              {clawdVersion === null ? (
                 <span className="skeleton skeleton-sm" />
               ) : (
-                <span className="settings-hermes-value">
+                <span className="settings-clawd-value">
                   {parsedVersion?.python || "—"}
                 </span>
               )}
             </div>
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">OpenAI SDK</span>
-              {hermesVersion === null ? (
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">OpenAI SDK</span>
+              {clawdVersion === null ? (
                 <span className="skeleton skeleton-sm" />
               ) : (
-                <span className="settings-hermes-value">
+                <span className="settings-clawd-value">
                   {parsedVersion?.sdk || "—"}
                 </span>
               )}
             </div>
-            <div className="settings-hermes-detail">
-              <span className="settings-hermes-label">{t("common.home")}</span>
-              {!hermesHome ? (
+            <div className="settings-clawd-detail">
+              <span className="settings-clawd-label">{t("common.home")}</span>
+              {!clawdHome ? (
                 <span className="skeleton skeleton-md" />
               ) : (
-                <span className="settings-hermes-value settings-hermes-path">
-                  {hermesHome}
+                <span className="settings-clawd-value settings-clawd-path">
+                  {clawdHome}
                 </span>
               )}
             </div>
           </div>
           {parsedVersion?.updateInfo && (
-            <div className="settings-hermes-update-badge">
+            <div className="settings-clawd-update-badge">
               {parsedVersion.updateInfo}
             </div>
           )}
-          <div className="settings-hermes-actions">
+          <div className="settings-clawd-actions">
             {parsedVersion?.updateInfo ? (
               <button
                 className="btn btn-primary "
-                onClick={handleUpdateHermes}
+                onClick={handleUpdateClawd}
                 disabled={updating}
               >
                 {updating ? t("settings.updating") : t("settings.updateEngine")}
@@ -533,7 +533,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
               onClick={async () => {
                 setDumpRunning(true);
                 setDumpOutput(null);
-                const output = await window.hermesAPI.runHermesDump();
+                const output = await window.clawdAPI.runClawdDump();
                 setDumpOutput(output);
                 setDumpRunning(false);
               }}
@@ -544,16 +544,16 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           </div>
           {updateResult && (
             <div
-              className={`settings-hermes-result ${updateResultType || "error"}`}
+              className={`settings-clawd-result ${updateResultType || "error"}`}
             >
               {updateResult}
             </div>
           )}
           {doctorOutput && (
-            <pre className="settings-hermes-doctor">{doctorOutput}</pre>
+            <pre className="settings-clawd-doctor">{doctorOutput}</pre>
           )}
           {dumpOutput && (
-            <pre className="settings-hermes-doctor">{dumpOutput}</pre>
+            <pre className="settings-clawd-doctor">{dumpOutput}</pre>
           )}
         </div>
       </div>
@@ -563,13 +563,13 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
         <div className="settings-field">
           <div className="settings-field-hint" style={{ marginBottom: 10 }}>
             Join our Telegram group to ask questions, report issues, and chat
-            with other Hermes users.
+            with other Clawd users.
           </div>
-          <div className="settings-hermes-actions">
+          <div className="settings-clawd-actions">
             <button
               className="btn btn-secondary"
               onClick={() =>
-                window.hermesAPI.openExternal(TELEGRAM_COMMUNITY_URL)
+                window.clawdAPI.openExternal(TELEGRAM_COMMUNITY_URL)
               }
               title={TELEGRAM_COMMUNITY_URL}
             >
@@ -621,7 +621,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             {connMode === "local"
               ? t("settings.modeLocalHint")
               : connMode === "ssh"
-                ? "Tunnel to a remote Hermes over SSH — no exposed ports or API keys needed."
+                ? "Tunnel to a remote Clawd over SSH — no exposed ports or API keys needed."
                 : t("settings.modeRemoteHint")}
           </div>
         </div>
@@ -641,7 +641,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
               disabled={generatingKey}
               onClick={async () => {
                 setGeneratingKey(true);
-                await window.hermesAPI.generateApiServerKey(profile);
+                await window.clawdAPI.generateApiServerKey(profile);
                 setApiServerKeyMissing(false);
                 setGeneratingKey(false);
                 setConnStatus("API key generated — gateway restarting…");
@@ -658,8 +658,8 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             </div>
             <div className="settings-api-key-banner-desc">
               {connMode === "ssh"
-                ? "SSH mode: add API_SERVER_KEY=<your-key> to ~/.hermes/profiles/<profile>/.env on the remote host, then restart the gateway there."
-                : "Remote mode: add API_SERVER_KEY=<your-key> to the .env on your remote Hermes server, then restart the gateway."}
+                ? "SSH mode: add API_SERVER_KEY=<your-key> to ~/.clawd/profiles/<profile>/.env on the remote host, then restart the gateway there."
+                : "Remote mode: add API_SERVER_KEY=<your-key> to the .env on your remote Clawd server, then restart the gateway."}
             </div>
           </div>
         )}
@@ -703,7 +703,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 {t("settings.remoteApiKeyHint")}
               </div>
             </div>
-            <div className="settings-hermes-actions">
+            <div className="settings-clawd-actions">
               <button
                 className="btn btn-secondary"
                 onClick={handleTestConnection}
@@ -752,7 +752,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 type="text"
                 value={sshUser}
                 onChange={(e) => setSshUser(e.target.value)}
-                placeholder="hermes"
+                placeholder="clawd"
               />
             </div>
             <div className="settings-field">
@@ -772,7 +772,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             </div>
             <div className="settings-field">
               <label className="settings-field-label">
-                Remote Hermes Port{" "}
+                Remote Clawd Port{" "}
                 <span style={{ fontWeight: 400, opacity: 0.6 }}>
                   (default 8642)
                 </span>
@@ -797,7 +797,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 ; SSH will fail closed if that key changes later.
               </div>
             </div>
-            <div className="settings-hermes-actions">
+            <div className="settings-clawd-actions">
               <button
                 className="btn btn-secondary"
                 onClick={handleTestConnection}
@@ -841,13 +841,13 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             </button>
           </div>
           {migrationLog && (
-            <pre className="settings-hermes-doctor" ref={migrationLogRef}>
+            <pre className="settings-clawd-doctor" ref={migrationLogRef}>
               {migrationLog}
             </pre>
           )}
           {migrationResult && (
             <div
-              className={`settings-hermes-result ${migrationResultType || "error"}`}
+              className={`settings-clawd-result ${migrationResultType || "error"}`}
             >
               {migrationResult}
             </div>
@@ -860,7 +860,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             >
               {migrating
                 ? t("settings.migrating")
-                : t("settings.migrateToHermes")}
+                : t("settings.migrateToClawd")}
             </button>
             <button
               className="btn btn-secondary "
@@ -971,7 +971,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                 onChange={async (e) => {
                   const val = e.target.checked;
                   setForceIpv4(val);
-                  await window.hermesAPI.setConfig(
+                  await window.clawdAPI.setConfig(
                     "network.force_ipv4",
                     val ? "true" : "false",
                     profile,
@@ -997,7 +997,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
             value={httpProxy}
             onChange={(e) => setHttpProxy(e.target.value)}
             onBlur={async () => {
-              await window.hermesAPI.setConfig(
+              await window.clawdAPI.setConfig(
                 "network.proxy",
                 httpProxy.trim(),
                 profile,
@@ -1033,7 +1033,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           <div className="settings-field-hint" style={{ marginBottom: 10 }}>
             {t("settings.dataHint")}
           </div>
-          <div className="settings-hermes-actions">
+          <div className="settings-clawd-actions">
             <button
               className="btn btn-secondary"
               onClick={handleBackup}
@@ -1053,7 +1053,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           </div>
           {backupResult && (
             <div
-              className={`settings-hermes-result ${backupResult.includes("created") || backupResult.includes("success") ? "success" : "error"}`}
+              className={`settings-clawd-result ${backupResult.includes("created") || backupResult.includes("success") ? "success" : "error"}`}
               style={{ marginTop: 8 }}
             >
               {backupResult}
@@ -1061,7 +1061,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
           )}
           {importResult && (
             <div
-              className={`settings-hermes-result ${importResult.includes("complete") ? "success" : "error"}`}
+              className={`settings-clawd-result ${importResult.includes("complete") ? "success" : "error"}`}
               style={{ marginTop: 8 }}
             >
               {importResult}
@@ -1096,7 +1096,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
                   className={`btn btn-sm ${logFile === f ? "btn-primary" : "btn-secondary"}`}
                   onClick={() => {
                     setLogFile(f);
-                    window.hermesAPI.readLogs(f, 300).then((r) => {
+                    window.clawdAPI.readLogs(f, 300).then((r) => {
                       setLogContent(r.content);
                       setLogPath(r.path);
                     });
@@ -1115,7 +1115,7 @@ function Settings({ profile }: { profile?: string }): React.JSX.Element {
               </div>
             )}
             <pre
-              className="settings-hermes-doctor"
+              className="settings-clawd-doctor"
               style={{
                 maxHeight: 300,
                 overflow: "auto",

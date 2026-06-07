@@ -23,9 +23,9 @@ vi.mock("electron", () => ({
 }));
 
 // We test the extracted pure functions by importing them.
-// Some functions depend on HERMES_HOME — we mock the module-level constants.
+// Some functions depend on CLAWD_HOME — we mock the module-level constants.
 
-const TEST_DIR = join(tmpdir(), `hermes-test-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-test-${Date.now()}`);
 
 beforeEach(() => {
   mkdirSync(TEST_DIR, { recursive: true });
@@ -236,7 +236,7 @@ describe("Memory provider discovery", () => {
 
 // ─── OAuth credential discovery ─────────────────
 //
-// The previous installer-side `hasHermesAuthCredential` accepted a bare
+// The previous installer-side `hasClawdAuthCredential` accepted a bare
 // `active_provider` and empty `providers: { name: {} }` entries as
 // configured. That looser check could mask onboarding failures where a
 // credential record existed but contained no token. The replacement,
@@ -248,12 +248,12 @@ describe("OAuth credential discovery", () => {
     home: string,
   ): Promise<typeof import("../src/main/config")> {
     vi.resetModules();
-    process.env.HERMES_HOME = home;
+    process.env.CLAWD_HOME = home;
     return await import("../src/main/config");
   }
 
   afterEach(() => {
-    delete process.env.HERMES_HOME;
+    delete process.env.CLAWD_HOME;
     vi.resetModules();
   });
 
@@ -314,7 +314,7 @@ describe("OAuth credential discovery", () => {
 
 describe("checkOpenClawExists", () => {
   it("ignores an empty .openclawd directory (self-created stub)", async () => {
-    // Mirrors the real-world case where hermes-desktop's own Claw3D settings
+    // Mirrors the real-world case where clawd-desktop's own Claw3D settings
     // helper has mkdirSync'd ~/.openclawd/claw3d/ without writing any files.
     mkdirSync(join(TEST_DIR, ".openclawd", "claw3d"), { recursive: true });
     const { checkOpenClawExists } = await import("../src/main/installer");

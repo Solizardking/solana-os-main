@@ -1,7 +1,7 @@
 /**
  * Push the session-continuity test harder: many turns + larger payloads
  * to force the gateway into context compression, which (per upstream
- * NousResearch/hermes-agent#16938) can rotate the agent's session_id.
+ * NousResearch/clawd-agent#16938) can rotate the agent's session_id.
  *
  * Snapshot state.db AFTER EACH TURN — if a new session row appears
  * mid-conversation, we've reproduced the proliferation seen in Marat's
@@ -21,7 +21,7 @@ const STATE_DB = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   "state.db",
 );
 

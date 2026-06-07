@@ -13,7 +13,7 @@ import {
  *   2. `useChatIPC.onChatDone` — at end of stream, we re-fetch the
  *      session and replace the in-memory transcript so reasoning /
  *      tool messages the gateway didn't stream (DeepSeek's
- *      `reasoning_content`, see NousResearch/hermes-agent#30449)
+ *      `reasoning_content`, see NousResearch/clawd-agent#30449)
  *      become visible without a window-focus dance (#352).
  *
  * Both rely on this conversion producing the right `ChatMessage`

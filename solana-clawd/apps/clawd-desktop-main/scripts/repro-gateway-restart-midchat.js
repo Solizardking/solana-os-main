@@ -19,14 +19,14 @@ const STATE_DB = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   "state.db",
 );
 const GATEWAY_PID_FILE = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   "gateway.pid",
 );
 

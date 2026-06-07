@@ -19,7 +19,7 @@ const { spawned, TEST_HOME, TEST_REPO, healthStatuses, apiRequests } =
       >,
       TEST_HOME: path.join(
         os.tmpdir(),
-        `hermes-cli-session-test-${Date.now()}`,
+        `clawd-cli-session-test-${Date.now()}`,
       ),
       TEST_REPO: os.tmpdir(),
       healthStatuses: [] as number[],
@@ -67,7 +67,7 @@ vi.mock("http", () => ({
               headers: Record<string, string>;
             };
             res.statusCode = 200;
-            res.headers = { "x-hermes-session-id": "desk-cold-gateway" };
+            res.headers = { "x-clawd-session-id": "desk-cold-gateway" };
             cb?.(res);
             queueMicrotask(() => {
               res.emit(
@@ -133,10 +133,10 @@ vi.mock("child_process", () => ({
 }));
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: process.execPath,
-  HERMES_REPO: TEST_REPO,
-  hermesCliArgs: (extra?: string[]) => ["/dev/null", ...(extra || [])],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: process.execPath,
+  CLAWD_REPO: TEST_REPO,
+  clawdCliArgs: (extra?: string[]) => ["/dev/null", ...(extra || [])],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 
@@ -181,7 +181,7 @@ import {
   startGateway,
   stopGateway,
   stopHealthPolling,
-} from "../src/main/hermes";
+} from "../src/main/clawd";
 
 describe("CLI fallback session id propagation", () => {
   beforeEach(() => {
@@ -252,7 +252,7 @@ describe("CLI fallback session id propagation", () => {
     ).resolves.toBe("desk-cold-gateway");
 
     expect(apiRequests).toHaveLength(1);
-    expect(apiRequests[0].headers["X-Hermes-Session-Id"]).toBe(cliSessionId);
+    expect(apiRequests[0].headers["X-Clawd-Session-Id"]).toBe(cliSessionId);
     expect(JSON.parse(apiRequests[0].body)).toMatchObject({
       session_id: cliSessionId,
       messages: [{ role: "user", content: "what time is it?" }],

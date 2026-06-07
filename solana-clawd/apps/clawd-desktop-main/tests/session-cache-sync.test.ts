@@ -12,16 +12,16 @@ const { TEST_HOME } = vi.hoisted(() => {
   return {
     TEST_HOME: path.join(
       os.tmpdir(),
-      `hermes-session-cache-test-${Date.now()}`,
+      `clawd-session-cache-test-${Date.now()}`,
     ),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_SCRIPT: "/dev/null",
-  hermesCliArgs: (args: string[] = []) => ["/dev/null", ...args],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_SCRIPT: "/dev/null",
+  clawdCliArgs: (args: string[] = []) => ["/dev/null", ...args],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 

@@ -18,15 +18,15 @@ const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
   return {
-    TEST_HOME: path.join(os.tmpdir(), `hermes-toolset-test-${Date.now()}`),
+    TEST_HOME: path.join(os.tmpdir(), `clawd-toolset-test-${Date.now()}`),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_REPO: "/dev/null",
-  hermesCliArgs: (args: string[] = []) => ["/dev/null", ...args],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_REPO: "/dev/null",
+  clawdCliArgs: (args: string[] = []) => ["/dev/null", ...args],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 

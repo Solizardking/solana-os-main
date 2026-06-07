@@ -23,7 +23,7 @@ export interface SseCallbacks {
 const toolProgressRe = /^`([^\s`]+)\s+([^`]+)`$/;
 
 /**
- * Process a custom SSE event (e.g. hermes.tool.progress).
+ * Process a custom SSE event (e.g. clawd.tool.progress).
  * Returns true if the event was handled.
  */
 export function processCustomEvent(
@@ -31,7 +31,7 @@ export function processCustomEvent(
   data: string,
   cb: Pick<SseCallbacks, "onToolProgress">,
 ): boolean {
-  if (eventType === "hermes.tool.progress" && cb.onToolProgress) {
+  if (eventType === "clawd.tool.progress" && cb.onToolProgress) {
     try {
       const payload = JSON.parse(data);
       const label = payload.label || payload.tool || "";

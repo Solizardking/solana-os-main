@@ -274,19 +274,19 @@ function Sessions({
   // Quiet re-sync from state.db — refreshes the list WITHOUT flipping the
   // loading state, so it can run on a timer or on focus with no spinner flash.
   const refreshSessions = useCallback(async (): Promise<void> => {
-    const synced = await window.hermesAPI.syncSessionCache();
+    const synced = await window.clawdAPI.syncSessionCache();
     setSessions(synced.slice(0, 50));
   }, []);
 
   const loadSessions = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
-      const cached = await window.hermesAPI.listCachedSessions(50);
+      const cached = await window.clawdAPI.listCachedSessions(50);
       if (cached.length > 0) {
         setSessions(cached);
       }
 
-      const synced = await window.hermesAPI.syncSessionCache();
+      const synced = await window.clawdAPI.syncSessionCache();
       setSessions(synced.slice(0, 50));
     } catch (error) {
       console.error("Failed to load sessions", error);
@@ -323,7 +323,7 @@ function Sessions({
         prev.filter((r) => r.sessionId !== sessionId),
       );
       try {
-        await window.hermesAPI.deleteSession(sessionId);
+        await window.clawdAPI.deleteSession(sessionId);
       } catch (err) {
         console.error("Failed to delete session", sessionId, err);
       } finally {
@@ -376,7 +376,7 @@ function Sessions({
       setSessions((prev) => prev.filter((s) => !idSet.has(s.id)));
       setSearchResults((prev) => prev.filter((r) => !idSet.has(r.sessionId)));
       try {
-        await window.hermesAPI.deleteSessions(ids);
+        await window.clawdAPI.deleteSessions(ids);
       } catch (err) {
         console.error("Failed to delete selected sessions", ids, err);
       } finally {
@@ -457,7 +457,7 @@ function Sessions({
     setIsSearching(true);
     searchTimer.current = setTimeout(async () => {
       try {
-        const results = await window.hermesAPI.searchSessions(query);
+        const results = await window.clawdAPI.searchSessions(query);
         if (searchRequestId.current !== requestId) return;
         setSearchResults(results);
       } finally {

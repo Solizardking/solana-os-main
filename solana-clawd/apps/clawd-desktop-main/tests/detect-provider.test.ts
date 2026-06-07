@@ -38,7 +38,7 @@ describe("detectProviderFromUrl", () => {
     expect(detectProviderFromUrl("http://192.168.1.50:11434")).toBe("custom");
     expect(detectProviderFromUrl("http://10.0.0.5:8000")).toBe("custom");
     expect(detectProviderFromUrl("http://172.20.0.3:1234")).toBe("custom");
-    expect(detectProviderFromUrl("http://hermes.local:11434")).toBe("custom");
+    expect(detectProviderFromUrl("http://clawd.local:11434")).toBe("custom");
   });
 
   it("identifies well-known local-LLM ports on any host as custom", () => {

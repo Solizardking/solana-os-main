@@ -19,7 +19,7 @@ async function loadDiscovery(): Promise<
   typeof import("../src/main/model-discovery")
 > {
   vi.resetModules();
-  vi.stubEnv("HERMES_HOME", testHome);
+  vi.stubEnv("CLAWD_HOME", testHome);
   const mod = await import("../src/main/model-discovery");
   mod._clearCache();
   return mod;
@@ -41,7 +41,7 @@ function close(): Promise<void> {
 
 describe("model-discovery", () => {
   beforeEach(() => {
-    testHome = mkdtempSync(join(tmpdir(), "hermes-discovery-"));
+    testHome = mkdtempSync(join(tmpdir(), "clawd-discovery-"));
   });
 
   afterEach(async () => {
@@ -104,7 +104,7 @@ describe("model-discovery", () => {
     const { discoverProviderModels } = await loadDiscovery();
     // openai-codex / qwen-oauth / nous are no longer here — OAuth
     // providers (including `nous` as of #367) are discovered via
-    // hermes-agent's provider_model_ids instead.
+    // clawd-agent's provider_model_ids instead.
     for (const provider of ["google", "xai"]) {
       const result = await discoverProviderModels(
         provider,

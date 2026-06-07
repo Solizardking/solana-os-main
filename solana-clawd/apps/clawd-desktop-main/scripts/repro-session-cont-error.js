@@ -7,7 +7,7 @@
  * reads `api_server.token` (a nested config key). The gateway never picks
  * that up. So if the user's key is only in `api_server.token` (or any
  * source not bridged into the gateway's env), the desktop sends
- * `X-Hermes-Session-Id` (because hasAuth=true) and the gateway returns
+ * `X-Clawd-Session-Id` (because hasAuth=true) and the gateway returns
  * 403 with the exact "Configure API_SERVER_KEY" message.
  *
  * Setup BEFORE running this script:

@@ -16,7 +16,7 @@ import { tmpdir } from "os";
  * The upstream engine resolver reads `access_token` (not `key`) and
  * needs `auth_type` to distinguish OAuth vs API-key entries inside
  * the same pool. The malformed entry meant the gateway couldn't find
- * the credential — "Hermes is not logged into Nous Portal".
+ * the credential — "Clawd is not logged into Nous Portal".
  *
  * The fix: a main-process helper `addCredentialPoolEntry()` that
  * constructs the full canonical shape.
@@ -24,14 +24,14 @@ import { tmpdir } from "os";
 
 const TEST_DIR = join(
   tmpdir(),
-  `hermes-test-cred-pool-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  `clawd-test-cred-pool-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
 );
 
 async function freshConfig(
   home: string,
 ): Promise<typeof import("../src/main/config")> {
   vi.resetModules();
-  process.env.HERMES_HOME = home;
+  process.env.CLAWD_HOME = home;
   return await import("../src/main/config");
 }
 
@@ -40,7 +40,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   rmSync(TEST_DIR, { recursive: true, force: true });
 });

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { classifyInstallTarget } from "../src/main/installer";
 
 // Pre-install inspection (issue #272): classify what the installer will do
-// to the target `hermes-agent` directory so the renderer can warn first.
+// to the target `clawd-agent` directory so the renderer can warn first.
 describe("classifyInstallTarget", () => {
   it("reports a fresh install when nothing is at the target", () => {
     expect(classifyInstallTarget(false, false)).toBe("fresh");

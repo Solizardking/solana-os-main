@@ -9,7 +9,7 @@ const { TEST_HOME, DB_PATH } = vi.hoisted(() => {
   const os = require("os");
   const home = path.join(
     os.tmpdir(),
-    `hermes-delete-session-test-${Date.now()}`,
+    `clawd-delete-session-test-${Date.now()}`,
   );
   return {
     TEST_HOME: home,
@@ -18,7 +18,7 @@ const { TEST_HOME, DB_PATH } = vi.hoisted(() => {
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
+  CLAWD_HOME: TEST_HOME,
 }));
 
 // Simulate better-sqlite3 faithfully: readonly connections reject writes
@@ -426,7 +426,7 @@ describe("deleteSession", () => {
   });
 
   it("returns early when the database file does not exist", () => {
-    // No DB seeded — HERMES_HOME/state.db doesn't exist
+    // No DB seeded — CLAWD_HOME/state.db doesn't exist
     expect(() => deleteSession("any-session")).not.toThrow();
   });
 });

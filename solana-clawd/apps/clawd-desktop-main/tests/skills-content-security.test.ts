@@ -7,18 +7,18 @@ const { TEST_HOME, TEST_REPO } = vi.hoisted(() => {
   const path = require("path");
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
-  const home = path.join(os.tmpdir(), `hermes-skill-content-${Date.now()}`);
+  const home = path.join(os.tmpdir(), `clawd-skill-content-${Date.now()}`);
   return {
     TEST_HOME: home,
-    TEST_REPO: path.join(home, "hermes-agent"),
+    TEST_REPO: path.join(home, "clawd-agent"),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_REPO: TEST_REPO,
-  HERMES_PYTHON: "python",
-  hermesCliArgs: (args: string[] = []) => args,
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_REPO: TEST_REPO,
+  CLAWD_PYTHON: "python",
+  clawdCliArgs: (args: string[] = []) => args,
   getEnhancedPath: () => "",
 }));
 
@@ -49,9 +49,9 @@ describe("getSkillContent path validation", () => {
     expect(getSkillContent(skillPath)).toBe("profile skill");
   });
 
-  it("allows bundled skills from the hermes-agent repo", () => {
+  it("allows bundled skills from the clawd-agent repo", () => {
     const skillPath = writeSkill(
-      join(TEST_HOME, "hermes-agent", "skills", "writing", "brief"),
+      join(TEST_HOME, "clawd-agent", "skills", "writing", "brief"),
       "bundled skill",
     );
 
@@ -76,7 +76,7 @@ describe("getSkillContent path validation", () => {
     expect(getSkillContent(skillPath)).toBe("");
   });
 
-  it("blocks arbitrary absolute paths outside Hermes roots", () => {
+  it("blocks arbitrary absolute paths outside Clawd roots", () => {
     const skillPath = writeSkill(
       join(TEST_HOME, "..", `outside-${Date.now()}`, "skill"),
       "not allowed",

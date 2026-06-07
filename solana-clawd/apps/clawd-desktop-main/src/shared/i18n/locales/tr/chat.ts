@@ -99,7 +99,7 @@ export default {
     model: "Mevcut modeli göster veya değiştir",
     memory: "Ajan belleğini göster",
     persona: "Mevcut persona'yı göster",
-    version: "Hermes sürümünü göster",
+    version: "Clawd sürümünü göster",
   },
   queued: "{{count}} mesaj sırada — ajan işini bitirince gönderilecek",
   worktree: {

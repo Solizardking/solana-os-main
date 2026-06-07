@@ -1,7 +1,7 @@
 export default {
   title: "Profile",
   subtitle:
-    "Każdy profil to odizolowany obszar roboczy Hermes z własną konfiguracją, pamięcią i umiejętnościami",
+    "Każdy profil to odizolowany obszar roboczy Clawd z własną konfiguracją, pamięcią i umiejętnościami",
   newAgent: "Nowy agent",
   namePlaceholder: "Nazwa agenta (np. coder)",
   cloneConfig: "Sklonuj konfigurację i klucze API z default",

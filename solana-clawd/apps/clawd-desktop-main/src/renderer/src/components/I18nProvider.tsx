@@ -11,7 +11,7 @@ import { I18nContext, type I18nContextValue } from "./I18nContext";
 
 void sharedI18n.use(initReactI18next);
 
-const STORAGE_KEY = "hermes-locale";
+const STORAGE_KEY = "clawd-locale";
 
 function readStoredLocale(): AppLocale {
   try {
@@ -35,7 +35,7 @@ export function I18nProvider({
 }): React.JSX.Element {
   const [locale, setLocaleState] = useState<AppLocale>(initialLocale);
   const [mainLocaleLoaded, setMainLocaleLoaded] = useState(
-    () => !window.hermesAPI?.getLocale,
+    () => !window.clawdAPI?.getLocale,
   );
   const userSelectedLocale = useRef(false);
 
@@ -46,7 +46,7 @@ export function I18nProvider({
 
   useEffect(() => {
     let cancelled = false;
-    const getMainLocale = window.hermesAPI?.getLocale;
+    const getMainLocale = window.clawdAPI?.getLocale;
 
     if (!getMainLocale) {
       return;
@@ -77,7 +77,7 @@ export function I18nProvider({
     if (sharedI18n.language !== locale) {
       setSharedLocale(locale);
     }
-    void window.hermesAPI?.setLocale?.(locale).catch(() => {
+    void window.clawdAPI?.setLocale?.(locale).catch(() => {
       /* ignore */
     });
     try {

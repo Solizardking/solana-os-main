@@ -22,7 +22,7 @@ const ENV_FILE = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   ".env",
 );
 

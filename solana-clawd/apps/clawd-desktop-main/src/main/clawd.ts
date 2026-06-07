@@ -14,10 +14,10 @@ import { homedir } from "os";
 import http from "http";
 import https from "https";
 import {
-  HERMES_HOME,
-  HERMES_REPO,
-  HERMES_PYTHON,
-  hermesCliArgs,
+  CLAWD_HOME,
+  CLAWD_REPO,
+  CLAWD_PYTHON,
+  clawdCliArgs,
   getEnhancedPath,
 } from "./installer";
 import {
@@ -469,7 +469,7 @@ function sendMessageViaApi(
   if (ctxSystem) messages.unshift(ctxSystem);
 
   const body = JSON.stringify({
-    model: mc.model || "hermes-agent",
+    model: mc.model || "clawd-agent",
     messages,
     stream: true,
     ...(_resumeSessionId ? { session_id: _resumeSessionId } : {}),
@@ -500,7 +500,7 @@ function sendMessageViaApi(
   if (!isRemoteMode()) {
     const apiServerKey = getApiServerKey(profile);
     console.log(
-      "[hermes] apiServerKey=",
+      "[clawd] apiServerKey=",
       apiServerKey ? apiServerKey.slice(0, 12) + "…" : "(none)",
     );
     if (apiServerKey) {
@@ -508,7 +508,7 @@ function sendMessageViaApi(
     }
   }
 
-  // Session id: always send via `X-Hermes-Session-Id` so the gateway
+  // Session id: always send via `X-Clawd-Session-Id` so the gateway
   // doesn't fall back to its `_derive_chat_session_id` fingerprint —
   // sha256(system_prompt + first_user_message)[:16] — which collides
   // across every chat whose first user message is the same (e.g. "Hi").
@@ -516,7 +516,7 @@ function sendMessageViaApi(
   // conversations and, post-#352, surfaces as old-session content
   // bleeding into new chats when our end-of-stream merge reads
   // getSessionMessages(). Filed upstream as
-  // NousResearch/hermes-agent#7484 (security framing — same root cause).
+  // NousResearch/clawd-agent#7484 (security framing — same root cause).
   //
   // Format: `desk-<ms>-<uuidv4>`. UUIDv4 alone is collision-safe
   // probabilistically (~10⁻³⁶ for any pair); the timestamp prefix makes
@@ -525,7 +525,7 @@ function sendMessageViaApi(
   // from the gateway's fingerprint-derived `api-<hash>` ids in
   // state.db / logs.
   //
-  // Gate on auth: the gateway rejects `X-Hermes-Session-Id` with 403
+  // Gate on auth: the gateway rejects `X-Clawd-Session-Id` with 403
   // when API_SERVER_KEY isn't configured (its history-load is gated
   // behind auth). The desktop auto-generates API_SERVER_KEY at install
   // and remote mode supplies its own bearer, so in practice this
@@ -536,7 +536,7 @@ function sendMessageViaApi(
   let sessionId =
     _resumeSessionId || (hasAuth ? `desk-${Date.now()}-${randomUUID()}` : "");
   if (sessionId) {
-    headers["X-Hermes-Session-Id"] = sessionId;
+    headers["X-Clawd-Session-Id"] = sessionId;
   }
   let hasContent = false;
   let finished = false; // guard against double callbacks
@@ -548,7 +548,7 @@ function sendMessageViaApi(
     if (finished) return;
     finished = true;
     console.log(
-      "[hermes] finish called:",
+      "[clawd] finish called:",
       error ? `error=${error}` : "done",
       "sessionId=",
       sessionId,
@@ -563,7 +563,7 @@ function sendMessageViaApi(
   function probeRealError(): void {
     // When streaming returns empty, make a non-streaming request to surface the real error
     const probeBody = JSON.stringify({
-      model: mc.model || "hermes-agent",
+      model: mc.model || "clawd-agent",
       messages: [{ role: "user", content: userContent }],
       stream: false,
     });
@@ -615,7 +615,7 @@ function sendMessageViaApi(
 
   /** Handle a custom SSE event (non-data lines with `event:` prefix). */
   function processCustomEvent(eventType: string, data: string): void {
-    if (eventType === "hermes.tool.progress" && cb.onToolProgress) {
+    if (eventType === "clawd.tool.progress" && cb.onToolProgress) {
       try {
         const payload = JSON.parse(data);
         const label = payload.label || payload.tool || "";
@@ -708,7 +708,7 @@ function sendMessageViaApi(
       timeout: 120000,
     },
     (res) => {
-      const sid = res.headers["x-hermes-session-id"];
+      const sid = res.headers["x-clawd-session-id"];
       if (sid && typeof sid === "string") sessionId = sid;
 
       if (res.statusCode !== 200) {
@@ -744,7 +744,7 @@ function sendMessageViaApi(
         }
         if (!dataLine) return false;
         if (eventType) {
-          // Custom event (e.g. hermes.tool.progress) — never signals [DONE]
+          // Custom event (e.g. clawd.tool.progress) — never signals [DONE]
           processCustomEvent(eventType, dataLine);
           return false;
         }
@@ -789,7 +789,7 @@ function sendMessageViaApi(
   req.on("timeout", () => {
     req.destroy();
     finish(
-      "API request timed out. Check the SSH tunnel and remote Hermes gateway.",
+      "API request timed out. Check the SSH tunnel and remote Clawd gateway.",
     );
   });
 
@@ -807,7 +807,7 @@ function sendMessageViaApi(
 //  CLI fallback (slow path — spawns process)
 // ────────────────────────────────────────────────────
 
-const NOISE_PATTERNS = [/^[╭╰│╮╯─┌┐└┘┤├┬┴┼]/, /⚕\s*Hermes/];
+const NOISE_PATTERNS = [/^[╭╰│╮╯─┌┐└┘┤├┬┴┼]/, /⚕\s*Clawd/];
 
 function sendMessageViaCli(
   message: string,
@@ -836,7 +836,7 @@ function sendMessageViaCli(
   const mc = getModelConfig(profile);
   const profileEnv = readEnv(profile);
 
-  const args = hermesCliArgs();
+  const args = clawdCliArgs();
   if (profile && profile !== "default") {
     args.push("-p", profile);
   }
@@ -854,7 +854,7 @@ function sendMessageViaCli(
     ...(process.env as Record<string, string>),
     PATH: getEnhancedPath(),
     HOME: homedir(),
-    HERMES_HOME: HERMES_HOME,
+    CLAWD_HOME: CLAWD_HOME,
     PYTHONUNBUFFERED: "1",
   };
 
@@ -913,10 +913,10 @@ function sendMessageViaCli(
     }
     const isAnthropicProtocol = modelApiMode === "anthropic_messages";
     if (isAnthropicProtocol) {
-      env.HERMES_INFERENCE_PROVIDER = "anthropic";
+      env.CLAWD_INFERENCE_PROVIDER = "anthropic";
       env.ANTHROPIC_BASE_URL = mc.baseUrl.replace(/\/+$/, "");
     } else {
-      env.HERMES_INFERENCE_PROVIDER = "custom";
+      env.CLAWD_INFERENCE_PROVIDER = "custom";
       env.OPENAI_BASE_URL = mc.baseUrl.replace(/\/+$/, "");
     }
 
@@ -967,8 +967,8 @@ function sendMessageViaCli(
     delete env.OPENROUTER_BASE_URL;
   }
 
-  const proc = spawn(HERMES_PYTHON, args, {
-    cwd: HERMES_REPO,
+  const proc = spawn(CLAWD_PYTHON, args, {
+    cwd: CLAWD_REPO,
     env,
     stdio: ["ignore", "pipe", "pipe"],
     ...HIDDEN_SUBPROCESS_OPTIONS,
@@ -1039,8 +1039,8 @@ function sendMessageViaCli(
       const detail = stderrBuffer.trim();
       cb.onError(
         detail
-          ? `Hermes exited with code ${code}: ${detail}`
-          : `Hermes exited with code ${code}. Check your model configuration and API key.`,
+          ? `Clawd exited with code ${code}: ${detail}`
+          : `Clawd exited with code ${code}. Check your model configuration and API key.`,
       );
     }
   });
@@ -1160,7 +1160,7 @@ export function stopHealthPolling(): void {
 // default profile, the profile name otherwise). Tracking them in maps —
 // rather than a single global — lets several profiles' gateways run at once
 // (e.g. each keeping its own Telegram bot online), which is the documented
-// hermes model: one gateway per profile, bound to that profile's own port.
+// clawd model: one gateway per profile, bound to that profile's own port.
 const gatewayProcesses = new Map<string, ChildProcess>();
 const appStartedProfiles = new Set<string>();
 
@@ -1180,8 +1180,8 @@ export function startGateway(profile?: string): boolean {
   // Defensive: the local gateway is never the right thing to spawn in
   // remote/SSH mode — the user is pointing at an off-machine server.
   // Callers should already gate, but several IPC handlers historically
-  // forgot to (issue #266), and reaching `spawn(HERMES_PYTHON, …)` when
-  // there's no local hermes-agent install produces an uncaught ENOENT
+  // forgot to (issue #266), and reaching `spawn(CLAWD_PYTHON, …)` when
+  // there's no local clawd-agent install produces an uncaught ENOENT
   // that pops a generic error dialog.  Refuse cleanly here.
   if (isRemoteMode()) {
     console.warn(
@@ -1195,17 +1195,17 @@ export function startGateway(profile?: string): boolean {
   // Pre-flight: verify the Python interpreter exists before attempting to
   // spawn. Without this check, spawn() fails with ENOENT and the error is
   // completely silent (stdio:"ignore", no error handler).
-  if (!existsSync(HERMES_PYTHON)) {
+  if (!existsSync(CLAWD_PYTHON)) {
     console.error(
-      `[gateway] Cannot start: Python interpreter not found at ${HERMES_PYTHON}. ` +
-        "Is hermes-agent installed?",
+      `[gateway] Cannot start: Python interpreter not found at ${CLAWD_PYTHON}. ` +
+        "Is clawd-agent installed?",
     );
     return false;
   }
-  if (!existsSync(HERMES_REPO)) {
+  if (!existsSync(CLAWD_REPO)) {
     console.error(
-      `[gateway] Cannot start: hermes-agent repo not found at ${HERMES_REPO}. ` +
-        "Is hermes-agent installed?",
+      `[gateway] Cannot start: clawd-agent repo not found at ${CLAWD_REPO}. ` +
+        "Is clawd-agent installed?",
     );
     return false;
   }
@@ -1223,7 +1223,7 @@ export function startGateway(profile?: string): boolean {
     ...(process.env as Record<string, string>),
     PATH: getEnhancedPath(),
     HOME: homedir(),
-    HERMES_HOME: HERMES_HOME,
+    CLAWD_HOME: CLAWD_HOME,
     API_SERVER_ENABLED: "true", // Ensure API server starts with gateway
     // Bind to this profile's port. config.yaml's api_server.port wins when
     // present (getProfilePort keeps it collision-free); this env value covers
@@ -1253,7 +1253,7 @@ export function startGateway(profile?: string): boolean {
   // become an env var, and the gateway never reads it directly.
   //
   // The result is a divergence: the desktop happily sends
-  // `Authorization: Bearer <key>` + `X-Hermes-Session-Id` for users
+  // `Authorization: Bearer <key>` + `X-Clawd-Session-Id` for users
   // whose key lives in `api_server.token`, while the gateway's
   // `self._api_key` is empty and returns 403 with
   //   "Session continuation requires API key authentication.
@@ -1299,11 +1299,11 @@ export function startGateway(profile?: string): boolean {
 
   // Target the specific profile via `--profile <name>` (placed before the
   // subcommand, as the CLI requires). The flag makes the CLI repoint
-  // HERMES_HOME at the profile's dir internally; the shared repo/venv stay
+  // CLAWD_HOME at the profile's dir internally; the shared repo/venv stay
   // put. The default profile takes no flag.
   const cliArgs = resolved ? ["--profile", resolved, "gateway"] : ["gateway"];
-  const proc = spawn(HERMES_PYTHON, hermesCliArgs(cliArgs), {
-    cwd: HERMES_REPO,
+  const proc = spawn(CLAWD_PYTHON, clawdCliArgs(cliArgs), {
+    cwd: CLAWD_REPO,
     env: gatewayEnv,
     stdio: ["ignore", "ignore", stderrFd >= 0 ? stderrFd : "ignore"],
     detached: true,
@@ -1373,9 +1373,9 @@ function parsePidFromFile(pidFile: string): number | null {
 }
 
 /**
- * The gateway.pid path for a profile. The hermes CLI writes it into the
- * profile's home directory (~/.hermes/gateway.pid for default,
- * ~/.hermes/profiles/<name>/gateway.pid for a named profile), so each
+ * The gateway.pid path for a profile. The clawd CLI writes it into the
+ * profile's home directory (~/.clawd/gateway.pid for default,
+ * ~/.clawd/profiles/<name>/gateway.pid for a named profile), so each
  * profile's gateway has its own PID file — that's what lets them coexist.
  */
 function gatewayPidPath(profile?: string): string {

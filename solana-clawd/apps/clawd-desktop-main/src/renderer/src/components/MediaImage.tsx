@@ -16,7 +16,7 @@ function useMediaContextMenu(
   const { t } = useI18n();
   return (event) => {
     event.preventDefault();
-    window.hermesAPI.showMediaMenu(token.src, token.name, {
+    window.clawdAPI.showMediaMenu(token.src, token.name, {
       open: t("chat.media.open"),
       saveAs: t("chat.media.saveAs"),
     });
@@ -46,7 +46,7 @@ export function MediaImage({
   useEffect(() => {
     if (isDirect) return;
     let cancelled = false;
-    window.hermesAPI
+    window.clawdAPI
       .readMediaFile(token.src)
       .then((dataUrl) => {
         if (cancelled) return;
@@ -102,7 +102,7 @@ export function MediaImage({
             <button
               className="chat-image-preview-btn"
               onClick={() =>
-                window.hermesAPI.saveMediaFile(token.src, token.name)
+                window.clawdAPI.saveMediaFile(token.src, token.name)
               }
             >
               <Download size={14} />
@@ -132,7 +132,7 @@ export function DownloadChip({
   return (
     <button
       className="chat-media-file"
-      onClick={() => window.hermesAPI.saveMediaFile(token.src, token.name)}
+      onClick={() => window.clawdAPI.saveMediaFile(token.src, token.name)}
       onContextMenu={onContextMenu}
     >
       <Download size={14} />
@@ -166,7 +166,7 @@ export function MediaSegmentView({
     // URLs are trusted as-is.
     if (source !== "bare-path" || token.isUrl) return;
     let cancelled = false;
-    window.hermesAPI
+    window.clawdAPI
       .mediaFileExists(token.src)
       .then((ok) => {
         if (!cancelled) setVerified(ok);

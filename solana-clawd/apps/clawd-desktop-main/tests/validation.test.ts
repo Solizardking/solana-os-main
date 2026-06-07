@@ -14,13 +14,13 @@ import { tmpdir } from "os";
  * is a known provider missing its expected env var.
  */
 
-const TEST_DIR = join(tmpdir(), `hermes-test-validation-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-test-validation-${Date.now()}`);
 
 async function freshValidation(
   home: string,
 ): Promise<typeof import("../src/main/validation")> {
   vi.resetModules();
-  process.env.HERMES_HOME = home;
+  process.env.CLAWD_HOME = home;
   return await import("../src/main/validation");
 }
 
@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   rmSync(TEST_DIR, { recursive: true, force: true });
 });
@@ -200,7 +200,7 @@ describe("validateChatReadiness", () => {
 
   it("blocks for nous provider when neither NOUS_API_KEY nor auth.json evidence is present (#367)", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     // No .env, no auth.json
     const { validateChatReadiness } = await freshValidation(TEST_DIR);
@@ -212,7 +212,7 @@ describe("validateChatReadiness", () => {
 
   it("allows nous when NOUS_API_KEY is set in .env", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     writeEnv("NOUS_API_KEY=sk-nous-test-12345\n");
     const { validateChatReadiness } = await freshValidation(TEST_DIR);
@@ -221,7 +221,7 @@ describe("validateChatReadiness", () => {
 
   it("allows nous when auth.json has a properly-shaped OAuth entry", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     // No NOUS_API_KEY in .env — OAuth-only setup
     writeFileSync(
@@ -247,7 +247,7 @@ describe("validateChatReadiness", () => {
 
   it("allows nous when credential_pool.nous has a usable entry", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     writeFileSync(
       join(TEST_DIR, "auth.json"),
@@ -279,7 +279,7 @@ describe("validateChatReadiness", () => {
     // The exact malformed shape the credential-pool UI was writing —
     // `key` field instead of `access_token`. Engine can't read it.
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     writeFileSync(
       join(TEST_DIR, "auth.json"),
@@ -302,7 +302,7 @@ describe("validateChatReadiness", () => {
 
   it("nous-api variant is also recognized", async () => {
     writeConfig(
-      ["model:", "  provider: nous-api", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous-api", "  default: clawd-4", ""].join("\n"),
     );
     // No creds anywhere
     const { validateChatReadiness } = await freshValidation(TEST_DIR);

@@ -71,7 +71,7 @@ export default function Discover({
   // so users land on their local skills.
   const [skillsView, setSkillsView] = useState<SkillsView>("installed");
   const [catalog, setCatalog] = useState<RegistryCatalog>(EMPTY);
-  // Skills shipped with the hermes-agent repo, shown in the Community view as
+  // Skills shipped with the clawd-agent repo, shown in the Community view as
   // a fallback alongside (eventually) registry skills.
   const [bundledSkills, setBundledSkills] = useState<RegistryItem[]>([]);
   const [localSkills, setLocalSkills] = useState<LocalSkill[]>([]);
@@ -100,9 +100,9 @@ export default function Discover({
   const loadInstalled = useCallback(async () => {
     try {
       const [reg, profiles, skills] = await Promise.all([
-        window.hermesAPI.listInstalledRegistry(profile),
-        window.hermesAPI.listProfiles(),
-        window.hermesAPI.listInstalledSkills(profile),
+        window.clawdAPI.listInstalledRegistry(profile),
+        window.clawdAPI.listProfiles(),
+        window.clawdAPI.listInstalledSkills(profile),
       ]);
       setLocalSkills(skills);
       setInstalled({
@@ -122,8 +122,8 @@ export default function Discover({
       setError(null);
       try {
         const [data, bundled] = await Promise.all([
-          window.hermesAPI.fetchRegistry(force),
-          window.hermesAPI.listBundledSkills(),
+          window.clawdAPI.fetchRegistry(force),
+          window.clawdAPI.listBundledSkills(),
         ]);
         if (data.error) setError(data.error);
         setCatalog({
@@ -133,7 +133,7 @@ export default function Discover({
           workflows: data.workflows ?? [],
         });
         // `source: name` so the existing install path runs
-        // `hermes skills install <name>`.
+        // `clawd skills install <name>`.
         setBundledSkills(
           bundled.map((b) => ({
             id: b.name,
@@ -263,7 +263,7 @@ export default function Discover({
       return next;
     });
     try {
-      const res = await window.hermesAPI.installRegistryItem(
+      const res = await window.clawdAPI.installRegistryItem(
         kind,
         item,
         profile,
@@ -289,7 +289,7 @@ export default function Discover({
     setDetailContent("");
     setDetailLoading(true);
     try {
-      const content = await window.hermesAPI.getSkillContent(skill.path);
+      const content = await window.clawdAPI.getSkillContent(skill.path);
       setDetailContent(content);
     } catch {
       setDetailContent("");
@@ -306,7 +306,7 @@ export default function Discover({
     setDetailData(null);
     setDetailLoading(true);
     try {
-      const detail = await window.hermesAPI.fetchRegistryDetail(kind, item);
+      const detail = await window.clawdAPI.fetchRegistryDetail(kind, item);
       setDetailData(detail);
     } catch {
       setDetailData({ description: item.description });
@@ -324,7 +324,7 @@ export default function Discover({
       return next;
     });
     try {
-      const res = await window.hermesAPI.uninstallSkill(name, profile);
+      const res = await window.clawdAPI.uninstallSkill(name, profile);
       if (res.success) {
         setActions((a) => {
           const next = { ...a };

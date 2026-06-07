@@ -98,7 +98,7 @@ export default {
     model: "Show or switch the current model",
     memory: "Show agent memory",
     persona: "Show current persona",
-    version: "Show Hermes version",
+    version: "Show Clawd version",
   },
   queued: "{{count}} message(s) queued — will send when the agent finishes",
   worktree: {

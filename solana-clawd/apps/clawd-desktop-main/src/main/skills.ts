@@ -9,10 +9,10 @@ import {
 import { isAbsolute, join, relative, resolve } from "path";
 import { homedir } from "os";
 import {
-  HERMES_HOME,
-  HERMES_PYTHON,
-  HERMES_REPO,
-  hermesCliArgs,
+  CLAWD_HOME,
+  CLAWD_PYTHON,
+  CLAWD_REPO,
+  clawdCliArgs,
   getEnhancedPath,
 } from "./installer";
 import { isValidNamedProfileName, profileHome } from "./utils";
@@ -137,7 +137,7 @@ function pathIsInside(parent: string, child: string): boolean {
 }
 
 function isProfileSkillFile(skillFile: string): boolean {
-  const profilesRoot = realOrResolved(join(HERMES_HOME, "profiles"));
+  const profilesRoot = realOrResolved(join(CLAWD_HOME, "profiles"));
   if (!pathIsInside(profilesRoot, skillFile)) return false;
 
   const parts = relative(profilesRoot, skillFile).split(/[\\/]+/);
@@ -150,8 +150,8 @@ function isProfileSkillFile(skillFile: string): boolean {
 
 function isAllowedSkillFile(skillFile: string): boolean {
   const allowedRoots = [
-    join(HERMES_HOME, "skills"),
-    join(HERMES_REPO, "skills"),
+    join(CLAWD_HOME, "skills"),
+    join(CLAWD_REPO, "skills"),
   ].map(realOrResolved);
 
   return (
@@ -179,20 +179,20 @@ export function getSkillContent(skillPath: string): string {
 }
 
 /**
- * Search the skill registry via the hermes CLI.
+ * Search the skill registry via the clawd CLI.
  */
 export function searchSkills(query: string): SkillSearchResult[] {
   try {
     const output = execFileSync(
-      HERMES_PYTHON,
-      hermesCliArgs(["skills", "browse", "--query", query, "--json"]),
+      CLAWD_PYTHON,
+      clawdCliArgs(["skills", "browse", "--query", query, "--json"]),
       {
-        cwd: HERMES_REPO,
+        cwd: CLAWD_REPO,
         env: {
           ...process.env,
           PATH: getEnhancedPath(),
           HOME: homedir(),
-          HERMES_HOME,
+          CLAWD_HOME,
         },
         stdio: ["ignore", "pipe", "pipe"],
         timeout: 30000,
@@ -227,10 +227,10 @@ export function searchSkills(query: string): SkillSearchResult[] {
 }
 
 /**
- * List bundled skills from the hermes-agent repo.
+ * List bundled skills from the clawd-agent repo.
  */
 export function listBundledSkills(): SkillSearchResult[] {
-  const bundledDir = join(HERMES_REPO, "skills");
+  const bundledDir = join(CLAWD_REPO, "skills");
   if (!existsSync(bundledDir)) return [];
 
   const skills: SkillSearchResult[] = [];
@@ -283,11 +283,11 @@ export function listBundledSkills(): SkillSearchResult[] {
 }
 
 /**
- * Failure markers seen in `hermes skills install/uninstall` stdout when the
+ * Failure markers seen in `clawd skills install/uninstall` stdout when the
  * CLI exits 0 despite the operation having failed. Observed live against
- * Hermes Agent v0.14.0 (2026.5.16) on 2026-05-22:
+ * Clawd Agent v0.14.0 (2026.5.16) on 2026-05-22:
  *
- *   $ hermes skills install concept-diagram --yes
+ *   $ clawd skills install concept-diagram --yes
  *   Resolving 'concept-diagram'...
  *   No exact match for 'concept-diagram'. Did you mean one of these?
  *     concept-diagrams - official/creative/concept-diagrams
@@ -309,7 +309,7 @@ export interface SkillCliResult {
 }
 
 /**
- * Classify the combined output of `hermes skills install/uninstall` after
+ * Classify the combined output of `clawd skills install/uninstall` after
  * the subprocess has exited 0. The CLI exits 0 even on resolution failure
  * (issue #310), so the exit code alone is not enough. When a known failure
  * marker is present, surface the message (minus the leading
@@ -345,18 +345,18 @@ export function installSkill(
   profile?: string,
 ): SkillCliResult {
   try {
-    const args = hermesCliArgs(["skills", "install", identifier, "--yes"]);
+    const args = clawdCliArgs(["skills", "install", identifier, "--yes"]);
     if (profile && profile !== "default") {
       args.splice(process.platform === "win32" ? 2 : 1, 0, "-p", profile);
     }
 
-    const stdout = execFileSync(HERMES_PYTHON, args, {
-      cwd: HERMES_REPO,
+    const stdout = execFileSync(CLAWD_PYTHON, args, {
+      cwd: CLAWD_REPO,
       env: {
         ...process.env,
         PATH: getEnhancedPath(),
         HOME: homedir(),
-        HERMES_HOME,
+        CLAWD_HOME,
       },
       stdio: "pipe",
       timeout: 60000,
@@ -378,18 +378,18 @@ export function installSkill(
 
 export function uninstallSkill(name: string, profile?: string): SkillCliResult {
   try {
-    const args = hermesCliArgs(["skills", "uninstall", name]);
+    const args = clawdCliArgs(["skills", "uninstall", name]);
     if (profile && profile !== "default") {
       args.splice(process.platform === "win32" ? 2 : 1, 0, "-p", profile);
     }
 
-    const stdout = execFileSync(HERMES_PYTHON, args, {
-      cwd: HERMES_REPO,
+    const stdout = execFileSync(CLAWD_PYTHON, args, {
+      cwd: CLAWD_REPO,
       env: {
         ...process.env,
         PATH: getEnhancedPath(),
         HOME: homedir(),
-        HERMES_HOME,
+        CLAWD_HOME,
       },
       stdio: "pipe",
       timeout: 30000,

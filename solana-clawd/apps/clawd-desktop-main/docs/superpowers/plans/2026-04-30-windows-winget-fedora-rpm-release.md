@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Extend the existing GitHub Actions release pipeline to produce a Windows NSIS installer + winget manifests, and a Fedora `.rpm`, alongside the existing macOS/Linux artifacts. End state: open a PR from `Aiacos/hermes-desktop:feat/winget-rpm-release` to `fathah/hermes-desktop:main`.
+**Goal:** Extend the existing GitHub Actions release pipeline to produce a Windows NSIS installer + winget manifests, and a Fedora `.rpm`, alongside the existing macOS/Linux artifacts. End state: open a PR from `Aiacos/clawd-desktop:feat/winget-rpm-release` to `fathah/clawd-desktop:main`.
 
 **Architecture:** Two new jobs added to `.github/workflows/release.yml` (Windows build + winget manifest generator), one existing job extended (Linux gets rpm), one job gated on a new `dry_run` input. Winget manifests are filled from YAML templates by a tested Node ESM script and uploaded as a CI artifact for manual submission to `microsoft/winget-pkgs`.
 
@@ -70,8 +70,8 @@ linux:
   category: Utility
   synopsis: Self-improving AI assistant desktop app
   description: |
-    Hermes Desktop is a native desktop app for installing, configuring, and chatting
-    with Hermes Agent — a self-improving AI assistant with tool use, multi-platform
+    Clawd Desktop is a native desktop app for installing, configuring, and chatting
+    with Clawd Agent — a self-improving AI assistant with tool use, multi-platform
     messaging, and a closed learning loop.
 appImage:
   artifactName: ${name}-${version}.${ext}
@@ -176,8 +176,8 @@ Run: `ls -la dist/*.rpm && rpm -qpi dist/*.rpm | head -20`
 
 Expected:
 
-- A file `dist/hermes-desktop-0.2.3.rpm` (or current version) of non-trivial size (~120-200 MB)
-- `rpm -qpi` shows `Name: hermes-desktop`, `Version: 0.2.3`, `Vendor: Nous Research`, `License`, `Summary` matching our `synopsis`.
+- A file `dist/clawd-desktop-0.2.3.rpm` (or current version) of non-trivial size (~120-200 MB)
+- `rpm -qpi` shows `Name: clawd-desktop`, `Version: 0.2.3`, `Vendor: Nous Research`, `License`, `Summary` matching our `synopsis`.
 
 If the RPM is missing or metadata is wrong, go back to Task 1 and fix.
 
@@ -224,7 +224,7 @@ Contents:
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
 # Placeholders ({{...}}) are replaced at build time. Do not edit the generated copy in dist/.
-PackageIdentifier: NousResearch.HermesDesktop
+PackageIdentifier: NousResearch.ClawdDesktop
 PackageVersion: { { VERSION } }
 InstallerLocale: en-US
 InstallerType: nullsoft
@@ -246,20 +246,20 @@ Contents:
 
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
-PackageIdentifier: NousResearch.HermesDesktop
+PackageIdentifier: NousResearch.ClawdDesktop
 PackageVersion: { { VERSION } }
 PackageLocale: en-US
 Publisher: Nous Research
-PublisherUrl: https://github.com/fathah/hermes-desktop
-PublisherSupportUrl: https://github.com/fathah/hermes-desktop/issues
-PackageName: Hermes Agent
-PackageUrl: https://github.com/fathah/hermes-desktop
+PublisherUrl: https://github.com/fathah/clawd-desktop
+PublisherSupportUrl: https://github.com/fathah/clawd-desktop/issues
+PackageName: Clawd Agent
+PackageUrl: https://github.com/fathah/clawd-desktop
 License: MIT
-LicenseUrl: https://github.com/fathah/hermes-desktop/blob/main/LICENSE
+LicenseUrl: https://github.com/fathah/clawd-desktop/blob/main/LICENSE
 ShortDescription: Self-improving AI assistant desktop app
 Description: |-
-  Hermes Desktop is a native desktop app for installing, configuring, and chatting
-  with Hermes Agent — a self-improving AI assistant with tool use, multi-platform
+  Clawd Desktop is a native desktop app for installing, configuring, and chatting
+  with Clawd Agent — a self-improving AI assistant with tool use, multi-platform
   messaging, and a closed learning loop.
 Tags:
   - ai
@@ -278,7 +278,7 @@ Contents:
 
 ```yaml
 # Generated from this template by scripts/generate-winget-manifests.mjs.
-PackageIdentifier: NousResearch.HermesDesktop
+PackageIdentifier: NousResearch.ClawdDesktop
 PackageVersion: { { VERSION } }
 DefaultLocale: en-US
 ManifestType: version
@@ -349,14 +349,14 @@ describe("generateWingetManifests", () => {
     const distDir = join(TEST_DIR, "dist");
     mkdirSync(distDir, { recursive: true });
     writeFileSync(
-      join(distDir, "hermes-desktop-9.9.9-setup.exe"),
+      join(distDir, "clawd-desktop-9.9.9-setup.exe"),
       "fake-installer-bytes",
     );
 
     generateWingetManifests({
       rootDir: TEST_DIR,
       version: "9.9.9",
-      name: "hermes-desktop",
+      name: "clawd-desktop",
       publishOwner: "fathah",
     });
 
@@ -366,16 +366,16 @@ describe("generateWingetManifests", () => {
       "manifests",
       "n",
       "NousResearch",
-      "HermesDesktop",
+      "ClawdDesktop",
       "9.9.9",
     );
     expect(
-      existsSync(join(outDir, "NousResearch.HermesDesktop.installer.yaml")),
+      existsSync(join(outDir, "NousResearch.ClawdDesktop.installer.yaml")),
     ).toBe(true);
     expect(
-      existsSync(join(outDir, "NousResearch.HermesDesktop.locale.en-US.yaml")),
+      existsSync(join(outDir, "NousResearch.ClawdDesktop.locale.en-US.yaml")),
     ).toBe(true);
-    expect(existsSync(join(outDir, "NousResearch.HermesDesktop.yaml"))).toBe(
+    expect(existsSync(join(outDir, "NousResearch.ClawdDesktop.yaml"))).toBe(
       true,
     );
   });
@@ -385,14 +385,14 @@ describe("generateWingetManifests", () => {
     const distDir = join(TEST_DIR, "dist");
     mkdirSync(distDir, { recursive: true });
     writeFileSync(
-      join(distDir, "hermes-desktop-9.9.9-setup.exe"),
+      join(distDir, "clawd-desktop-9.9.9-setup.exe"),
       "fake-installer-bytes",
     );
 
     generateWingetManifests({
       rootDir: TEST_DIR,
       version: "9.9.9",
-      name: "hermes-desktop",
+      name: "clawd-desktop",
       publishOwner: "fathah",
     });
 
@@ -402,14 +402,14 @@ describe("generateWingetManifests", () => {
       "manifests",
       "n",
       "NousResearch",
-      "HermesDesktop",
+      "ClawdDesktop",
       "9.9.9",
-      "NousResearch.HermesDesktop.installer.yaml",
+      "NousResearch.ClawdDesktop.installer.yaml",
     );
     const content = readFileSync(outFile, "utf-8");
     expect(content).toContain("Version: 9.9.9");
     expect(content).toContain(
-      "Url: https://github.com/fathah/hermes-desktop/releases/download/v9.9.9/hermes-desktop-9.9.9-setup.exe",
+      "Url: https://github.com/fathah/clawd-desktop/releases/download/v9.9.9/clawd-desktop-9.9.9-setup.exe",
     );
     expect(content).toMatch(/Sha: [A-F0-9]{64}/);
     expect(content).toMatch(/Date: \d{4}-\d{2}-\d{2}/);
@@ -421,14 +421,14 @@ describe("generateWingetManifests", () => {
     const distDir = join(TEST_DIR, "dist");
     mkdirSync(distDir, { recursive: true });
     writeFileSync(
-      join(distDir, "hermes-desktop-9.9.9-setup.exe"),
+      join(distDir, "clawd-desktop-9.9.9-setup.exe"),
       "fake-installer-bytes",
     );
 
     generateWingetManifests({
       rootDir: TEST_DIR,
       version: "9.9.9",
-      name: "hermes-desktop",
+      name: "clawd-desktop",
       publishOwner: "fathah",
     });
 
@@ -438,13 +438,13 @@ describe("generateWingetManifests", () => {
       "manifests",
       "n",
       "NousResearch",
-      "HermesDesktop",
+      "ClawdDesktop",
       "9.9.9",
-      "NousResearch.HermesDesktop.locale.en-US.yaml",
+      "NousResearch.ClawdDesktop.locale.en-US.yaml",
     );
     const content = readFileSync(outFile, "utf-8");
     expect(content).toContain(
-      "Notes: https://github.com/fathah/hermes-desktop/releases/tag/v9.9.9",
+      "Notes: https://github.com/fathah/clawd-desktop/releases/tag/v9.9.9",
     );
     expect(content).not.toContain("{{");
   });
@@ -457,7 +457,7 @@ describe("generateWingetManifests", () => {
       generateWingetManifests({
         rootDir: TEST_DIR,
         version: "9.9.9",
-        name: "hermes-desktop",
+        name: "clawd-desktop",
         publishOwner: "fathah",
       }),
     ).toThrow(/installer not found/i);
@@ -494,7 +494,7 @@ Contents:
 //
 // Fills the YAML templates in build/winget/ with the current version,
 // installer URL, and SHA256 of the NSIS installer in dist/, and writes
-// the result under dist/winget/manifests/n/NousResearch/HermesDesktop/<version>/.
+// the result under dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/.
 //
 // Run from CLI: VERSION=0.2.3 PUBLISH_OWNER=fathah node scripts/generate-winget-manifests.mjs
 // Or import as ESM and call generateWingetManifests({ rootDir, version, name, publishOwner }).
@@ -523,8 +523,8 @@ export function generateWingetManifests({
     .digest("hex")
     .toUpperCase();
   const releaseDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  const installerUrl = `https://github.com/${publishOwner}/hermes-desktop/releases/download/v${version}/${name}-${version}-setup.exe`;
-  const releaseNotesUrl = `https://github.com/${publishOwner}/hermes-desktop/releases/tag/v${version}`;
+  const installerUrl = `https://github.com/${publishOwner}/clawd-desktop/releases/download/v${version}/${name}-${version}-setup.exe`;
+  const releaseNotesUrl = `https://github.com/${publishOwner}/clawd-desktop/releases/tag/v${version}`;
 
   const replacements = {
     VERSION: version,
@@ -548,18 +548,18 @@ export function generateWingetManifests({
     "manifests",
     "n",
     "NousResearch",
-    "HermesDesktop",
+    "ClawdDesktop",
     version,
   );
   mkdirSync(outDir, { recursive: true });
 
   const files = [
-    ["Installer.template.yaml", "NousResearch.HermesDesktop.installer.yaml"],
+    ["Installer.template.yaml", "NousResearch.ClawdDesktop.installer.yaml"],
     [
       "Locale.en-US.template.yaml",
-      "NousResearch.HermesDesktop.locale.en-US.yaml",
+      "NousResearch.ClawdDesktop.locale.en-US.yaml",
     ],
-    ["Version.template.yaml", "NousResearch.HermesDesktop.yaml"],
+    ["Version.template.yaml", "NousResearch.ClawdDesktop.yaml"],
   ];
 
   for (const [tmplName, outName] of files) {
@@ -857,7 +857,7 @@ publish:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ needs.prepare.outputs.tag }}
-        name: Hermes Desktop ${{ needs.prepare.outputs.tag }}
+        name: Clawd Desktop ${{ needs.prepare.outputs.tag }}
         generate_release_notes: true
         files: artifacts/*
 ```
@@ -891,7 +891,7 @@ publish:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ needs.prepare.outputs.tag }}
-        name: Hermes Desktop ${{ needs.prepare.outputs.tag }}
+        name: Clawd Desktop ${{ needs.prepare.outputs.tag }}
         generate_release_notes: true
         files: |
           artifacts/*.dmg
@@ -951,7 +951,7 @@ Locate the current Install section (lines ~22-37):
 ````markdown
 ## Install
 
-Download the latest build from the [Releases](https://github.com/fathah/hermes-desktop/releases/) page.
+Download the latest build from the [Releases](https://github.com/fathah/clawd-desktop/releases/) page.
 
 | Platform | File                  |
 | -------- | --------------------- |
@@ -961,7 +961,7 @@ Download the latest build from the [Releases](https://github.com/fathah/hermes-d
 > **macOS users:** The app is not code-signed or notarized. macOS will block it on first launch. To fix this, run the following after installing:
 >
 > ```bash
-> xattr -cr "/Applications/Hermes Agent.app"
+> xattr -cr "/Applications/Clawd Agent.app"
 > ```
 >
 > Or right-click the app → **Open** → click **Open** in the confirmation dialog.
@@ -972,7 +972,7 @@ Replace the table and add a Linux/Windows notes block. The new section:
 ````markdown
 ## Install
 
-Download the latest build from the [Releases](https://github.com/fathah/hermes-desktop/releases/) page.
+Download the latest build from the [Releases](https://github.com/fathah/clawd-desktop/releases/) page.
 
 | Platform       | File                    |
 | -------------- | ----------------------- |
@@ -987,7 +987,7 @@ Download the latest build from the [Releases](https://github.com/fathah/hermes-d
 Once the manifest has been accepted into [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs), you can install with:
 
 ```powershell
-winget install NousResearch.HermesDesktop
+winget install NousResearch.ClawdDesktop
 ```
 ````
 
@@ -998,7 +998,7 @@ Until then, download the `.exe` from the Releases page.
 ### Fedora (RPM)
 
 ```bash
-sudo dnf install ./hermes-desktop-<version>.rpm
+sudo dnf install ./clawd-desktop-<version>.rpm
 ```
 
 > **Fedora users:** The `.rpm` is not GPG-signed. If your system enforces signature checking, append `--nogpgcheck` to the install command. Auto-update is not supported for `.rpm` builds (limitation of `electron-updater`); reinstall the new `.rpm` to update.
@@ -1008,7 +1008,7 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 > **macOS users:** The app is not code-signed or notarized. macOS will block it on first launch. To fix this, run the following after installing:
 >
 > ```bash
-> xattr -cr "/Applications/Hermes Agent.app"
+> xattr -cr "/Applications/Clawd Agent.app"
 > ```
 >
 > Or right-click the app → **Open** → click **Open** in the confirmation dialog.
@@ -1070,13 +1070,13 @@ Expected: `nothing to commit, working tree clean`.
 
 ### Task 21: Push branch to Aiacos fork
 
-This step requires push access to `Aiacos/hermes-desktop` (the user's fork). If pushing requires interactive auth, the human operator runs the command.
+This step requires push access to `Aiacos/clawd-desktop` (the user's fork). If pushing requires interactive auth, the human operator runs the command.
 
 - [ ] **Step 1: Push**
 
 Run: `git push -u origin feat/winget-rpm-release`
 
-Expected: branch created on `origin` (which is `Aiacos/hermes-desktop` per `git remote -v`), tracking set up.
+Expected: branch created on `origin` (which is `Aiacos/clawd-desktop` per `git remote -v`), tracking set up.
 
 If push is rejected, resolve auth (e.g., `gh auth login` or SSH key) before retrying. Do not force-push.
 
@@ -1117,7 +1117,7 @@ Fix the issue, commit on the branch, push, and re-trigger. Do not proceed to PR 
 
 - [ ] **Step 1: Download the artifact**
 
-Run: `gh run download <run-id> -n winget-manifests-0.2.3 -D /tmp/winget-check && ls -la /tmp/winget-check/manifests/n/NousResearch/HermesDesktop/0.2.3/`
+Run: `gh run download <run-id> -n winget-manifests-0.2.3 -D /tmp/winget-check && ls -la /tmp/winget-check/manifests/n/NousResearch/ClawdDesktop/0.2.3/`
 
 (Replace `0.2.3` with the actual `version` from `package.json` if it changed.)
 
@@ -1125,13 +1125,13 @@ Expected: three `.yaml` files listed.
 
 - [ ] **Step 2: Visually inspect**
 
-Run: `cat /tmp/winget-check/manifests/n/NousResearch/HermesDesktop/0.2.3/*.yaml`
+Run: `cat /tmp/winget-check/manifests/n/NousResearch/ClawdDesktop/0.2.3/*.yaml`
 
 Expected:
 
 - No `{{...}}` placeholders left.
 - `InstallerSha256` is a 64-character uppercase hex string.
-- `InstallerUrl` points to the `fathah/hermes-desktop` releases path with the correct version.
+- `InstallerUrl` points to the `fathah/clawd-desktop` releases path with the correct version.
 - `ReleaseDate` is today's date (UTC) in `YYYY-MM-DD`.
 - `PackageVersion` matches `package.json`.
 
@@ -1145,13 +1145,13 @@ Run: `rm -rf /tmp/winget-check`
 
 ## Phase 7: Open PR upstream
 
-### Task 24: Open PR to `fathah/hermes-desktop:main`
+### Task 24: Open PR to `fathah/clawd-desktop:main`
 
 This is a "shared state" action visible to others. The human operator confirms before running.
 
 - [ ] **Step 1: Confirm PR target with the user**
 
-Ask the user: "Ready to open the PR from `Aiacos:feat/winget-rpm-release` to `fathah/hermes-desktop:main`? Or do you want to review the diff one more time first?"
+Ask the user: "Ready to open the PR from `Aiacos:feat/winget-rpm-release` to `fathah/clawd-desktop:main`? Or do you want to review the diff one more time first?"
 
 Wait for explicit confirmation.
 
@@ -1161,14 +1161,14 @@ Run:
 
 ```bash
 gh pr create \
-  --repo fathah/hermes-desktop \
+  --repo fathah/clawd-desktop \
   --base main \
   --head Aiacos:feat/winget-rpm-release \
   --title "ci: add Windows (winget) and Fedora (RPM) release artifacts" \
   --body "$(cat <<'EOF'
 ## Summary
 
-- Adds a `release_windows` job that builds an NSIS installer (`hermes-desktop-<version>-setup.exe`) on `windows-latest`.
+- Adds a `release_windows` job that builds an NSIS installer (`clawd-desktop-<version>-setup.exe`) on `windows-latest`.
 - Adds a `generate_winget` job that fills YAML manifest templates (`build/winget/*.template.yaml`) with the installer SHA256 and uploads them as the `winget-manifests-<version>` CI artifact, ready for manual submission to [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs).
 - Extends the existing `release_linux` job to also build an `.rpm` for Fedora alongside the existing `.AppImage` and `.deb`.
 - Adds explicit `oneClick: true` / `perMachine: false` to NSIS (matches electron-builder defaults; pinning prevents future drift) and Linux packaging metadata (`vendor`, `synopsis`, `description`).

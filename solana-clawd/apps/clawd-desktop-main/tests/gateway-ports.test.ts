@@ -8,7 +8,7 @@ const { configuredPorts, dirEntries } = vi.hoisted(() => ({
 }));
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: "/tmp/hermes-test-home",
+  CLAWD_HOME: "/tmp/clawd-test-home",
 }));
 
 vi.mock("../src/main/utils", () => ({

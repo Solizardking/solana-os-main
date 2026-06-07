@@ -16,8 +16,8 @@ export interface SectionDef {
 
 export const PROVIDERS = {
   // Ordered for the Providers / model-picker dropdown.  Each value must
-  // match a provider name `hermes-agent` recognises (see
-  // hermes_cli/auth.py::resolve_provider — _PROVIDER_ALIASES + PROVIDER_REGISTRY)
+  // match a provider name `clawd-agent` recognises (see
+  // clawd_cli/auth.py::resolve_provider — _PROVIDER_ALIASES + PROVIDER_REGISTRY)
   // so the gateway routes correctly when the user picks the entry.  The
   // catch-all `custom` stays last for unlisted OpenAI-compatible endpoints.
   options: [
@@ -117,7 +117,7 @@ export const PROVIDERS = {
       url: "https://platform.openai.com/api-keys",
       placeholder: "sk-...",
       // Routed through the `custom` provider with an explicit base_url:
-      // hermes-agent's resolve_provider does not recognise a bare `openai`
+      // clawd-agent's resolve_provider does not recognise a bare `openai`
       // provider id (issue #294). The `custom` + api.openai.com path is
       // accepted, and the OpenAI key is picked up via the known-host
       // base-URL mapping.
@@ -189,9 +189,9 @@ export const PROVIDERS = {
 };
 
 // Subscription / OAuth-plan providers — these authenticate through an
-// interactive browser login (`hermes auth add <id> --type oauth`) rather
+// interactive browser login (`clawd auth add <id> --type oauth`) rather
 // than a static API key. The Providers screen renders a "Sign in" card
-// for each. Values must match hermes-agent's provider registry.
+// for each. Values must match clawd-agent's provider registry.
 export interface OAuthProviderDef {
   id: string;
   name: string;
@@ -223,7 +223,7 @@ export const OAUTH_PROVIDERS: OAuthProviderDef[] = [
   // Nous Portal OAuth — issue #367 Bug 2. The engine's
   // PROVIDER_REGISTRY registers `nous` with auth_type="oauth_device_code";
   // without this card the only way to trigger the sign-in flow was
-  // `hermes auth add nous --type oauth` from PowerShell.
+  // `clawd auth add nous --type oauth` from PowerShell.
   {
     id: "nous",
     name: "Nous Portal (OAuth)",
@@ -322,7 +322,7 @@ export const THEME_OPTIONS = [
   { value: "dark" as const, label: "constants.themeDark" },
 ];
 
-export const THEME_STORAGE_KEY = "hermes-theme";
+export const THEME_STORAGE_KEY = "clawd-theme";
 
 // ── Settings API Key Sections ───────────────────────────
 
@@ -894,10 +894,10 @@ export const GATEWAY_PLATFORMS: PlatformDef[] = [
 // ── Install ─────────────────────────────────────────────
 
 export const UNIX_INSTALL_CMD =
-  "curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash";
+  "curl -fsSL https://raw.githubusercontent.com/NousResearch/clawd-agent/main/scripts/install.sh | bash";
 export const INSTALL_CMD_UNIX = UNIX_INSTALL_CMD;
 export const WINDOWS_INSTALL_CMD =
-  "powershell -NoProfile -ExecutionPolicy Bypass -c \"$hermesHome = Join-Path $env:USERPROFILE '.hermes'; $installDir = Join-Path $hermesHome 'hermes-agent'; $installer = [ScriptBlock]::Create((irm https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.ps1 -UseBasicParsing)); & $installer -SkipSetup -HermesHome $hermesHome -InstallDir $installDir\"";
+  "powershell -NoProfile -ExecutionPolicy Bypass -c \"$clawdHome = Join-Path $env:USERPROFILE '.clawd'; $installDir = Join-Path $clawdHome 'clawd-agent'; $installer = [ScriptBlock]::Create((irm https://raw.githubusercontent.com/NousResearch/clawd-agent/main/scripts/install.ps1 -UseBasicParsing)); & $installer -SkipSetup -ClawdHome $clawdHome -InstallDir $installDir\"";
 export const INSTALL_CMD =
   typeof window !== "undefined" &&
   window.electron?.process?.platform === "win32"

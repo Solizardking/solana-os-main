@@ -4,7 +4,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 
 /**
- * Workaround coverage for fathah/hermes-desktop#260:
+ * Workaround coverage for fathah/clawd-desktop#260:
  * setModelConfig should auto-populate `model.api_key` for custom
  * providers that point at a known commercial host (DeepSeek, Groq,
  * Mistral, …) using the matching `<NAME>_API_KEY` value from the
@@ -16,7 +16,7 @@ let testHome: string;
 
 async function loadConfig(): Promise<typeof import("../src/main/config")> {
   vi.resetModules();
-  vi.stubEnv("HERMES_HOME", testHome);
+  vi.stubEnv("CLAWD_HOME", testHome);
   return await import("../src/main/config");
 }
 
@@ -33,7 +33,7 @@ const SEED_YAML = `model:
 
 describe("setModelConfig — known-host custom provider auto-api-key (issue #260)", () => {
   beforeEach(() => {
-    testHome = mkdtempSync(join(tmpdir(), "hermes-auto-key-"));
+    testHome = mkdtempSync(join(tmpdir(), "clawd-auto-key-"));
   });
 
   afterEach(() => {

@@ -38,7 +38,7 @@ for (const distro of listDistros()) {
   console.log("  homesRoot exists:", existsSync(homesRoot));
   if (!existsSync(homesRoot)) continue;
   // Try the user we know is in WSL — pmos69
-  const known = `${homesRoot}\\pmos69\\.hermes`;
+  const known = `${homesRoot}\\pmos69\\.clawd`;
   console.log(`  ${known} exists:`, existsSync(known));
   if (existsSync(known)) {
     console.log("  is dir:", statSync(known).isDirectory());

@@ -67,7 +67,7 @@ export default {
   },
   mcpServers: "MCP Sunucuları",
   mcpDescription:
-    "config.yaml dosyasında yapılandırılan Model Context Protocol sunucuları. Terminalde <code>hermes mcp add/remove</code> ile yönetin.",
+    "config.yaml dosyasında yapılandırılan Model Context Protocol sunucuları. Terminalde <code>clawd mcp add/remove</code> ile yönetin.",
   http: "HTTP",
   stdio: "stdio",
   disabled: "devre dışı",

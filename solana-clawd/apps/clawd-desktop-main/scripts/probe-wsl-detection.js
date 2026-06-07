@@ -5,8 +5,8 @@ const tests = [
   "\\\\wsl$\\Ubuntu-24.04",
   "\\\\wsl$\\Ubuntu-24.04\\home",
   "\\\\wsl$\\Ubuntu-24.04\\home\\pmos69",
-  "\\\\wsl$\\Ubuntu-24.04\\home\\pmos69\\.hermes",
-  "\\\\wsl$\\Ubuntu-24.04\\home\\pmos69\\.hermes\\.env",
+  "\\\\wsl$\\Ubuntu-24.04\\home\\pmos69\\.clawd",
+  "\\\\wsl$\\Ubuntu-24.04\\home\\pmos69\\.clawd\\.env",
 ];
 for (const p of tests) {
   try {

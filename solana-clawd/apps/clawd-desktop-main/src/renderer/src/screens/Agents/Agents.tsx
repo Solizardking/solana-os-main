@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash, ChatBubble } from "../../assets/icons";
-import HermesLogo from "../../components/common/HermesLogo";
+import ClawdLogo from "../../components/common/ClawdLogo";
 import { useI18n } from "../../components/useI18n";
 
 interface ProfileInfo {
@@ -26,7 +26,7 @@ function AgentAvatar({ name }: { name: string }): React.JSX.Element {
   if (name === "default") {
     return (
       <div className="agents-card-avatar agents-card-avatar-icon">
-        <HermesLogo size={22} />
+        <ClawdLogo size={22} />
       </div>
     );
   }
@@ -51,7 +51,7 @@ function Agents({
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const loadProfiles = useCallback(async (): Promise<void> => {
-    const list = await window.hermesAPI.listProfiles();
+    const list = await window.clawdAPI.listProfiles();
     setProfiles(list);
     setLoading(false);
   }, []);
@@ -65,7 +65,7 @@ function Agents({
     if (!name) return;
     setCreating(true);
     setError("");
-    const result = await window.hermesAPI.createProfile(name, cloneConfig);
+    const result = await window.clawdAPI.createProfile(name, cloneConfig);
     setCreating(false);
     if (result.success) {
       setShowCreate(false);
@@ -82,7 +82,7 @@ function Agents({
     setError("");
     setProfiles((current) => current.filter((p) => p.name !== name));
 
-    const result = await window.hermesAPI.deleteProfile(name);
+    const result = await window.clawdAPI.deleteProfile(name);
     if (result.success) {
       if (activeProfile === name) onSelectProfile("default");
       loadProfiles();
@@ -93,7 +93,7 @@ function Agents({
   }
 
   async function handleSelect(name: string): Promise<void> {
-    await window.hermesAPI.setActiveProfile(name);
+    await window.clawdAPI.setActiveProfile(name);
     onSelectProfile(name);
     loadProfiles();
   }

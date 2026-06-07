@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-// ── Mock project dependencies so importing hermes.ts is side-effect free ──
+// ── Mock project dependencies so importing clawd.ts is side-effect free ──
 
 const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -8,15 +8,15 @@ const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
   return {
-    TEST_HOME: path.join(os.tmpdir(), `hermes-buc-test-${Date.now()}`),
+    TEST_HOME: path.join(os.tmpdir(), `clawd-buc-test-${Date.now()}`),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_REPO: "/dev/null",
-  hermesCliArgs: () => ["/dev/null"],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_REPO: "/dev/null",
+  clawdCliArgs: () => ["/dev/null"],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 
@@ -57,7 +57,7 @@ vi.mock("../src/main/process-options", () => ({
   HIDDEN_SUBPROCESS_OPTIONS: {},
 }));
 
-import { buildUserContent } from "../src/main/hermes";
+import { buildUserContent } from "../src/main/clawd";
 import type { Attachment } from "../src/shared/attachments";
 
 // ── helpers ──────────────────────────────────────────────

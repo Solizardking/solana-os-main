@@ -9,7 +9,7 @@ import {
 
 /**
  * The shared URL → env-var-name table backs three call sites:
- *   - Gateway spawn env hydration (main/hermes.ts)
+ *   - Gateway spawn env hydration (main/clawd.ts)
  *   - Edit Model dialog API-key read-back (renderer/Models.tsx)
  *   - Setup wizard's custom-host save path (renderer/Setup.tsx)
  *

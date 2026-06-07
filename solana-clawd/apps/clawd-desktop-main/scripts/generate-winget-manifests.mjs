@@ -2,7 +2,7 @@
 //
 // Fills the YAML templates in build/winget/ with the current version,
 // installer URL, and SHA256 of the NSIS installer in dist/, and writes
-// the result under dist/winget/manifests/n/NousResearch/HermesDesktop/<version>/.
+// the result under dist/winget/manifests/n/NousResearch/ClawdDesktop/<version>/.
 //
 // Run from CLI: VERSION=0.2.3 PUBLISH_OWNER=fathah node scripts/generate-winget-manifests.mjs
 // Or import as ESM and call generateWingetManifests({ rootDir, version, name, publishOwner }).
@@ -32,8 +32,8 @@ export function generateWingetManifests({
     .digest("hex")
     .toUpperCase();
   const releaseDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  const installerUrl = `https://github.com/${publishOwner}/hermes-desktop/releases/download/v${version}/${name}-${version}-setup.exe`;
-  const releaseNotesUrl = `https://github.com/${publishOwner}/hermes-desktop/releases/tag/v${version}`;
+  const installerUrl = `https://github.com/${publishOwner}/clawd-desktop/releases/download/v${version}/${name}-${version}-setup.exe`;
+  const releaseNotesUrl = `https://github.com/${publishOwner}/clawd-desktop/releases/tag/v${version}`;
 
   const replacements = {
     VERSION: version,
@@ -64,18 +64,18 @@ export function generateWingetManifests({
     "manifests",
     "n",
     "NousResearch",
-    "HermesDesktop",
+    "ClawdDesktop",
     version,
   );
   mkdirSync(outDir, { recursive: true });
 
   const files = [
-    ["Installer.template.yaml", "NousResearch.HermesDesktop.installer.yaml"],
+    ["Installer.template.yaml", "NousResearch.ClawdDesktop.installer.yaml"],
     [
       "Locale.en-US.template.yaml",
-      "NousResearch.HermesDesktop.locale.en-US.yaml",
+      "NousResearch.ClawdDesktop.locale.en-US.yaml",
     ],
-    ["Version.template.yaml", "NousResearch.HermesDesktop.yaml"],
+    ["Version.template.yaml", "NousResearch.ClawdDesktop.yaml"],
   ];
 
   for (const [tmplName, outName] of files) {

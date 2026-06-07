@@ -1,7 +1,7 @@
 export default {
   title: "Ayarlar",
   sections: {
-    hermesAgent: "Hermes Agent",
+    clawdAgent: "Clawd Agent",
     appearance: "Görünüm",
     privacy: "Gizlilik",
     credentialPool: "Kimlik Bilgisi Havuzu",
@@ -25,7 +25,7 @@ export default {
   },
   analytics: {
     label: "Anonim kullanım istatistikleri gönder",
-    hint: "Hermes Desktop'u iyileştirmeye yardımcı olmak için anonim, toplulaştırılmış kullanım verilerini projenin PostHog örneğine gönderir. İstediğiniz zaman kapatabilirsiniz.",
+    hint: "Clawd Desktop'u iyileştirmeye yardımcı olmak için anonim, toplulaştırılmış kullanım verilerini projenin PostHog örneğine gönderir. İstediğiniz zaman kapatabilirsiniz.",
     disclosure: {
       uuid: "Yalnızca bu cihazda saklanan rastgele bir kurulum tanımlayıcısı (ad, e-posta veya hesap bilgisi yok).",
       platform: "İşletim sisteminiz, Electron sürümü ve Node.js sürümü.",
@@ -39,7 +39,7 @@ export default {
   },
   notDetected: "Algılanmadı",
   updatedSuccessfully: "Başarıyla güncellendi!",
-  updateSuccess: "Hermes başarıyla güncellendi.",
+  updateSuccess: "Clawd başarıyla güncellendi.",
   updateFailed: "Güncelleme başarısız.",
   version: "v{{version}}",
   proxyPlaceholder: "örn. socks5://127.0.0.1:1080 veya http://proxy:8080",
@@ -68,14 +68,14 @@ export default {
     "Sağlayıcının model listesine ulaşılamadı — yine de bir model adı yazabilirsiniz",
   customBaseUrlHint: "OpenAI uyumlu API uç noktası",
   poolHint:
-    "Otomatik dönüşüm ve yük dengelemesi için aynı sağlayıcıya birden çok API Anahtarı ekleyin. Hermes bunlar arasında geçiş yapacaktır.",
+    "Otomatik dönüşüm ve yük dengelemesi için aynı sağlayıcıya birden çok API Anahtarı ekleyin. Clawd bunlar arasında geçiş yapacaktır.",
   add: "Ekle",
   remove: "Kaldır",
   keyLabel: "Anahtar",
   empty: "(boş)",
   dataSection: "Veri",
   dataHint:
-    "Hermes yapılandırmanızı, oturumlarınızı, yeteneklerinizi ve belleğinizi dışa veya içe aktarın.",
+    "Clawd yapılandırmanızı, oturumlarınızı, yeteneklerinizi ve belleğinizi dışa veya içe aktarın.",
   backingUp: "Yedekleniyor...",
   exportBackup: "Yedek Dışa Aktar",
   importing: "İçe aktarılıyor...",
@@ -92,10 +92,10 @@ export default {
   debugDump: "Hata Ayıklama Dökümü",
   migrationDetected: "OpenClaw Kurulumu Bulundu",
   migrationDesc:
-    "<code>{{path}}</code> adresinde OpenClaw bulundu. Yapılandırmanızı, API anahtarlarınızı, oturumlarınızı ve yeteneklerinizi Hermes'e taşıyabilirsiniz.",
+    "<code>{{path}}</code> adresinde OpenClaw bulundu. Yapılandırmanızı, API anahtarlarınızı, oturumlarınızı ve yeteneklerinizi Clawd'e taşıyabilirsiniz.",
   migrationDismiss: "Tekrar gösterme",
   migrating: "Taşınıyor...",
-  migrateToHermes: "Hermes'e Taşı",
+  migrateToClawd: "Clawd'e Taşı",
   skip: "Geç",
   appearanceHint: "Tercih ettiğiniz arayüz görünümünü seçin",
   apiKeyPlaceholder: "API Anahtarı",
@@ -103,12 +103,12 @@ export default {
   connectionSection: "Bağlantı",
   modeLocal: "Yerel",
   modeRemote: "Uzak",
-  modeLocalHint: "Bu cihazda yüklü Hermes kullanılıyor",
+  modeLocalHint: "Bu cihazda yüklü Clawd kullanılıyor",
   modeRemoteHint:
-    "Ağınızdaki veya buluttaki bir Hermes API sunucusuna bağlanın",
+    "Ağınızdaki veya buluttaki bir Clawd API sunucusuna bağlanın",
   remoteUrl: "Uzak URL",
   remoteUrlHint:
-    "Hermes API sunucusu URL'si (/health ve /v1/chat/completions uç noktalarını sunmalıdır)",
+    "Clawd API sunucusu URL'si (/health ve /v1/chat/completions uç noktalarını sunmalıdır)",
   remoteApiKey: "API Anahtarı",
   remoteApiKeyHint:
     "Uzak sunucudaki API_SERVER_KEY ile eşleşir. Sunucu kimlik doğrulamasız istekleri kabul ediyorsa boş bırakın.",
@@ -117,7 +117,7 @@ export default {
   save: "Kaydet",
   serverConfigTitle: "Sunucu Yapılandırması",
   serverConfigHint:
-    "Uzak bir Hermes sunucusuna bağlandınız. Model seçimi, sağlayıcı API anahtarları ve kimlik bilgileri sunucunun <code>~/.hermes/.env</code> ve <code>config.yaml</code> dosyalarında yönetilir. Bunları ana bilgisayarda düzenleyin (örn. <code>docker exec -it hermes vi /opt/data/.env</code>) ve kabı yeniden başlatın.",
+    "Uzak bir Clawd sunucusuna bağlandınız. Model seçimi, sağlayıcı API anahtarları ve kimlik bilgileri sunucunun <code>~/.clawd/.env</code> ve <code>config.yaml</code> dosyalarında yönetilir. Bunları ana bilgisayarda düzenleyin (örn. <code>docker exec -it clawd vi /opt/data/.env</code>) ve kabı yeniden başlatın.",
   connectionMode: "Mod",
   switchedToLocal: "Yerel moda geçildi",
 } as const;

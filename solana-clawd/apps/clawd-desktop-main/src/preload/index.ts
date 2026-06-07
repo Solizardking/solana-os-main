@@ -32,7 +32,7 @@ const electronAPI = {
   },
 };
 
-const hermesAPI = {
+const clawdEngineAPI = {
   // Installation
   checkInstall: (): Promise<{
     installed: boolean;
@@ -47,16 +47,16 @@ const hermesAPI = {
 
   // Pre-install inspection + "use an existing installation" (issue #272)
   inspectInstallTarget: (): Promise<{
-    hermesHome: string;
+    clawdHome: string;
     repoPath: string;
     state: "fresh" | "update" | "replace";
   }> => ipcRenderer.invoke("inspect-install-target"),
 
-  validateHermesHome: (dir: string): Promise<boolean> =>
-    ipcRenderer.invoke("validate-hermes-home", dir),
+  validateClawdHome: (dir: string): Promise<boolean> =>
+    ipcRenderer.invoke("validate-clawd-home", dir),
 
-  adoptHermesHome: (dir: string): Promise<boolean> =>
-    ipcRenderer.invoke("adopt-hermes-home", dir),
+  adoptClawdHome: (dir: string): Promise<boolean> =>
+    ipcRenderer.invoke("adopt-clawd-home", dir),
 
   quitApp: (): Promise<void> => ipcRenderer.invoke("quit-app"),
 
@@ -86,15 +86,15 @@ const hermesAPI = {
     return () => ipcRenderer.removeListener("install-progress", handler);
   },
 
-  // Hermes engine info
-  getHermesVersion: (): Promise<string | null> =>
-    ipcRenderer.invoke("get-hermes-version"),
-  refreshHermesVersion: (): Promise<string | null> =>
-    ipcRenderer.invoke("refresh-hermes-version"),
-  runHermesDoctor: (): Promise<string> =>
-    ipcRenderer.invoke("run-hermes-doctor"),
-  runHermesUpdate: (): Promise<{ success: boolean; error?: string }> =>
-    ipcRenderer.invoke("run-hermes-update"),
+  // Clawd engine info
+  getClawdVersion: (): Promise<string | null> =>
+    ipcRenderer.invoke("get-clawd-version"),
+  refreshClawdVersion: (): Promise<string | null> =>
+    ipcRenderer.invoke("refresh-clawd-version"),
+  runClawdDoctor: (): Promise<string> =>
+    ipcRenderer.invoke("run-clawd-doctor"),
+  runClawdUpdate: (): Promise<{ success: boolean; error?: string }> =>
+    ipcRenderer.invoke("run-clawd-update"),
 
   // OpenClawd migration
   checkOpenClawd: (): Promise<{ found: boolean; path: string | null }> =>
@@ -162,8 +162,8 @@ const hermesAPI = {
   setConfig: (key: string, value: string, profile?: string): Promise<boolean> =>
     ipcRenderer.invoke("set-config", key, value, profile),
 
-  getHermesHome: (profile?: string): Promise<string> =>
-    ipcRenderer.invoke("get-hermes-home", profile),
+  getClawdHome: (profile?: string): Promise<string> =>
+    ipcRenderer.invoke("get-clawd-home", profile),
 
   getModelConfig: (
     profile?: string,
@@ -968,19 +968,19 @@ const hermesAPI = {
     ipcRenderer.invoke("open-external", url),
 
   // Backup / Import
-  runHermesBackup: (
+  runClawdBackup: (
     profile?: string,
   ): Promise<{ success: boolean; path?: string; error?: string }> =>
-    ipcRenderer.invoke("run-hermes-backup", profile),
+    ipcRenderer.invoke("run-clawd-backup", profile),
 
-  runHermesImport: (
+  runClawdImport: (
     archivePath: string,
     profile?: string,
   ): Promise<{ success: boolean; error?: string }> =>
-    ipcRenderer.invoke("run-hermes-import", archivePath, profile),
+    ipcRenderer.invoke("run-clawd-import", archivePath, profile),
 
   // Debug dump
-  runHermesDump: (): Promise<string> => ipcRenderer.invoke("run-hermes-dump"),
+  runClawdDump: (): Promise<string> => ipcRenderer.invoke("run-clawd-dump"),
 
   // Memory providers
   discoverMemoryProviders: (
@@ -1092,7 +1092,7 @@ const clawdAPI = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
-    contextBridge.exposeInMainWorld("hermesAPI", hermesAPI);
+    contextBridge.exposeInMainWorld("clawdEngineAPI", clawdEngineAPI);
     contextBridge.exposeInMainWorld("clawdAPI", clawdAPI);
   } catch (error) {
     console.error(error);
@@ -1101,7 +1101,7 @@ if (process.contextIsolated) {
   // @ts-ignore (define in dts)
   window.electron = electronAPI;
   // @ts-ignore (define in dts)
-  window.hermesAPI = hermesAPI;
+  window.clawdEngineAPI = clawdEngineAPI;
   // @ts-ignore (define in dts)
   window.clawdAPI = clawdAPI;
 }

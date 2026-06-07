@@ -4,9 +4,9 @@ import { homedir } from "os";
 import { promises as fs } from "fs";
 import { existsSync } from "fs";
 import {
-  HERMES_HOME,
-  HERMES_PYTHON,
-  hermesCliArgs,
+  CLAWD_HOME,
+  CLAWD_PYTHON,
+  clawdCliArgs,
   getEnhancedPath,
 } from "./installer";
 import {
@@ -18,7 +18,7 @@ import {
 } from "./utils";
 import { HIDDEN_SUBPROCESS_OPTIONS } from "./process-options";
 
-const PROFILES_DIR = join(HERMES_HOME, "profiles");
+const PROFILES_DIR = join(CLAWD_HOME, "profiles");
 
 function commandErrorMessage(err: unknown): string {
   const e = err as {
@@ -94,7 +94,7 @@ async function isGatewayRunning(profilePath: string): Promise<boolean> {
   const pidFile = join(profilePath, "gateway.pid");
   try {
     const raw = (await fs.readFile(pidFile, "utf-8")).trim();
-    // The Python hermes CLI writes JSON: {"pid": <n>, "kind": ..., ...}.
+    // The Python clawd CLI writes JSON: {"pid": <n>, "kind": ..., ...}.
     // Older builds wrote a bare integer, so fall back to parseInt.
     const parsed = raw.startsWith("{")
       ? (JSON.parse(raw) as { pid?: unknown }).pid
@@ -125,7 +125,7 @@ export async function listProfiles(): Promise<ProfileInfo[]> {
   const activeName = await getActiveProfileName();
   const profiles: ProfileInfo[] = [];
 
-  // Default profile is HERMES_HOME itself
+  // Default profile is CLAWD_HOME itself
   const [
     defaultConfig,
     defaultHasEnv,
@@ -133,16 +133,16 @@ export async function listProfiles(): Promise<ProfileInfo[]> {
     defaultSkills,
     defaultGw,
   ] = await Promise.all([
-    readProfileConfig(HERMES_HOME),
-    fileExists(join(HERMES_HOME, ".env")),
-    fileExists(join(HERMES_HOME, "SOUL.md")),
-    countSkills(HERMES_HOME),
-    isGatewayRunning(HERMES_HOME),
+    readProfileConfig(CLAWD_HOME),
+    fileExists(join(CLAWD_HOME, ".env")),
+    fileExists(join(CLAWD_HOME, "SOUL.md")),
+    countSkills(CLAWD_HOME),
+    isGatewayRunning(CLAWD_HOME),
   ]);
 
   profiles.push({
     name: "default",
-    path: HERMES_HOME,
+    path: CLAWD_HOME,
     isDefault: true,
     isActive: activeName === "default",
     model: defaultConfig.model,
@@ -153,7 +153,7 @@ export async function listProfiles(): Promise<ProfileInfo[]> {
     gatewayRunning: defaultGw,
   });
 
-  // Named profiles under ~/.hermes/profiles/
+  // Named profiles under ~/.clawd/profiles/
   if (existsSync(PROFILES_DIR)) {
     try {
       const dirs = await fs.readdir(PROFILES_DIR);
@@ -166,7 +166,7 @@ export async function listProfiles(): Promise<ProfileInfo[]> {
         const stat = await fs.stat(profilePath);
         if (!stat.isDirectory()) return null;
 
-        // Any subdirectory of ~/.hermes/profiles/ is treated as a profile.
+        // Any subdirectory of ~/.clawd/profiles/ is treated as a profile.
         // We deliberately do NOT require config.yaml or .env to exist —
         // a freshly created profile may have neither yet, and filtering on
         // them silently hides it from the UI (issue #19).
@@ -220,13 +220,13 @@ export function createProfile(
     const args = clone
       ? ["profile", "create", name, "--clone"]
       : ["profile", "create", name];
-    execFileSync(HERMES_PYTHON, hermesCliArgs(args), {
-      cwd: join(HERMES_HOME, "hermes-agent"),
+    execFileSync(CLAWD_PYTHON, clawdCliArgs(args), {
+      cwd: join(CLAWD_HOME, "clawd-agent"),
       env: {
         ...process.env,
         PATH: getEnhancedPath(),
         HOME: homedir(),
-        HERMES_HOME,
+        CLAWD_HOME,
       },
       stdio: "pipe",
       timeout: 30000,
@@ -250,15 +250,15 @@ export function deleteProfile(name: string): {
 
   try {
     execFileSync(
-      HERMES_PYTHON,
-      hermesCliArgs(["profile", "delete", name, "--yes"]),
+      CLAWD_PYTHON,
+      clawdCliArgs(["profile", "delete", name, "--yes"]),
       {
-        cwd: join(HERMES_HOME, "hermes-agent"),
+        cwd: join(CLAWD_HOME, "clawd-agent"),
         env: {
           ...process.env,
           PATH: getEnhancedPath(),
           HOME: homedir(),
-          HERMES_HOME,
+          CLAWD_HOME,
         },
         stdio: "pipe",
         timeout: 30000,
@@ -277,13 +277,13 @@ export function setActiveProfile(name: string): void {
   }
 
   try {
-    execFileSync(HERMES_PYTHON, hermesCliArgs(["profile", "use", name]), {
-      cwd: join(HERMES_HOME, "hermes-agent"),
+    execFileSync(CLAWD_PYTHON, clawdCliArgs(["profile", "use", name]), {
+      cwd: join(CLAWD_HOME, "clawd-agent"),
       env: {
         ...process.env,
         PATH: getEnhancedPath(),
         HOME: homedir(),
-        HERMES_HOME,
+        CLAWD_HOME,
       },
       stdio: "pipe",
       timeout: 10000,

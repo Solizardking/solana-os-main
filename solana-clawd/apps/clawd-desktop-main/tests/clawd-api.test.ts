@@ -59,15 +59,15 @@ const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
   return {
-    TEST_HOME: path.join(os.tmpdir(), `hermes-api-test-${Date.now()}`),
+    TEST_HOME: path.join(os.tmpdir(), `clawd-api-test-${Date.now()}`),
   };
 });
 
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_REPO: "/dev/null",
-  hermesCliArgs: () => ["/dev/null"],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_REPO: "/dev/null",
+  clawdCliArgs: () => ["/dev/null"],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 
@@ -113,7 +113,7 @@ vi.mock("../src/main/process-options", () => ({
 import {
   sendMessage,
   stopHealthPolling as realStopHealthPolling,
-} from "../src/main/hermes";
+} from "../src/main/clawd";
 
 describe("sendMessageViaApi forwards resumeSessionId", () => {
   beforeEach(() => {
@@ -190,7 +190,7 @@ describe("sendMessageViaApi forwards resumeSessionId", () => {
     expect(parsed).not.toHaveProperty("session_id");
   });
 
-  it("sends the X-Hermes-Session-Id request header when resuming", async () => {
+  it("sends the X-Clawd-Session-Id request header when resuming", async () => {
     const testSessionId = "session-abc-123";
 
     await sendMessage(
@@ -213,16 +213,16 @@ describe("sendMessageViaApi forwards resumeSessionId", () => {
     // The gateway resumes an existing session from this request header;
     // the session_id body field is ignored. Without it every request
     // forks a new server-side session (issue #226).
-    expect(headers["X-Hermes-Session-Id"]).toBe(testSessionId);
+    expect(headers["X-Clawd-Session-Id"]).toBe(testSessionId);
   });
 
-  it("generates a fresh `desk-`-prefixed X-Hermes-Session-Id when no resumeSessionId is passed", async () => {
+  it("generates a fresh `desk-`-prefixed X-Clawd-Session-Id when no resumeSessionId is passed", async () => {
     // Pin the new-chat session-id behaviour: instead of letting the
     // gateway fall back to its `_derive_chat_session_id` fingerprint
     // (sha256(system_prompt + first_user_message)[:16]), the desktop
     // generates `desk-<ms>-<uuid>` per fresh chat and ships it via the
     // header. The fingerprint collides across all chats whose first
-    // message is the same — see NousResearch/hermes-agent#7484.
+    // message is the same — see NousResearch/clawd-agent#7484.
     await sendMessage(
       "hello",
       {
@@ -240,13 +240,13 @@ describe("sendMessageViaApi forwards resumeSessionId", () => {
     expect(chatRequest).toBeDefined();
     const headers = chatRequest!.options.headers as Record<string, string>;
 
-    expect(headers).toHaveProperty("X-Hermes-Session-Id");
-    expect(headers["X-Hermes-Session-Id"]).toMatch(
+    expect(headers).toHaveProperty("X-Clawd-Session-Id");
+    expect(headers["X-Clawd-Session-Id"]).toMatch(
       /^desk-\d{13,}-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
     );
   });
 
-  it("generates a different X-Hermes-Session-Id on each fresh send (no fingerprint collision)", async () => {
+  it("generates a different X-Clawd-Session-Id on each fresh send (no fingerprint collision)", async () => {
     // The same first message twice MUST NOT produce the same session
     // id — the whole point of the fix.
     await sendMessage(
@@ -268,7 +268,7 @@ describe("sendMessageViaApi forwards resumeSessionId", () => {
     expect(chatRequests.length).toBeGreaterThanOrEqual(2);
     const ids = chatRequests.map(
       (r) =>
-        (r.options.headers as Record<string, string>)["X-Hermes-Session-Id"],
+        (r.options.headers as Record<string, string>)["X-Clawd-Session-Id"],
     );
     expect(ids[0]).toBeTruthy();
     expect(ids[1]).toBeTruthy();

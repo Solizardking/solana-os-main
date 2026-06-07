@@ -27,13 +27,13 @@ import { tmpdir } from "os";
  * nothing.
  */
 
-const TEST_DIR = join(tmpdir(), `hermes-test-set-model-base-url-${Date.now()}`);
+const TEST_DIR = join(tmpdir(), `clawd-test-set-model-base-url-${Date.now()}`);
 
 async function importConfigWithHome(
   home: string,
 ): Promise<typeof import("../src/main/config")> {
   vi.resetModules();
-  process.env.HERMES_HOME = home;
+  process.env.CLAWD_HOME = home;
   return await import("../src/main/config");
 }
 
@@ -42,7 +42,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   rmSync(TEST_DIR, { recursive: true, force: true });
 });

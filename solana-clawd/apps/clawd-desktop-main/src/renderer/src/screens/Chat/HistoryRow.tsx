@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import { useI18n } from "../../components/useI18n";
 import { AttachmentChip } from "../../components/AttachmentChip";
-import { HermesAvatar, AvatarSpacer } from "./MessageRow";
+import { ClawdAvatar, AvatarSpacer } from "./MessageRow";
 import type {
   Attachment,
   ReasoningMessage,
@@ -80,7 +80,7 @@ export const ReasoningRow = memo(function ReasoningRow({
         showAvatar ? "" : " chat-message--grouped"
       }`}
     >
-      {showAvatar ? <HermesAvatar /> : <AvatarSpacer />}
+      {showAvatar ? <ClawdAvatar /> : <AvatarSpacer />}
       <CollapsibleSection
         variant="reasoning"
         header={
@@ -125,7 +125,7 @@ export const ToolCallRow = memo(function ToolCallRow({
         showAvatar ? "" : " chat-message--grouped"
       }`}
     >
-      {showAvatar ? <HermesAvatar /> : <AvatarSpacer />}
+      {showAvatar ? <ClawdAvatar /> : <AvatarSpacer />}
       <CollapsibleSection
         variant="tool-call"
         header={
@@ -169,7 +169,7 @@ export const ToolResultRow = memo(function ToolResultRow({
         showAvatar ? "" : " chat-message--grouped"
       }`}
     >
-      {showAvatar ? <HermesAvatar /> : <AvatarSpacer />}
+      {showAvatar ? <ClawdAvatar /> : <AvatarSpacer />}
       <CollapsibleSection
         variant="tool-result"
         header={

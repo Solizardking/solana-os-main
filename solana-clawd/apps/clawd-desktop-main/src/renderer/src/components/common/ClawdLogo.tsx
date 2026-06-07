@@ -1,15 +1,15 @@
 import icon from "../../assets/icon.png";
 
-function HermesLogo({ size = 32 }: { size?: number }): React.JSX.Element {
+function ClawdLogo({ size = 32 }: { size?: number }): React.JSX.Element {
   return (
     <img
       src={icon}
       width={size}
       height={size}
       className="rounded-xl"
-      alt="Hermes"
+      alt="Clawd"
     />
   );
 }
 
-export default HermesLogo;
+export default ClawdLogo;

@@ -23,17 +23,17 @@ import {
   verifyInstall,
   runInstall,
   inspectInstallTarget,
-  validateHermesHome,
-  setHermesHomeOverride,
-  getHermesVersion,
+  validateClawdHome,
+  setClawdHomeOverride,
+  getClawdVersion,
   clearVersionCache,
-  runHermesDoctor,
-  runHermesUpdate,
+  runClawdDoctor,
+  runClawdUpdate,
   checkOpenClawdExists,
   runClawMigrate,
-  runHermesBackup,
-  runHermesImport,
-  runHermesDump,
+  runClawdBackup,
+  runClawdImport,
+  runClawdDump,
   listMcpServers,
   discoverMemoryProviders,
   readLogs,
@@ -41,10 +41,10 @@ import {
 } from "./installer";
 import { updaterLogger } from "./updater-log";
 import {
-  runHermesAuthLogin,
-  cancelHermesAuthLogin,
+  runClawdAuthLogin,
+  cancelClawdAuthLogin,
   detectDeviceCode,
-} from "./hermes-auth";
+} from "./clawd-auth";
 import {
   isRemoteMode,
   isRemoteOnlyMode,
@@ -60,7 +60,7 @@ import {
   ensureSshTunnelIfNeeded,
   setSshRemoteApiKey,
   getRemoteAuthHeader,
-} from "./hermes";
+} from "./clawd";
 import {
   startSshTunnel,
   stopSshTunnel,
@@ -90,7 +90,7 @@ import {
   setEnvValue,
   getConfigValue,
   setConfigValue,
-  getHermesHome,
+  getClawdHome,
   getModelConfig,
   setModelConfig,
   getCredentialPool,
@@ -212,7 +212,7 @@ import {
   sshSetEnvValue,
   sshGetConfigValue,
   sshSetConfigValue,
-  sshGetHermesHome,
+  sshGetClawdHome,
   sshGetModelConfig,
   sshSetModelConfig,
   sshListSessions,
@@ -225,7 +225,7 @@ import {
   sshStartGateway,
   sshStopGateway,
   sshReadRemoteApiKey,
-  sshGetHermesVersion,
+  sshGetClawdVersion,
   sshReadLogs,
   sshGetPlatformEnabled,
   sshSetPlatformEnabled,
@@ -436,47 +436,47 @@ function setupIPC(): void {
 
   // Pre-install inspection + "use an existing installation" (issue #272).
   ipcMain.handle("inspect-install-target", () => inspectInstallTarget());
-  ipcMain.handle("validate-hermes-home", (_event, dir: string) =>
-    validateHermesHome(dir),
+  ipcMain.handle("validate-clawd-home", (_event, dir: string) =>
+    validateClawdHome(dir),
   );
-  ipcMain.handle("adopt-hermes-home", (_event, dir: string) => {
-    if (!validateHermesHome(dir)) return false;
-    // Persist the choice only. HERMES_HOME is resolved once at module
+  ipcMain.handle("adopt-clawd-home", (_event, dir: string) => {
+    if (!validateClawdHome(dir)) return false;
+    // Persist the choice only. CLAWD_HOME is resolved once at module
     // load, so the override takes effect on the next launch — the renderer
     // asks the user to restart. (An app-driven relaunch is unreliable
     // under the dev server, which is torn down with the process.)
-    setHermesHomeOverride(dir);
+    setClawdHomeOverride(dir);
     return true;
   });
   ipcMain.handle("quit-app", () => app.quit());
 
-  // Hermes engine info
-  ipcMain.handle("get-hermes-version", async () => {
+  // Clawd engine info
+  ipcMain.handle("get-clawd-version", async () => {
     const conn = getConnectionConfig();
-    if (conn.mode === "ssh" && conn.ssh) return sshGetHermesVersion(conn.ssh);
-    return getHermesVersion();
+    if (conn.mode === "ssh" && conn.ssh) return sshGetClawdVersion(conn.ssh);
+    return getClawdVersion();
   });
-  ipcMain.handle("refresh-hermes-version", async () => {
+  ipcMain.handle("refresh-clawd-version", async () => {
     const conn = getConnectionConfig();
-    if (conn.mode === "ssh" && conn.ssh) return sshGetHermesVersion(conn.ssh);
+    if (conn.mode === "ssh" && conn.ssh) return sshGetClawdVersion(conn.ssh);
     clearVersionCache();
-    return getHermesVersion();
+    return getClawdVersion();
   });
-  ipcMain.handle("run-hermes-doctor", () => {
+  ipcMain.handle("run-clawd-doctor", () => {
     const conn = getConnectionConfig();
     if (conn.mode === "ssh" && conn.ssh) return sshRunDoctor(conn.ssh);
-    return runHermesDoctor();
+    return runClawdDoctor();
   });
-  ipcMain.handle("run-hermes-update", async (event) => {
+  ipcMain.handle("run-clawd-update", async (event) => {
     try {
       const conn = getConnectionConfig();
       if (conn.mode === "ssh" && conn.ssh) {
         event.sender.send("install-progress", {
           step: 1,
           totalSteps: 1,
-          title: "Updating remote Hermes Agent",
-          detail: "Running hermes update over SSH...",
-          log: "Running hermes update over SSH...\n",
+          title: "Updating remote Clawd Agent",
+          detail: "Running clawd update over SSH...",
+          log: "Running clawd update over SSH...\n",
         });
         await sshRunUpdate(conn.ssh);
         await sshStartGateway(conn.ssh);
@@ -485,7 +485,7 @@ function setupIPC(): void {
         setSshRemoteApiKey(key);
         return { success: true };
       }
-      await runHermesUpdate((progress: InstallProgress) => {
+      await runClawdUpdate((progress: InstallProgress) => {
         event.sender.send("install-progress", progress);
       });
       return { success: true };
@@ -507,7 +507,7 @@ function setupIPC(): void {
     }
   });
 
-  // OAuth provider sign-in — spawns `hermes auth add <provider> --type
+  // OAuth provider sign-in — spawns `clawd auth add <provider> --type
   // oauth`, streaming the CLI's output to the renderer's sign-in modal.
   ipcMain.handle("oauth-login", (event, provider: string, profile?: string) => {
     // Codex uses a device-code flow: it prints a URL + code instead
@@ -515,10 +515,10 @@ function setupIPC(): void {
     // open the page and pre-copy the code so the user just pastes.
     let buffer = "";
     let deviceHandled = false;
-    return runHermesAuthLogin(
+    return runClawdAuthLogin(
       provider,
       (chunk) => {
-        // The user can close the modal mid-flow before cancelHermesAuthLogin
+        // The user can close the modal mid-flow before cancelClawdAuthLogin
         // tears down the subprocess; any send on a destroyed sender throws.
         if (event.sender.isDestroyed()) return;
         event.sender.send("oauth-login-progress", chunk);
@@ -538,7 +538,7 @@ function setupIPC(): void {
       profile,
     );
   });
-  ipcMain.handle("oauth-login-cancel", () => cancelHermesAuthLogin());
+  ipcMain.handle("oauth-login-cancel", () => cancelClawdAuthLogin());
 
   // Configuration (profile-aware)
   ipcMain.handle("get-locale", () => getAppLocale());
@@ -562,7 +562,7 @@ function setupIPC(): void {
   // Config-health audit + per-issue auto-fix. The renderer renders a
   // dismissible banner above the chat input and a full report in the
   // Settings → Diagnose section. Auto-fixes are additive only — never
-  // delete; always log to ~/.hermes/logs/config-fixes.log.
+  // delete; always log to ~/.clawd/logs/config-fixes.log.
   ipcMain.handle("get-config-health", (_event, profile?: string) => {
     return runConfigHealthCheck(profile);
   });
@@ -635,11 +635,11 @@ function setupIPC(): void {
     },
   );
 
-  ipcMain.handle("get-hermes-home", (_event, profile?: string) => {
+  ipcMain.handle("get-clawd-home", (_event, profile?: string) => {
     const conn = getConnectionConfig();
     if (conn.mode === "ssh" && conn.ssh)
-      return sshGetHermesHome(conn.ssh, profile);
-    return getHermesHome(profile);
+      return sshGetClawdHome(conn.ssh, profile);
+    return getClawdHome(profile);
   });
 
   ipcMain.handle("get-model-config", (_event, profile?: string) => {
@@ -923,7 +923,7 @@ function setupIPC(): void {
                 .trim()
                 .slice(0, 80);
               new Notification({
-                title: "Hermes Agent",
+                title: "Clawd Agent",
                 body: preview || "Response ready",
               }).show();
             }
@@ -935,7 +935,7 @@ function setupIPC(): void {
             // Notify on error too if window not focused
             if (mainWindow && !mainWindow.isFocused()) {
               new Notification({
-                title: "Hermes Agent — Error",
+                title: "Clawd Agent — Error",
                 body: error.slice(0, 100),
               }).show();
             }
@@ -1063,7 +1063,7 @@ function setupIPC(): void {
     if (conn.mode === "remote") {
       // The remote server runs its own gateway; nothing to start locally.
       // Without this guard we'd fall through to `startGateway()` and
-      // spawn a non-existent local hermes-agent (issue #266).
+      // spawn a non-existent local clawd-agent (issue #266).
       return false;
     }
     return startGateway();
@@ -1678,20 +1678,20 @@ function setupIPC(): void {
   });
 
   // Backup / Import
-  ipcMain.handle("run-hermes-backup", (_event, profile?: string) =>
-    runHermesBackup(profile),
+  ipcMain.handle("run-clawd-backup", (_event, profile?: string) =>
+    runClawdBackup(profile),
   );
   ipcMain.handle(
-    "run-hermes-import",
+    "run-clawd-import",
     (_event, archivePath: string, profile?: string) =>
-      runHermesImport(archivePath, profile),
+      runClawdImport(archivePath, profile),
   );
 
   // Debug dump
-  ipcMain.handle("run-hermes-dump", () => {
+  ipcMain.handle("run-clawd-dump", () => {
     const conn = getConnectionConfig();
     if (conn.mode === "ssh" && conn.ssh) return sshRunDump(conn.ssh);
-    return runHermesDump();
+    return runClawdDump();
   });
 
   // MCP servers
@@ -1819,15 +1819,15 @@ function buildMenu(): void {
       label: "Help",
       submenu: [
         {
-          label: "Hermes Agent on GitHub",
+          label: "Clawd Agent on GitHub",
           click: (): void => {
-            openExternalUrl("https://github.com/NousResearch/hermes-agent/");
+            openExternalUrl("https://github.com/NousResearch/clawd-agent/");
           },
         },
         {
           label: "Report an Issue",
           click: (): void => {
-            openExternalUrl("https://github.com/fathah/hermes-desktop/issues");
+            openExternalUrl("https://github.com/fathah/clawd-desktop/issues");
           },
         },
       ],

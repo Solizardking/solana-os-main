@@ -25,8 +25,8 @@ interface Report {
   summary: { errors: number; warnings: number; infos: number };
 }
 
-const DISMISS_STORAGE_KEY = "hermes-config-health-dismissed";
-export const CONFIG_HEALTH_UPDATED_EVENT = "hermes-config-health-updated";
+const DISMISS_STORAGE_KEY = "clawd-config-health-dismissed";
+export const CONFIG_HEALTH_UPDATED_EVENT = "clawd-config-health-updated";
 
 function readDismissedReportStamp(): number {
   try {
@@ -67,7 +67,7 @@ export function ConfigHealthBanner({
     let cancelled = false;
     (async (): Promise<void> => {
       try {
-        const r = (await window.hermesAPI.getConfigHealth(profile)) as
+        const r = (await window.clawdAPI.getConfigHealth(profile)) as
           | (Report & { ranAt: number })
           | null;
         if (!cancelled) setReport(r);

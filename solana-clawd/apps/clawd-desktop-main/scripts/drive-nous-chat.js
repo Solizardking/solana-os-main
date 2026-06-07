@@ -2,7 +2,7 @@
  * Drive a Nous Portal end-to-end chat round-trip via the dev electron.
  *
  *   1. Backup config.yaml + remember active model.
- *   2. Switch model.provider → "nous", model.default → "Hermes-4-405B"
+ *   2. Switch model.provider → "nous", model.default → "Clawd-4-405B"
  *      (or the smallest available Nous model name; the engine resolves
  *      it). Clear base_url so the engine uses portal's inference URL
  *      from auth.json.
@@ -19,12 +19,12 @@ const CONFIG = path.join(
   os.homedir(),
   "AppData",
   "Local",
-  "hermes",
+  "clawd",
   "config.yaml",
 );
 const CONFIG_BAK = CONFIG + ".nous-chat-bk";
 
-const NOUS_MODEL = process.env.NOUS_MODEL || "Hermes-4-405B";
+const NOUS_MODEL = process.env.NOUS_MODEL || "Clawd-4-405B";
 const PROMPT =
   process.env.PROMPT ||
   "Reply with exactly two words: 'NOUS WORKS'. Nothing else.";
@@ -58,7 +58,7 @@ const PROMPT =
 
     // Bust the main-process model-config cache by writing it through IPC
     await page.evaluate(async (model) => {
-      await window.hermesAPI.setModelConfig("nous", model, "");
+      await window.clawdAPI.setModelConfig("nous", model, "");
     }, NOUS_MODEL);
     await new Promise((r) => setTimeout(r, 400));
 
@@ -94,7 +94,7 @@ const PROMPT =
         bubbleCount: bubbles.length,
         text: last ? (last.textContent || "").trim() : null,
         anyError: Array.from(bubbles).some((b) =>
-          /^Error:|Internal server error|Hermes is not logged into/i.test(
+          /^Error:|Internal server error|Clawd is not logged into/i.test(
             (b.textContent || "").trim(),
           ),
         ),

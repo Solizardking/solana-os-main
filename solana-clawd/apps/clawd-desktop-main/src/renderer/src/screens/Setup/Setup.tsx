@@ -60,16 +60,16 @@ function Setup({
 
     try {
       if (provider.needsKey && provider.envKey) {
-        await window.hermesAPI.setEnv(provider.envKey, apiKey.trim());
+        await window.clawdAPI.setEnv(provider.envKey, apiKey.trim());
       } else if (isLocal && apiKey.trim()) {
         const envKey = resolveCustomEnvKey(baseUrl.trim());
-        await window.hermesAPI.setEnv(envKey, apiKey.trim());
+        await window.clawdAPI.setEnv(envKey, apiKey.trim());
       }
 
       const configProvider = isLocal ? "custom" : provider.configProvider;
       const configBaseUrl = isLocal ? baseUrl.trim() : provider.baseUrl;
       const configModel = modelName.trim() || "";
-      await window.hermesAPI.setModelConfig(
+      await window.clawdAPI.setModelConfig(
         configProvider,
         configModel,
         configBaseUrl,
@@ -238,7 +238,7 @@ function Setup({
 
             <button
               className="setup-link"
-              onClick={() => window.hermesAPI.openExternal(provider.url)}
+              onClick={() => window.clawdAPI.openExternal(provider.url)}
             >
               {t("setup.noKeyHint")}
               <ExternalLink size={12} />

@@ -15,7 +15,7 @@ import { findTopLevelKey, findYamlPath } from "../src/main/ssh-remote";
 // pure helpers; the SSH wrappers are thin glue over them.
 
 describe("findYamlPath — dotted paths against remote-shaped config.yaml", () => {
-  it("resolves model.default against typical hermes config", () => {
+  it("resolves model.default against typical clawd config", () => {
     const content = [
       "model:",
       '  default: "nemotron-120b"',

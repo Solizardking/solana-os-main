@@ -1,20 +1,20 @@
-<img width="100%" alt="HERMES DESKTOP" src="previews/header.webp" />
+<img width="100%" alt="CLAWD DESKTOP" src="previews/header.webp" />
 
 <br/>
 <p align="center">
-  <a href="https://hermes-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-hermes--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
-  <a href="https://t.me/hermes_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/hermes-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
-  <a href="https://hermesagents.cc/"><img src="https://img.shields.io/badge/Download-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
-<a href="https://github.com/fathah/hermes-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/hermes-desktop?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
+  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Docs-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentation"></a>
+  <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
+  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License: MIT"></a>
+  <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Download-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
+<a href="https://github.com/fathah/clawd-desktop/stargazers">
+  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Stars" alt="Stars">
 </a>
-  <a href="https://github.com/fathah/hermes-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/hermes-desktop/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
+  <a href="https://github.com/fathah/clawd-desktop/releases/">
+  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Total%20Downloads" alt="Downloads">
 </a>
 </p>
 
-> **本プロジェクトは現在も活発に開発中です。** 機能は変更される可能性があり、一部が動作しなくなることもあります。問題に遭遇した場合や、アイデアがある場合は[Issue を作成してください](https://github.com/fathah/hermes-desktop/issues)。コントリビューションも歓迎しています！
+> **本プロジェクトは現在も活発に開発中です。** 機能は変更される可能性があり、一部が動作しなくなることもあります。問題に遭遇した場合や、アイデアがある場合は[Issue を作成してください](https://github.com/fathah/clawd-desktop/issues)。コントリビューションも歓迎しています！
 
 ## 言語
 
@@ -22,13 +22,13 @@
 - 简体中文: `README.zh-CN.md`
 - 日本語: `README.ja-JP.md`
 
-Hermes Desktop は、[Hermes Agent](https://github.com/NousResearch/hermes-agent)（ツール使用、マルチプラットフォームメッセージング、クローズドな学習ループを備えた、自己改善型 AI アシスタント）のインストール・設定・チャットを行うためのネイティブデスクトップアプリです。
+Clawd Desktop は、[Clawd Agent](https://github.com/NousResearch/clawd-agent)（ツール使用、マルチプラットフォームメッセージング、クローズドな学習ループを備えた、自己改善型 AI アシスタント）のインストール・設定・チャットを行うためのネイティブデスクトップアプリです。
 
-CLI を手作業で管理する代わりに、本アプリではインストール、プロバイダのセットアップ、日常的な利用までを一箇所でガイドします。公式の Hermes インストールスクリプトを使用し、Hermes を `~/.hermes` に保存し、チャット、セッション、プロファイル、メモリ、スキル、ツール、スケジューリング、メッセージングゲートウェイなどを GUI で操作できます。
+CLI を手作業で管理する代わりに、本アプリではインストール、プロバイダのセットアップ、日常的な利用までを一箇所でガイドします。公式の Clawd インストールスクリプトを使用し、Clawd を `~/.clawd` に保存し、チャット、セッション、プロファイル、メモリ、スキル、ツール、スケジューリング、メッセージングゲートウェイなどを GUI で操作できます。
 
 ## インストール
 
-<a href="https://hermesagents.cc/"><img width="380" alt="Download Now" src="previews/download.webp" /></a>
+<a href="https://clawdagents.cc/"><img width="380" alt="Download Now" src="previews/download.webp" /></a>
 
 ### Windows
 
@@ -37,17 +37,17 @@ CLI を手作業で管理する代わりに、本アプリではインストー�
 > **WSL ユーザーへ:** インストーラが `Switching to root user to install dependencies...` で停止する場合、Playwright が sudo パスワードを待っていますが、読み取るための TTY がありません。インストール中だけパスワードなしの sudo を許可し、完了後に元へ戻してください。
 >
 > ```bash
-> echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/hermes-install
+> echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/clawd-install
 > # …インストーラを再実行し、完了したら:
-> sudo rm /etc/sudoers.d/hermes-install
+> sudo rm /etc/sudoers.d/clawd-install
 > ```
 >
-> [#109](https://github.com/fathah/hermes-desktop/issues/109) で追跡しています。
+> [#109](https://github.com/fathah/clawd-desktop/issues/109) で追跡しています。
 
 ### Fedora (RPM)
 
 ```bash
-sudo dnf install ./hermes-desktop-<version>.rpm
+sudo dnf install ./clawd-desktop-<version>.rpm
 ```
 
 > **Fedora ユーザーへ:** `.rpm` は GPG 署名されていません。署名検証を強制する設定の場合は、インストールコマンドに `--nogpgcheck` を追加してください。`.rpm` ビルドは自動アップデートに対応していません（`electron-updater` の制約）。アップデートする場合は新しい `.rpm` を再インストールしてください。
@@ -83,21 +83,21 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 
 ## 機能
 
-- **初回起動時のガイド付きインストール** — Hermes Agent のインストールを進捗表示と依存関係解決付きで案内します
-- **ローカル / リモートバックエンド** — Hermes をローカル (`127.0.0.1:8642`) で実行するか、URL + API キーを使ってリモートの Hermes API サーバーに接続できます
+- **初回起動時のガイド付きインストール** — Clawd Agent のインストールを進捗表示と依存関係解決付きで案内します
+- **ローカル / リモートバックエンド** — Clawd をローカル (`127.0.0.1:8642`) で実行するか、URL + API キーを使ってリモートの Clawd API サーバーに接続できます
 - **マルチプロバイダ対応** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, Hugging Face, Groq、そしてローカルの OpenAI 互換エンドポイント (LM Studio, Ollama, vLLM, llama.cpp)
 - **ストリーミングチャット UI** — SSE ストリーミング、ツール進捗インジケータ、Markdown レンダリング、シンタックスハイライト対応
 - **トークン使用量のトラッキング** — プロンプト / 出力トークン数とコストをチャットフッターにリアルタイム表示。`/usage` スラッシュコマンドも利用可能
 - **22 種類のスラッシュコマンド** — `/new`, `/clear`, `/fast`, `/web`, `/image`, `/browse`, `/code`, `/shell`, `/usage`, `/help`, `/tools`, `/skills`, `/model`, `/memory`, `/persona`, `/version`, `/compact`, `/compress`, `/undo`, `/retry`, `/debug`, `/status` など
 - **セッション管理** — 全文検索 (SQLite FTS5)、日付別の履歴表示、会話の再開と横断検索
-- **プロファイル切り替え** — Hermes 環境を分離した状態で作成・削除・切り替え可能
+- **プロファイル切り替え** — Clawd 環境を分離した状態で作成・削除・切り替え可能
 - **14 のツールセット** — Web、ブラウザ、ターミナル、ファイル、コード実行、ビジョン、画像生成、TTS、スキル、メモリ、セッション検索、Clarify、Delegation、MoA、タスクプランニング
 - **メモリシステム** — メモリエントリの閲覧 / 編集、ユーザープロファイルメモリ、容量トラッキング、検出可能なメモリプロバイダ (Honcho, Hindsight, Mem0, RetainDB, Supermemory, ByteRover) に対応
 - **ペルソナエディタ** — エージェントの SOUL.md パーソナリティを編集・リセット可能
 - **保存済みモデル** — プロバイダごとのモデル設定を CRUD で管理
 - **スケジュールタスク** — 分単位 / 時間単位 / 日単位 / 週単位 / カスタム cron に対応する cron ジョブビルダー（15 種類の配信先）
 - **16 種類のメッセージングゲートウェイ** — Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email (IMAP/SMTP), SMS (Twilio/Vonage), iMessage (BlueBubbles), DingTalk, Feishu/Lark, WeCom, WeChat (iLink Bot), Webhooks, Home Assistant
-- **Hermes Office (Claw3d)** — ビジュアルな 3D インターフェース。開発サーバーとアダプタの管理機能を備える
+- **Clawd Office (Claw3d)** — ビジュアルな 3D インターフェース。開発サーバーとアダプタの管理機能を備える
 - **バックアップ、インポート、デバッグダンプ** — 設定画面からデータの完全なバックアップ / リストアとシステム診断が可能
 - **ログビューア** — ゲートウェイとエージェントのログを設定画面から直接閲覧
 - **自動アップデーター** — electron-updater を使ったアップデートチェックとインストール
@@ -108,11 +108,11 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 
 初回起動時、アプリは次の手順で動作します。
 
-1. Hermes を**ローカル**で動かすか、**リモート**の Hermes API サーバーに接続するかを尋ねます。
-2. **ローカルモード:** `~/.hermes` に Hermes が既にインストールされているかを確認します。なければ、依存関係 (Git, uv, Python 3.11+) を解決しつつ公式インストーラを実行します。
+1. Clawd を**ローカル**で動かすか、**リモート**の Clawd API サーバーに接続するかを尋ねます。
+2. **ローカルモード:** `~/.clawd` に Clawd が既にインストールされているかを確認します。なければ、依存関係 (Git, uv, Python 3.11+) を解決しつつ公式インストーラを実行します。
 3. **リモートモード:** リモート API の URL と API キーを入力させ、接続を検証し、ローカルインストールをスキップします。
 4. API プロバイダまたはローカルモデルのエンドポイントを尋ねます。
-5. プロバイダ設定と API キーを Hermes の設定ファイルに保存します。
+5. プロバイダ設定と API キーを Clawd の設定ファイルに保存します。
 6. セットアップが完了するとメインのワークスペースを起動します。
 
 ローカルモードでは、チャットリクエストは `http://127.0.0.1:8642` 経由で SSE ストリーミングされます。リモートモードでは、設定したリモート URL に対して同じストリーミングプロトコルで通信します。デスクトップアプリはストリームをリアルタイムで解析し、ツール進捗、Markdown コンテンツ、トークン使用量を順次レンダリングします。
@@ -123,7 +123,7 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 | ------------- | ------------------------------------------------------------------------------------------ |
 | **Chat**      | ストリーミング会話 UI。スラッシュコマンド、ツール進捗、トークントラッキングに対応         |
 | **Sessions**  | 過去の会話の閲覧、検索、再開                                                               |
-| **Agents**    | Hermes プロファイルの作成、削除、切り替え                                                  |
+| **Agents**    | Clawd プロファイルの作成、削除、切り替え                                                  |
 | **Skills**    | バンドル済み / インストール済みスキルの閲覧、インストール、管理                            |
 | **Models**    | プロバイダごとに保存されたモデル設定の管理                                                 |
 | **Memory**    | メモリエントリとユーザープロファイルの閲覧 / 編集、メモリプロバイダの設定                  |
@@ -167,8 +167,8 @@ Exa Search、Parallel API、Tavily、Firecrawl、FAL.ai (画像生成)、Honcho�
 ### 前提条件
 
 - Node.js と npm
-- Hermes インストーラ用の Unix 系シェル環境
-- 初回起動時に Hermes をダウンロードするためのネットワークアクセス
+- Clawd インストーラ用の Unix 系シェル環境
+- 初回起動時に Clawd をダウンロードするためのネットワークアクセス
 
 ### 依存関係のインストール
 
@@ -213,7 +213,7 @@ npm run build:rpm    # Fedora/RHEL .rpm のみ
 
 ## 初回セットアップ
 
-アプリを初めて開くと、既存の Hermes インストールを検出するか、インストールを提案します。
+アプリを初めて開くと、既存の Clawd インストールを検出するか、インストールを提案します。
 
 UI でサポートされているセットアップパス:
 
@@ -229,15 +229,15 @@ UI でサポートされているセットアップパス:
 - vLLM
 - llama.cpp
 
-Hermes のファイルは以下の場所で管理されます。
+Clawd のファイルは以下の場所で管理されます。
 
-- `~/.hermes`
-- `~/.hermes/.env`
-- `~/.hermes/config.yaml`
-- `~/.hermes/hermes-agent`
-- `~/.hermes/profiles/` — 名前付きプロファイルディレクトリ
-- `~/.hermes/state.db` — セッション履歴データベース
-- `~/.hermes/cron/jobs.json` — スケジュールタスク
+- `~/.clawd`
+- `~/.clawd/.env`
+- `~/.clawd/config.yaml`
+- `~/.clawd/clawd-agent`
+- `~/.clawd/profiles/` — 名前付きプロファイルディレクトリ
+- `~/.clawd/state.db` — セッション履歴データベース
+- `~/.clawd/cron/jobs.json` — スケジュールタスク
 
 ## 技術スタック
 
@@ -252,17 +252,17 @@ Hermes のファイルは以下の場所で管理されます。
 
 ## 補足
 
-- 本デスクトップアプリはエージェントの動作やツール実行を上流の Hermes Agent プロジェクトに依存しています。
-- 内蔵インストーラは公式の Hermes インストールスクリプトを `--skip-setup` 付きで実行し、その後 GUI でプロバイダ設定を完了します。
+- 本デスクトップアプリはエージェントの動作やツール実行を上流の Clawd Agent プロジェクトに依存しています。
+- 内蔵インストーラは公式の Clawd インストールスクリプトを `--skip-setup` 付きで実行し、その後 GUI でプロバイダ設定を完了します。
 - ローカルモデルプロバイダには API キーは不要ですが、互換サーバーが事前に起動している必要があります。
 - ネットワーク制限のある環境向けに、代替の npm レジストリ経路をサポートしています。
 
 ## コントリビューション
 
-コントリビューションを歓迎します！始め方は[コントリビューションガイド](CONTRIBUTING.md)をご覧ください。どこから手を付ければよいか分からない場合は、[Open Issues](https://github.com/NousResearch/hermes-desktop/issues) を確認してください。バグを見つけた、または機能要望がある場合は [Issue を作成してください](https://github.com/NousResearch/hermes-desktop/issues/new)。
+コントリビューションを歓迎します！始め方は[コントリビューションガイド](CONTRIBUTING.md)をご覧ください。どこから手を付ければよいか分からない場合は、[Open Issues](https://github.com/NousResearch/clawd-desktop/issues) を確認してください。バグを見つけた、または機能要望がある場合は [Issue を作成してください](https://github.com/NousResearch/clawd-desktop/issues/new)。
 
 ## 関連プロジェクト
 
-コアエージェント、ドキュメント、CLI ワークフローについては、Hermes Agent 本体のリポジトリを参照してください。
+コアエージェント、ドキュメント、CLI ワークフローについては、Clawd Agent 本体のリポジトリを参照してください。
 
-- https://github.com/NousResearch/hermes-agent
+- https://github.com/NousResearch/clawd-agent

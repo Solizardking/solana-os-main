@@ -23,7 +23,7 @@ export default {
   startingClaw3dService: "Claw3D servisi başlatılıyor...",
   clickToStart: 'Claw3D\'yi çalıştırmak için "Başlat"a tıklayın',
   setupDesc1:
-    "Claw3D, Hermes ajanlarınız için 3B görselleştirme ortamıdır. Ajanlarınızı interaktif bir ofis alanında çalışırken görmenizi sağlar.",
+    "Claw3D, Clawd ajanlarınız için 3B görselleştirme ortamıdır. Ajanlarınızı interaktif bir ofis alanında çalışırken görmenizi sağlar.",
   setupDesc2:
     "Claw3D'yi otomatik olarak indirip kurmak için aşağıya tıklayın. Bu, depoyu kopyalayacak ve tüm bağımlılıkları yükleyecektir.",
 } as const;

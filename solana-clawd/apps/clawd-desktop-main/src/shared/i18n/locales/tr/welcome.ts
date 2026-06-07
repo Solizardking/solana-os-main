@@ -1,5 +1,5 @@
 export default {
-  title: "Hermes'e Hoş Geldiniz",
+  title: "Clawd'e Hoş Geldiniz",
   subtitle:
     "Makinenizde yerel olarak çalışan, kendini geliştiren yapay zeka asistanınız. Gizli, güçlü ve sürekli öğrenen.",
   installIssueTitle: "Kurulum Sorunu",
@@ -11,9 +11,9 @@ export default {
   installSizeHint: "Bu, gerekli bileşenleri kuracaktır (~2 GB)",
   copyInstallCommand: "Kurulum komutunu kopyala",
   dividerOr: "veya",
-  connectRemote: "Uzak Hermes'e Bağlan",
-  connectRemoteTitle: "Uzak Hermes'e Bağlan",
-  connectRemoteSubtitle: "Çalışan bir Hermes API sunucusunun URL'sini girin.",
+  connectRemote: "Uzak Clawd'e Bağlan",
+  connectRemoteTitle: "Uzak Clawd'e Bağlan",
+  connectRemoteSubtitle: "Çalışan bir Clawd API sunucusunun URL'sini girin.",
   remoteServerUrl: "Sunucu URL",
   remoteApiKey: "API Anahtarı (isteğe bağlı)",
   remoteApiKeyPlaceholder: "Bearer token (API_SERVER_KEY)",

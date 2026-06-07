@@ -20,9 +20,9 @@ function Memory({ profile }: { profile?: string }): React.JSX.Element {
 
   const loadData = useCallback(async () => {
     const [d, provider, provs] = await Promise.all([
-      window.hermesAPI.readMemory(profile),
-      window.hermesAPI.getConfig("memory.provider", profile),
-      window.hermesAPI.discoverMemoryProviders(profile),
+      window.clawdAPI.readMemory(profile),
+      window.clawdAPI.getConfig("memory.provider", profile),
+      window.clawdAPI.discoverMemoryProviders(profile),
     ]);
     setData(d as MemoryData);
     setMemoryProvider(provider);

@@ -13,17 +13,17 @@ const { TEST_HOME } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const os = require("os");
   return {
-    TEST_HOME: path.join(os.tmpdir(), `hermes-profiles-test-${Date.now()}`),
+    TEST_HOME: path.join(os.tmpdir(), `clawd-profiles-test-${Date.now()}`),
   };
 });
 
-// Mock installer module so HERMES_HOME points at our temp dir before
+// Mock installer module so CLAWD_HOME points at our temp dir before
 // profiles.ts evaluates the `PROFILES_DIR` constant from it.
 vi.mock("../src/main/installer", () => ({
-  HERMES_HOME: TEST_HOME,
-  HERMES_PYTHON: "/usr/bin/python3",
-  HERMES_SCRIPT: "/dev/null",
-  hermesCliArgs: (args: string[] = []) => ["/dev/null", ...args],
+  CLAWD_HOME: TEST_HOME,
+  CLAWD_PYTHON: "/usr/bin/python3",
+  CLAWD_SCRIPT: "/dev/null",
+  clawdCliArgs: (args: string[] = []) => ["/dev/null", ...args],
   getEnhancedPath: () => process.env.PATH || "",
 }));
 
@@ -123,7 +123,7 @@ describe("listProfiles", () => {
     expect(profiles.find((p) => p.name === "UpperCase")).toBeUndefined();
   });
 
-  it("returns the default profile even when ~/.hermes/profiles/ is empty", async () => {
+  it("returns the default profile even when ~/.clawd/profiles/ is empty", async () => {
     const profiles = await listProfiles();
     expect(profiles.find((p) => p.isDefault)).toBeDefined();
   });
@@ -140,7 +140,7 @@ describe("listProfiles", () => {
     expect(def?.isActive).toBe(false);
   });
 
-  it("rejects invalid profile names before invoking the Hermes CLI", () => {
+  it("rejects invalid profile names before invoking the Clawd CLI", () => {
     expect(createProfile("../outside", true).success).toBe(false);
     expect(createProfile("-flag", true).success).toBe(false);
     expect(deleteProfile("../outside").success).toBe(false);
@@ -150,11 +150,11 @@ describe("listProfiles", () => {
     expect(execFileSyncMock).not.toHaveBeenCalled();
   });
 
-  it("surfaces Hermes Agent profile-create errors written to stdout", () => {
+  it("surfaces Clawd Agent profile-create errors written to stdout", () => {
     const err = new Error("Command failed");
     Object.assign(err, {
       stdout: Buffer.from(
-        "Error: Profile name 'test' is reserved — it collides with either the Hermes installation itself or a common system binary. Pick a different name.\n",
+        "Error: Profile name 'test' is reserved — it collides with either the Clawd installation itself or a common system binary. Pick a different name.\n",
       ),
       stderr: Buffer.from(""),
     });
@@ -169,11 +169,11 @@ describe("listProfiles", () => {
     expect(result.error).toContain("common system binary");
   });
 
-  it("uses Hermes Agent stdout for duplicate profile-create errors", () => {
+  it("uses Clawd Agent stdout for duplicate profile-create errors", () => {
     const err = new Error("Command failed");
     Object.assign(err, {
       stdout: Buffer.from(
-        "Error: Profile 'test2' already exists at C:\\Users\\pmos6\\AppData\\Local\\hermes\\profiles\\test2\n",
+        "Error: Profile 'test2' already exists at C:\\Users\\pmos6\\AppData\\Local\\clawd\\profiles\\test2\n",
       ),
       stderr: Buffer.from(""),
     });
@@ -185,7 +185,7 @@ describe("listProfiles", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toBe(
-      "Error: Profile 'test2' already exists at C:\\Users\\pmos6\\AppData\\Local\\hermes\\profiles\\test2",
+      "Error: Profile 'test2' already exists at C:\\Users\\pmos6\\AppData\\Local\\clawd\\profiles\\test2",
     );
   });
 

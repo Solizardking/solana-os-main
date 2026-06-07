@@ -19,7 +19,7 @@ vi.mock("../../components/AgentMarkdown", () => ({
 import Skills from "./Skills";
 
 describe("Skills.tsx — Install button (issue #310 diagnosis)", () => {
-  it("calls window.hermesAPI.installSkill(skill.name, profile) when Install is clicked on a Browse card", async () => {
+  it("calls window.clawdAPI.installSkill(skill.name, profile) when Install is clicked on a Browse card", async () => {
     const installSkill = vi.fn().mockResolvedValue({ success: true });
     const listInstalledSkills = vi.fn().mockResolvedValue([]);
     const listBundledSkills = vi.fn().mockResolvedValue([
@@ -33,7 +33,7 @@ describe("Skills.tsx — Install button (issue #310 diagnosis)", () => {
     ]);
     const getSkillContent = vi.fn().mockResolvedValue("");
 
-    Object.defineProperty(window, "hermesAPI", {
+    Object.defineProperty(window, "clawdAPI", {
       configurable: true,
       value: {
         installSkill,
@@ -97,7 +97,7 @@ describe("Skills.tsx — Install button (issue #310 diagnosis)", () => {
     ]);
     const getSkillContent = vi.fn().mockResolvedValue("");
 
-    Object.defineProperty(window, "hermesAPI", {
+    Object.defineProperty(window, "clawdAPI", {
       configurable: true,
       value: {
         installSkill,

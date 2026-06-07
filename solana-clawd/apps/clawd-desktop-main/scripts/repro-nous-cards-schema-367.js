@@ -15,7 +15,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
-const AUTH = path.join(os.homedir(), "AppData", "Local", "hermes", "auth.json");
+const AUTH = path.join(os.homedir(), "AppData", "Local", "clawd", "auth.json");
 const AUTH_BAK = AUTH + ".nous-cards-bk";
 
 (async () => {
@@ -61,7 +61,7 @@ const AUTH_BAK = AUTH + ".nous-cards-bk";
     const TEST_KEY = `sk-nous-test-${Date.now()}`;
     const entries = await page.evaluate(
       async ({ label, key }) => {
-        return await window.hermesAPI.addCredentialPoolEntry(
+        return await window.clawdAPI.addCredentialPoolEntry(
           "nous",
           key,
           label,

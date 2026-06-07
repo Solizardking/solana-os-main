@@ -10,10 +10,10 @@ import {
 import { tmpdir } from "os";
 
 /**
- * SIBLING_HERMES_HOME_DRIFT — config drift detection between the
- * Windows-side ~/.hermes/ and any WSL distro's ~/.hermes/.
+ * SIBLING_CLAWD_HOME_DRIFT — config drift detection between the
+ * Windows-side ~/.clawd/ and any WSL distro's ~/.clawd/.
  *
- * Test strategy: mock `wsl-detection.findSiblingHermesHomes` to
+ * Test strategy: mock `wsl-detection.findSiblingClawdHomes` to
  * return synthetic distros pointing at temp dirs. The check then
  * reads those temp dirs the same way it'd read real \\wsl$\... paths
  * in production, so we exercise the actual diff + auto-fix logic
@@ -22,7 +22,7 @@ import { tmpdir } from "os";
 
 const RUN_ROOT = join(
   tmpdir(),
-  `hermes-sibling-drift-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  `clawd-sibling-drift-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
 );
 const WIN_HOME = join(RUN_ROOT, "windows");
 const WSL_HOME = join(RUN_ROOT, "wsl-ubuntu-home");
@@ -45,11 +45,11 @@ async function freshHealth(): Promise<
 > {
   vi.resetModules();
   vi.doMock("../src/main/wsl-detection", () => ({
-    findSiblingHermesHomes: () => [
-      { distro: "Ubuntu", user: "tester", hermesHome: WSL_HOME },
+    findSiblingClawdHomes: () => [
+      { distro: "Ubuntu", user: "tester", clawdHome: WSL_HOME },
     ],
   }));
-  process.env.HERMES_HOME = WIN_HOME;
+  process.env.CLAWD_HOME = WIN_HOME;
   return await import("../src/main/config-health");
 }
 
@@ -59,22 +59,22 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   vi.doUnmock("../src/main/wsl-detection");
   rmSync(RUN_ROOT, { recursive: true, force: true });
 });
 
-describe("checkSiblingHermesHomeDrift", () => {
+describe("checkSiblingClawdHomeDrift", () => {
   it("emits no issues when both sides have matching configs", async () => {
     writeWindowsEnv("OPENROUTER_API_KEY=sk-or-same\n");
     writeWslEnv("OPENROUTER_API_KEY=sk-or-same\n");
     writeWindowsConfig("model:\n  provider: openrouter\n  default: gpt-4\n");
     writeWslConfig("model:\n  provider: openrouter\n  default: gpt-4\n");
 
-    const { checkSiblingHermesHomeDrift } = await freshHealth();
-    const issues = checkSiblingHermesHomeDrift();
-    expect(issues.filter((i) => i.code === "SIBLING_HERMES_HOME_DRIFT")).toEqual(
+    const { checkSiblingClawdHomeDrift } = await freshHealth();
+    const issues = checkSiblingClawdHomeDrift();
+    expect(issues.filter((i) => i.code === "SIBLING_CLAWD_HOME_DRIFT")).toEqual(
       [],
     );
   });
@@ -87,11 +87,11 @@ describe("checkSiblingHermesHomeDrift", () => {
     writeWindowsConfig("model:\n  provider: custom\n  base_url: https://api.unsloth.ai/v1\n");
     writeWslConfig("model:\n  provider: custom\n  base_url: https://api.unsloth.ai/v1\n");
 
-    const { checkSiblingHermesHomeDrift } = await freshHealth();
-    const issues = checkSiblingHermesHomeDrift();
+    const { checkSiblingClawdHomeDrift } = await freshHealth();
+    const issues = checkSiblingClawdHomeDrift();
     const driftIssue = issues.find(
       (i) =>
-        i.code === "SIBLING_HERMES_HOME_DRIFT" &&
+        i.code === "SIBLING_CLAWD_HOME_DRIFT" &&
         i.context?.field === "CUSTOM_API_KEY",
     );
     expect(driftIssue).toBeDefined();
@@ -111,11 +111,11 @@ describe("checkSiblingHermesHomeDrift", () => {
       "model:\n  provider: custom\n  base_url: https://x.test/v1\n  api_key: sk-yaml-only-on-wsl\n",
     );
 
-    const { checkSiblingHermesHomeDrift } = await freshHealth();
-    const issues = checkSiblingHermesHomeDrift();
+    const { checkSiblingClawdHomeDrift } = await freshHealth();
+    const issues = checkSiblingClawdHomeDrift();
     const driftIssue = issues.find(
       (i) =>
-        i.code === "SIBLING_HERMES_HOME_DRIFT" &&
+        i.code === "SIBLING_CLAWD_HOME_DRIFT" &&
         i.context?.field === "model.api_key",
     );
     expect(driftIssue).toBeDefined();
@@ -127,11 +127,11 @@ describe("checkSiblingHermesHomeDrift", () => {
     writeWindowsEnv("DEEPSEEK_API_KEY=sk-on-windows\n");
     writeWslEnv("");
 
-    const { checkSiblingHermesHomeDrift } = await freshHealth();
-    const issues = checkSiblingHermesHomeDrift();
+    const { checkSiblingClawdHomeDrift } = await freshHealth();
+    const issues = checkSiblingClawdHomeDrift();
     const driftIssue = issues.find(
       (i) =>
-        i.code === "SIBLING_HERMES_HOME_DRIFT" &&
+        i.code === "SIBLING_CLAWD_HOME_DRIFT" &&
         i.context?.field === "DEEPSEEK_API_KEY",
     );
     expect(driftIssue).toBeDefined();
@@ -144,11 +144,11 @@ describe("checkSiblingHermesHomeDrift", () => {
     writeWindowsEnv("OPENAI_API_KEY=sk-windows-side\n");
     writeWslEnv("OPENAI_API_KEY=sk-different-on-wsl\n");
 
-    const { checkSiblingHermesHomeDrift } = await freshHealth();
-    const issues = checkSiblingHermesHomeDrift();
+    const { checkSiblingClawdHomeDrift } = await freshHealth();
+    const issues = checkSiblingClawdHomeDrift();
     const driftIssue = issues.find(
       (i) =>
-        i.code === "SIBLING_HERMES_HOME_DRIFT" &&
+        i.code === "SIBLING_CLAWD_HOME_DRIFT" &&
         i.context?.field === "OPENAI_API_KEY",
     );
     expect(driftIssue).toBeDefined();
@@ -163,24 +163,24 @@ describe("checkSiblingHermesHomeDrift", () => {
   it("emits nothing when no WSL distros are detected", async () => {
     vi.resetModules();
     vi.doMock("../src/main/wsl-detection", () => ({
-      findSiblingHermesHomes: () => [],
+      findSiblingClawdHomes: () => [],
     }));
-    process.env.HERMES_HOME = WIN_HOME;
+    process.env.CLAWD_HOME = WIN_HOME;
     writeWindowsEnv("OPENAI_API_KEY=sk-test\n");
-    const { checkSiblingHermesHomeDrift } = await import(
+    const { checkSiblingClawdHomeDrift } = await import(
       "../src/main/config-health"
     );
-    expect(checkSiblingHermesHomeDrift()).toEqual([]);
+    expect(checkSiblingClawdHomeDrift()).toEqual([]);
   });
 });
 
-describe("fixSiblingHermesHomeDrift", () => {
+describe("fixSiblingClawdHomeDrift", () => {
   it("copies the WSL env value into the Windows-side .env", async () => {
     writeWindowsEnv("");
     writeWslEnv("CUSTOM_API_KEY=sk-copy-this-one\n");
 
-    const { fixSiblingHermesHomeDrift } = await freshHealth();
-    const result = fixSiblingHermesHomeDrift(undefined, {
+    const { fixSiblingClawdHomeDrift } = await freshHealth();
+    const result = fixSiblingClawdHomeDrift(undefined, {
       field: "CUSTOM_API_KEY",
       wslHome: WSL_HOME,
       direction: "wsl-to-windows",
@@ -204,8 +204,8 @@ describe("fixSiblingHermesHomeDrift", () => {
       "model:\n  provider: custom\n  base_url: https://x.test/v1\n  api_key: sk-yaml-value\n",
     );
 
-    const { fixSiblingHermesHomeDrift } = await freshHealth();
-    const result = fixSiblingHermesHomeDrift(undefined, {
+    const { fixSiblingClawdHomeDrift } = await freshHealth();
+    const result = fixSiblingClawdHomeDrift(undefined, {
       field: "model.api_key",
       wslHome: WSL_HOME,
       direction: "wsl-to-windows",
@@ -222,8 +222,8 @@ describe("fixSiblingHermesHomeDrift", () => {
   it("refuses to auto-fix the windows-to-wsl direction (we don't write to WSL silently)", async () => {
     writeWindowsEnv("OPENAI_API_KEY=sk-on-windows\n");
     writeWslEnv("");
-    const { fixSiblingHermesHomeDrift } = await freshHealth();
-    const result = fixSiblingHermesHomeDrift(undefined, {
+    const { fixSiblingClawdHomeDrift } = await freshHealth();
+    const result = fixSiblingClawdHomeDrift(undefined, {
       field: "OPENAI_API_KEY",
       wslHome: WSL_HOME,
       direction: "windows-to-wsl",
@@ -237,8 +237,8 @@ describe("fixSiblingHermesHomeDrift", () => {
   it("writes an audit-log entry with the secret masked", async () => {
     writeWindowsEnv("");
     writeWslEnv("OPENROUTER_API_KEY=sk-or-full-secret-12345\n");
-    const { fixSiblingHermesHomeDrift } = await freshHealth();
-    fixSiblingHermesHomeDrift(undefined, {
+    const { fixSiblingClawdHomeDrift } = await freshHealth();
+    fixSiblingClawdHomeDrift(undefined, {
       field: "OPENROUTER_API_KEY",
       wslHome: WSL_HOME,
       direction: "wsl-to-windows",
@@ -252,7 +252,7 @@ describe("fixSiblingHermesHomeDrift", () => {
       .filter((l) => l.trim() !== "")
       .pop()!;
     const entry = JSON.parse(lastLine);
-    expect(entry.issueCode).toBe("SIBLING_HERMES_HOME_DRIFT");
+    expect(entry.issueCode).toBe("SIBLING_CLAWD_HOME_DRIFT");
     expect(entry.action).toBe("autofix");
     // Secret masked — first 4 + last 4 only
     expect(entry.valueMasked).toBe("sk-o…2345");

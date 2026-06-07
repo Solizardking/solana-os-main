@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "fs";
 import { join } from "path";
-import { HERMES_HOME } from "./installer";
+import { CLAWD_HOME } from "./installer";
 
 /**
  * Staging area for pasted attachments.  Picker / drag-drop attachments
@@ -9,13 +9,13 @@ import { HERMES_HOME } from "./installer";
  * agent.
  *
  * Layout:
- *   %LOCALAPPDATA%/hermes/desktop-staging/<sessionId>/<filename>
+ *   %LOCALAPPDATA%clawd/desktop-staging/<sessionId>/<filename>
  *
  * Files persist across desktop restarts so the agent can re-read them
  * on session resume.  Per-session subdirs are cleaned up when the
  * session is deleted.
  */
-const STAGING_ROOT = join(HERMES_HOME, "desktop-staging");
+const STAGING_ROOT = join(CLAWD_HOME, "desktop-staging");
 
 function sanitizeSegment(value: string, fallback: string): string {
   // Strip path separators, null bytes, and any other dodgy chars; collapse

@@ -1,20 +1,20 @@
-<img width="100%" alt="HERMES DESKTOP" src="previews/header.webp" />
+<img width="100%" alt="CLAWD DESKTOP" src="previews/header.webp" />
 
 <br/>
 <p align="center">
-  <a href="https://hermes-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Documentación-hermes--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentación"></a>
-  <a href="https://t.me/hermes_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
-  <a href="https://github.com/fathah/hermes-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="Licencia: MIT"></a>
-  <a href="https://hermesagents.cc/"><img src="https://img.shields.io/badge/Descargar-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
-  <a href="https://github.com/fathah/hermes-desktop/stargazers">
-  <img src="https://img.shields.io/github/stars/fathah/hermes-desktop?style=for-the-badge&color=FFD700&label=Estrellas" alt="Estrellas">
+  <a href="https://clawd-agent.nousresearch.com/docs/"><img src="https://img.shields.io/badge/Documentación-clawd--agent.nousresearch.com-FFD700?style=for-the-badge" alt="Documentación"></a>
+  <a href="https://t.me/clawd_agent_desktop"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram"></a>
+  <a href="https://github.com/fathah/clawd-desktop/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="Licencia: MIT"></a>
+  <a href="https://clawdagents.cc/"><img src="https://img.shields.io/badge/Descargar-Releases-FF6600?style=for-the-badge" alt="Releases"></a>
+  <a href="https://github.com/fathah/clawd-desktop/stargazers">
+  <img src="https://img.shields.io/github/stars/fathah/clawd-desktop?style=for-the-badge&color=FFD700&label=Estrellas" alt="Estrellas">
 </a>
-  <a href="https://github.com/fathah/hermes-desktop/releases/">
-  <img src="https://img.shields.io/github/downloads/fathah/hermes-desktop/total?style=for-the-badge&color=00B496&label=Descargas%20Totales" alt="Descargas">
+  <a href="https://github.com/fathah/clawd-desktop/releases/">
+  <img src="https://img.shields.io/github/downloads/fathah/clawd-desktop/total?style=for-the-badge&color=00B496&label=Descargas%20Totales" alt="Descargas">
 </a>
 </p>
 
-> **Este proyecto está en desarrollo activo.** Las funciones pueden cambiar y algunas cosas podrían no funcionar perfectamente. Si encuentras un problema o tienes una idea, [abre un issue](https://github.com/fathah/hermes-desktop/issues). ¡Las contribuciones son bienvenidas!
+> **Este proyecto está en desarrollo activo.** Las funciones pueden cambiar y algunas cosas podrían no funcionar perfectamente. Si encuentras un problema o tienes una idea, [abre un issue](https://github.com/fathah/clawd-desktop/issues). ¡Las contribuciones son bienvenidas!
 
 ## Idiomas
 
@@ -23,13 +23,13 @@
 - 日本語: `README.ja-JP.md`
 - 🌎 Español (LATAM): `README.es-LATAM.md`
 
-Hermes Desktop es una aplicación nativa de escritorio para instalar, configurar y chatear con [Hermes Agent](https://github.com/NousResearch/hermes-agent) — un asistente de IA con autoaprendizaje, uso de herramientas, mensajería multiplataforma y un ciclo de aprendizaje cerrado.
+Clawd Desktop es una aplicación nativa de escritorio para instalar, configurar y chatear con [Clawd Agent](https://github.com/NousResearch/clawd-agent) — un asistente de IA con autoaprendizaje, uso de herramientas, mensajería multiplataforma y un ciclo de aprendizaje cerrado.
 
-En lugar de manejar el CLI a mano, la app guía todo el proceso de instalación, configuración de proveedores y uso diario en un solo lugar. Usa el script oficial de instalación de Hermes, guarda los archivos en `~/.hermes` y te da una GUI para chat, sesiones, perfiles, memoria, habilidades, herramientas, tareas programadas, gateways de mensajería y más.
+En lugar de manejar el CLI a mano, la app guía todo el proceso de instalación, configuración de proveedores y uso diario en un solo lugar. Usa el script oficial de instalación de Clawd, guarda los archivos en `~/.clawd` y te da una GUI para chat, sesiones, perfiles, memoria, habilidades, herramientas, tareas programadas, gateways de mensajería y más.
 
 ## Instalación
 
-<a href="https://hermesagents.cc/"><img width="380" alt="Descargar ahora" src="previews/download.webp" /></a>
+<a href="https://clawdagents.cc/"><img width="380" alt="Descargar ahora" src="previews/download.webp" /></a>
 
 ### Windows
 
@@ -38,17 +38,17 @@ En lugar de manejar el CLI a mano, la app guía todo el proceso de instalación,
 > **Usuarios de WSL:** Si el instalador se queda colgado en `Switching to root user to install dependencies...`, Playwright está esperando una contraseña de sudo que no tiene TTY para leerla. Otorga sudo sin contraseña para la instalación y reviértelo al terminar:
 >
 > ```bash
-> echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/hermes-install
+> echo "$USER ALL=(ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/clawd-install
 > # …vuelve a ejecutar el instalador; cuando termine:
-> sudo rm /etc/sudoers.d/hermes-install
+> sudo rm /etc/sudoers.d/clawd-install
 > ```
 >
-> Seguimiento en [#109](https://github.com/fathah/hermes-desktop/issues/109).
+> Seguimiento en [#109](https://github.com/fathah/clawd-desktop/issues/109).
 
 ### Fedora (RPM)
 
 ```bash
-sudo dnf install ./hermes-desktop-<version>.rpm
+sudo dnf install ./clawd-desktop-<version>.rpm
 ```
 
 > **Usuarios de Fedora:** El `.rpm` no tiene firma GPG. Si tu sistema exige verificación de firma, agrega `--nogpgcheck` al comando de instalación. La actualización automática no está disponible para builds `.rpm` (limitación de `electron-updater`); reinstala el nuevo `.rpm` para actualizar.
@@ -84,21 +84,21 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 
 ## Funcionalidades
 
-- **Instalación guiada en el primer uso** de Hermes Agent con seguimiento de progreso y resolución de dependencias
-- **Backend local o remoto** — ejecuta Hermes localmente en `127.0.0.1:8642`, o conecta la app a un servidor remoto con URL + clave API
+- **Instalación guiada en el primer uso** de Clawd Agent con seguimiento de progreso y resolución de dependencias
+- **Backend local o remoto** — ejecuta Clawd localmente en `127.0.0.1:8642`, o conecta la app a un servidor remoto con URL + clave API
 - **Soporte multi-proveedor** — OpenRouter, Anthropic, OpenAI, Google (Gemini), xAI (Grok), Nous Portal, Qwen, MiniMax, Hugging Face, Groq y endpoints compatibles con OpenAI (LM Studio, Atomic Chat, Ollama, vLLM, llama.cpp)
 - **UI de chat con streaming** con SSE, indicadores de progreso de herramientas, renderizado de Markdown y resaltado de sintaxis
 - **Seguimiento de tokens** — conteo en tiempo real de tokens de entrada/salida y costo en el pie del chat, más el comando `/usage`
 - **22 comandos slash** — `/new`, `/clear`, `/fast`, `/web`, `/image`, `/browse`, `/code`, `/shell`, `/usage`, `/help`, `/tools`, `/skills`, `/model`, `/memory`, `/persona`, `/version`, `/compact`, `/compress`, `/undo`, `/retry`, `/debug`, `/status` y más
 - **Gestión de sesiones** — búsqueda de texto completo (SQLite FTS5), historial agrupado por fecha, reanudar y buscar conversaciones
-- **Cambio de perfiles** — crea, elimina y cambia entre entornos Hermes con configuración aislada
+- **Cambio de perfiles** — crea, elimina y cambia entre entornos Clawd con configuración aislada
 - **14 conjuntos de herramientas** — web, navegador, terminal, archivos, ejecución de código, visión, generación de imágenes, TTS, habilidades, memoria, búsqueda de sesiones, clarificación, delegación, MoA y planificación de tareas
 - **Sistema de memoria** — ver/editar entradas de memoria, perfil de usuario, seguimiento de capacidad y proveedores de memoria (Honcho, Hindsight, Mem0, RetainDB, Supermemory, ByteRover)
 - **Editor de Persona** — edita y restablece el archivo SOUL.md de personalidad de tu agente
 - **Modelos guardados** — gestión CRUD de configuraciones de modelos por proveedor
 - **Tareas programadas** — constructor de cron jobs (minutos, cada hora, diario, semanal, cron personalizado) con 15 destinos de entrega
 - **16 gateways de mensajería** — Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email (IMAP/SMTP), SMS (Twilio/Vonage), iMessage (BlueBubbles), DingTalk, Feishu/Lark, WeCom, WeChat (iLink Bot), Webhooks, Home Assistant
-- **Hermes Office (Claw3d)** — interfaz visual 3D con servidor de desarrollo y gestión de adaptadores
+- **Clawd Office (Claw3d)** — interfaz visual 3D con servidor de desarrollo y gestión de adaptadores
 - **Backup, importar y diagnóstico** — respaldo/restauración completa y diagnóstico del sistema desde Configuración
 - **Visor de logs** — visualiza logs de gateway y agente directamente desde la pantalla de Configuración
 - **Actualizador automático** — verifica e instala actualizaciones vía electron-updater
@@ -109,11 +109,11 @@ sudo dnf install ./hermes-desktop-<version>.rpm
 
 Al primer lanzamiento, la app:
 
-1. Pregunta si deseas ejecutar Hermes **localmente** o conectarte a un **servidor remoto**.
-2. **Modo local:** verifica si Hermes ya está instalado en `~/.hermes`; si no, ejecuta el instalador oficial con resolución de dependencias (Git, uv, Python 3.11+).
+1. Pregunta si deseas ejecutar Clawd **localmente** o conectarte a un **servidor remoto**.
+2. **Modo local:** verifica si Clawd ya está instalado en `~/.clawd`; si no, ejecuta el instalador oficial con resolución de dependencias (Git, uv, Python 3.11+).
 3. **Modo remoto:** solicita la URL de la API remota y la clave API, valida la conexión y omite la instalación local.
 4. Solicita un proveedor de API o endpoint de modelo local.
-5. Guarda la configuración del proveedor y las claves API en los archivos de configuración de Hermes.
+5. Guarda la configuración del proveedor y las claves API en los archivos de configuración de Clawd.
 6. Lanza el workspace principal una vez completada la configuración.
 
 En modo local, las solicitudes de chat van por `http://127.0.0.1:8642` con streaming SSE. En modo remoto, la app se comunica con tu URL remota configurada con el mismo protocolo de streaming. La app parsea el stream en tiempo real, renderizando progreso de herramientas, contenido Markdown y uso de tokens a medida que llegan.
@@ -124,7 +124,7 @@ En modo local, las solicitudes de chat van por `http://127.0.0.1:8642` con strea
 | ----------------- | ---------------------------------------------------------------------------------------------- |
 | **Chat**          | UI de conversación con streaming, comandos slash, progreso de herramientas y seguimiento de tokens |
 | **Sesiones**      | Navega, busca y reanuda conversaciones pasadas                                                  |
-| **Perfiles**      | Crea, elimina y cambia entre perfiles de Hermes                                                 |
+| **Perfiles**      | Crea, elimina y cambia entre perfiles de Clawd                                                 |
 | **Habilidades**   | Navega, instala y gestiona habilidades incluidas e instaladas                                   |
 | **Modelos**       | Gestiona configuraciones de modelos guardadas por proveedor                                     |
 | **Memoria**       | Ver/editar entradas de memoria, perfil de usuario y configurar proveedores de memoria           |
@@ -168,8 +168,8 @@ Exa Search, Parallel API, Tavily, Firecrawl, FAL.ai (generación de imágenes), 
 ### Requisitos previos
 
 - Node.js y npm
-- Un entorno tipo Unix para el instalador de Hermes
-- Acceso a internet para descargar Hermes en la primera instalación
+- Un entorno tipo Unix para el instalador de Clawd
+- Acceso a internet para descargar Clawd en la primera instalación
 
 ### Instalar dependencias
 
@@ -214,7 +214,7 @@ npm run build:rpm    # Solo .rpm para Fedora/RHEL
 
 ## Configuración inicial
 
-Cuando la app se abre por primera vez, detectará una instalación existente de Hermes o se ofrecerá a instalarla.
+Cuando la app se abre por primera vez, detectará una instalación existente de Clawd o se ofrecerá a instalarla.
 
 Rutas de configuración soportadas en la UI:
 
@@ -231,15 +231,15 @@ Los presets locales incluyen:
 - vLLM
 - llama.cpp
 
-Los archivos de Hermes se gestionan en:
+Los archivos de Clawd se gestionan en:
 
-- `~/.hermes`
-- `~/.hermes/.env`
-- `~/.hermes/config.yaml`
-- `~/.hermes/hermes-agent`
-- `~/.hermes/profiles/` — directorios de perfiles con nombre
-- `~/.hermes/state.db` — base de datos del historial de sesiones
-- `~/.hermes/cron/jobs.json` — tareas programadas
+- `~/.clawd`
+- `~/.clawd/.env`
+- `~/.clawd/config.yaml`
+- `~/.clawd/clawd-agent`
+- `~/.clawd/profiles/` — directorios de perfiles con nombre
+- `~/.clawd/state.db` — base de datos del historial de sesiones
+- `~/.clawd/cron/jobs.json` — tareas programadas
 
 ## Stack tecnológico
 
@@ -254,20 +254,20 @@ Los archivos de Hermes se gestionan en:
 
 ## Notas
 
-- La app de escritorio depende del proyecto upstream Hermes Agent para el comportamiento del agente y la ejecución de herramientas.
-- El instalador integrado ejecuta el script oficial de instalación de Hermes con `--skip-setup`, luego completa la configuración del proveedor en la GUI.
+- La app de escritorio depende del proyecto upstream Clawd Agent para el comportamiento del agente y la ejecución de herramientas.
+- El instalador integrado ejecuta el script oficial de instalación de Clawd con `--skip-setup`, luego completa la configuración del proveedor en la GUI.
 - Los proveedores de modelos locales no requieren clave API, pero el servidor compatible debe estar ejecutándose.
 - Las rutas alternativas de registro npm son compatibles para entornos con acceso restringido a internet.
 
 ## Contribuir
 
-¡Las contribuciones son bienvenidas! Consulta la [Guía de contribución](CONTRIBUTING.md) para comenzar. Si no sabes por dónde empezar, mira los [issues abiertos](https://github.com/fathah/hermes-desktop/issues). ¿Encontraste un bug o tienes una solicitud de funcionalidad? [Abre un issue](https://github.com/fathah/hermes-desktop/issues/new).
+¡Las contribuciones son bienvenidas! Consulta la [Guía de contribución](CONTRIBUTING.md) para comenzar. Si no sabes por dónde empezar, mira los [issues abiertos](https://github.com/fathah/clawd-desktop/issues). ¿Encontraste un bug o tienes una solicitud de funcionalidad? [Abre un issue](https://github.com/fathah/clawd-desktop/issues/new).
 
 ## Proyecto relacionado
 
-Para el agente central, documentación y flujos de trabajo CLI, consulta el repositorio principal de Hermes Agent:
+Para el agente central, documentación y flujos de trabajo CLI, consulta el repositorio principal de Clawd Agent:
 
-- https://github.com/NousResearch/hermes-agent
+- https://github.com/NousResearch/clawd-agent
 
 ---
 

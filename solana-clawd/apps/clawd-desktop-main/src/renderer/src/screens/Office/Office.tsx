@@ -45,7 +45,7 @@ function Office({
   });
   const [webviewReady, setWebviewReady] = useState(false);
   const [webviewError, setWebviewError] = useState("");
-  // Set when the main process detects a Claw3D / hermes-office service
+  // Set when the main process detects a Claw3D / clawd-office service
   // running on the remote host (SSH tunnel mode). When present the webview
   // points at this URL and the local install/start UX is bypassed.
   const [remoteUrl, setRemoteUrl] = useState<string | null>(null);
@@ -62,7 +62,7 @@ function Office({
 
   const checkStatus = useCallback(async (): Promise<void> => {
     setState("checking");
-    const status = await window.hermesAPI.claw3dStatus();
+    const status = await window.clawdAPI.claw3dStatus();
     setRemoteUrl(status.remoteUrl ?? null);
     setRunning(status.running);
     setPort(status.port);
@@ -85,7 +85,7 @@ function Office({
   useEffect(() => {
     if (state !== "ready" || !visible) return;
     const interval = setInterval(async () => {
-      const status = await window.hermesAPI.claw3dStatus();
+      const status = await window.clawdAPI.claw3dStatus();
       setRemoteUrl(status.remoteUrl ?? null);
       setRunning(status.running);
       setPort(status.port);
@@ -173,12 +173,12 @@ function Office({
     setState("installing");
     setError("");
 
-    const cleanup = window.hermesAPI.onClaw3dSetupProgress((p) => {
+    const cleanup = window.clawdAPI.onClaw3dSetupProgress((p) => {
       setProgress(p);
     });
 
     try {
-      const result = await window.hermesAPI.claw3dSetup();
+      const result = await window.clawdAPI.claw3dSetup();
       cleanup();
       if (result.success) {
         setState("ready");
@@ -195,7 +195,7 @@ function Office({
 
   async function handleStartStop(): Promise<void> {
     if (running) {
-      await window.hermesAPI.claw3dStopAll();
+      await window.clawdAPI.claw3dStopAll();
       setRunning(false);
       setWebviewReady(false);
       setWebviewError("");
@@ -204,7 +204,7 @@ function Office({
       setError("");
       setWebviewError("");
       setStarting(true);
-      const result = await window.hermesAPI.claw3dStartAll(profile);
+      const result = await window.clawdAPI.claw3dStartAll(profile);
       if (!result.success) {
         setError(result.error || "Failed to start Claw3D");
         setStarting(false);
@@ -220,20 +220,20 @@ function Office({
   async function handlePortSave(): Promise<void> {
     const newPort = parseInt(portInput, 10);
     if (isNaN(newPort) || newPort < 1024 || newPort > 65535) return;
-    await window.hermesAPI.claw3dSetPort(newPort);
+    await window.clawdAPI.claw3dSetPort(newPort);
     setPort(newPort);
-    const status = await window.hermesAPI.claw3dStatus();
+    const status = await window.clawdAPI.claw3dStatus();
     setPortInUse(status.portInUse);
   }
 
   async function handleWsUrlSave(): Promise<void> {
     const trimmed = wsUrlInput.trim();
     if (!trimmed) return;
-    await window.hermesAPI.claw3dSetWsUrl(trimmed);
+    await window.clawdAPI.claw3dSetWsUrl(trimmed);
   }
 
   async function loadLogs(): Promise<void> {
-    const l = await window.hermesAPI.claw3dGetLogs();
+    const l = await window.clawdAPI.claw3dGetLogs();
     setLogs(l);
     setShowLogs(true);
   }
@@ -250,7 +250,7 @@ function Office({
       : 0;
 
   // Remote Claw3D (SSH tunnel mode) takes precedence: the remote
-  // hermes-office.service already runs, so we point the webview at it
+  // clawd-office.service already runs, so we point the webview at it
   // rather than asking the user to install Claw3D locally.
   const claw3dUrl = remoteUrl || `http://localhost:${port}`;
 
@@ -285,7 +285,7 @@ function Office({
               <button
                 className="btn btn-secondary"
                 onClick={() =>
-                  window.hermesAPI.openExternal(
+                  window.clawdAPI.openExternal(
                     "https://github.com/iamlukethedev/Claw3D",
                   )
                 }
@@ -370,7 +370,7 @@ function Office({
               </button>
               <button
                 className="btn-ghost office-toolbar-btn"
-                onClick={() => window.hermesAPI.openExternal(claw3dUrl)}
+                onClick={() => window.clawdAPI.openExternal(claw3dUrl)}
                 title={t("office.openInBrowser")}
               >
                 <ExternalLink size={16} />

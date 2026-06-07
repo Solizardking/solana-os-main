@@ -1,10 +1,10 @@
 import { spawn, type ChildProcess } from "child_process";
 import { homedir } from "os";
 import {
-  HERMES_PYTHON,
-  HERMES_REPO,
-  HERMES_HOME,
-  hermesCliArgs,
+  CLAWD_PYTHON,
+  CLAWD_REPO,
+  CLAWD_HOME,
+  clawdCliArgs,
   getEnhancedPath,
 } from "./installer";
 import { HIDDEN_SUBPROCESS_OPTIONS } from "./process-options";
@@ -12,8 +12,8 @@ import { stripAnsi } from "./utils";
 
 /**
  * Provider identifiers that authenticate via an interactive OAuth flow
- * (`hermes auth add <provider> --type oauth`) rather than a static API
- * key. Mirrors hermes-agent's `_OAUTH_CAPABLE_PROVIDERS` set.
+ * (`clawd auth add <provider> --type oauth`) rather than a static API
+ * key. Mirrors clawd-agent's `_OAUTH_CAPABLE_PROVIDERS` set.
  *
  * `nous` is included even though it also has an API-key variant — the
  * Providers UI now offers both surfaces (an API Key card and an
@@ -75,7 +75,7 @@ export function detectDeviceCode(
 let activeProc: ChildProcess | null = null;
 
 /**
- * Run `hermes auth add <provider> --type oauth`, streaming the CLI's
+ * Run `clawd auth add <provider> --type oauth`, streaming the CLI's
  * stdout/stderr line-by-line to `emit`. The CLI opens the system browser
  * for the OAuth consent step and runs a localhost loopback server to
  * catch the redirect; this function just supervises that subprocess.
@@ -83,7 +83,7 @@ let activeProc: ChildProcess | null = null;
  * Resolves `{ success: true }` on exit code 0, `{ success: false, error }`
  * otherwise (non-zero exit, spawn failure, or cancellation).
  */
-export function runHermesAuthLogin(
+export function runClawdAuthLogin(
   provider: string,
   emit: (chunk: string) => void,
   profile?: string,
@@ -113,13 +113,13 @@ export function runHermesAuthLogin(
 
     let proc: ChildProcess;
     try {
-      proc = spawn(HERMES_PYTHON, hermesCliArgs(subArgs), {
-        cwd: HERMES_REPO,
+      proc = spawn(CLAWD_PYTHON, clawdCliArgs(subArgs), {
+        cwd: CLAWD_REPO,
         env: {
           ...process.env,
           PATH: getEnhancedPath(),
           HOME: homedir(),
-          HERMES_HOME,
+          CLAWD_HOME,
           PYTHONUNBUFFERED: "1",
           TERM: "dumb",
         },
@@ -166,7 +166,7 @@ export function runHermesAuthLogin(
  * Kill the in-flight login subprocess, if any. Used when the user closes
  * the sign-in modal before the OAuth flow completes.
  */
-export function cancelHermesAuthLogin(): boolean {
+export function cancelClawdAuthLogin(): boolean {
   if (!activeProc) return false;
   activeProc.kill();
   return true;

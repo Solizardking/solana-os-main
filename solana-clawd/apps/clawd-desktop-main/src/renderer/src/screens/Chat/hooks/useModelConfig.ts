@@ -48,8 +48,8 @@ export function useModelConfig(profile?: string): UseModelConfigResult {
 
   const reload = useCallback(async (): Promise<void> => {
     const [mc, savedModels] = await Promise.all([
-      window.hermesAPI.getModelConfig(profile),
-      window.hermesAPI.listModels(),
+      window.clawdAPI.getModelConfig(profile),
+      window.clawdAPI.listModels(),
     ]);
     setCurrentModel(mc.model);
     setCurrentProvider(mc.provider);
@@ -66,14 +66,14 @@ export function useModelConfig(profile?: string): UseModelConfigResult {
   const selectModel = useCallback(
     async (provider: string, model: string, baseUrl: string): Promise<void> => {
       // Named providers (deepseek, groq, anthropic, …) have a hardcoded
-      // canonical base_url in `hermes-agent`'s PROVIDER_REGISTRY.  A stored
+      // canonical base_url in `clawd-agent`'s PROVIDER_REGISTRY.  A stored
       // model entry that carries a stale `baseUrl` from an earlier confused
       // save (e.g. a deepseek-tagged entry whose baseUrl points at the codex
       // endpoint) would route the request to the wrong host.  Drop the
       // baseUrl whenever the entry isn't `custom`; the gateway falls back
       // to the provider's canonical URL.
       const effectiveBaseUrl = provider === "custom" ? baseUrl : "";
-      await window.hermesAPI.setModelConfig(
+      await window.clawdAPI.setModelConfig(
         provider,
         model,
         effectiveBaseUrl,

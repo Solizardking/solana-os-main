@@ -149,7 +149,7 @@ const AgentMarkdown = memo(function AgentMarkdown({
               } catch {
                 return;
               }
-              window.hermesAPI.openExternal(href);
+              window.clawdAPI.openExternal(href);
             }}
           >
             {children}

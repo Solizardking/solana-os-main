@@ -1,14 +1,14 @@
 export default {
   title: "Configuración",
   sections: {
-    hermesAgent: "Hermes Agent",
+    clawdAgent: "Clawd Agent",
     appearance: "Apariencia",
     privacy: "Privacidad",
     credentialPool: "Grupo de credenciales",
   },
   analytics: {
     label: "Enviar analíticas de uso anónimas",
-    hint: "Ayuda a mejorar Hermes enviando datos de uso anónimos y agregados a la instancia PostHog del proyecto (alojada en la UE). Puedes desactivarlo en cualquier momento.",
+    hint: "Ayuda a mejorar Clawd enviando datos de uso anónimos y agregados a la instancia PostHog del proyecto (alojada en la UE). Puedes desactivarlo en cualquier momento.",
     disclosure: {
       uuid: "Un identificador aleatorio por instalación almacenado únicamente en este dispositivo (sin nombre, correo electrónico ni datos de cuenta).",
       platform:
@@ -39,7 +39,7 @@ export default {
   },
   notDetected: "No detectado",
   updatedSuccessfully: "¡Actualizado correctamente!",
-  updateSuccess: "Hermes se actualizó correctamente.",
+  updateSuccess: "Clawd se actualizó correctamente.",
   updateFailed: "La actualización falló.",
   version: "v{{version}}",
   proxyPlaceholder: "p. ej. socks5://127.0.0.1:1080 o http://proxy:8080",
@@ -69,14 +69,14 @@ export default {
     "No se pudo acceder a la lista de modelos del proveedor — aún puedes escribir un nombre de modelo",
   customBaseUrlHint: "Endpoint de API compatible con OpenAI",
   poolHint:
-    "Agrega varias API keys para el mismo proveedor para la rotación automática y el equilibrio de carga. Hermes alternará entre ellas.",
+    "Agrega varias API keys para el mismo proveedor para la rotación automática y el equilibrio de carga. Clawd alternará entre ellas.",
   add: "Agregar",
   remove: "Quitar",
   keyLabel: "Clave",
   empty: "(vacío)",
   dataSection: "Datos",
   dataHint:
-    "Exporta o importa tu configuración de Hermes, sesiones, habilidades y memoria.",
+    "Exporta o importa tu configuración de Clawd, sesiones, habilidades y memoria.",
   backingUp: "Creando copia de seguridad...",
   exportBackup: "Exportar copia de seguridad",
   importing: "Importando...",
@@ -93,10 +93,10 @@ export default {
   debugDump: "Volcado de depuración",
   migrationDetected: "Se detectó una instalación de OpenClaw",
   migrationDesc:
-    "Se encontró OpenClaw en <code>{{path}}</code>. Puedes migrar tu configuración, API keys, sesiones y habilidades a Hermes.",
+    "Se encontró OpenClaw en <code>{{path}}</code>. Puedes migrar tu configuración, API keys, sesiones y habilidades a Clawd.",
   migrationDismiss: "No volver a mostrar",
   migrating: "Migrando...",
-  migrateToHermes: "Migrar a Hermes",
+  migrateToClawd: "Migrar a Clawd",
   skip: "Omitir",
   appearanceHint: "Elige la apariencia de interfaz que prefieras",
   apiKeyPlaceholder: "API key",
@@ -104,12 +104,12 @@ export default {
   connectionSection: "Conexión",
   modeLocal: "Local",
   modeRemote: "Remoto",
-  modeLocalHint: "Usando Hermes instalado en este dispositivo",
+  modeLocalHint: "Usando Clawd instalado en este dispositivo",
   modeRemoteHint:
-    "Conectarse a un servidor de API de Hermes en tu red o en la nube",
+    "Conectarse a un servidor de API de Clawd en tu red o en la nube",
   remoteUrl: "URL remota",
   remoteUrlHint:
-    "La URL del servidor de API de Hermes (debe exponer /health y /v1/chat/completions)",
+    "La URL del servidor de API de Clawd (debe exponer /health y /v1/chat/completions)",
   remoteApiKey: "API key",
   remoteApiKeyHint:
     "Coincide con API_SERVER_KEY en el host remoto. Déjalo vacío si el servidor acepta solicitudes no autenticadas.",
@@ -118,7 +118,7 @@ export default {
   save: "Guardar",
   serverConfigTitle: "Configuración del servidor",
   serverConfigHint:
-    "Estás conectado a un servidor remoto de Hermes. La selección de modelos, las API keys de proveedores y las credenciales se administran en <code>~/.hermes/.env</code> y <code>config.yaml</code> del servidor. Edítalos en el host (por ejemplo, <code>docker exec -it hermes vi /opt/data/.env</code>) y reinicia el contenedor.",
+    "Estás conectado a un servidor remoto de Clawd. La selección de modelos, las API keys de proveedores y las credenciales se administran en <code>~/.clawd/.env</code> y <code>config.yaml</code> del servidor. Edítalos en el host (por ejemplo, <code>docker exec -it clawd vi /opt/data/.env</code>) y reinicia el contenedor.",
   connectionMode: "Modo",
   switchedToLocal: "Se cambió al modo local",
 } as const;

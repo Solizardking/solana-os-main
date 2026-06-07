@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ArrowRight, Copy, Send } from "../../assets/icons";
 
-const TELEGRAM_COMMUNITY_URL = "https://t.me/hermes_agent_desktop";
+const TELEGRAM_COMMUNITY_URL = "https://t.me/clawd_agent_desktop";
 import { useI18n } from "../../components/useI18n";
 
 interface InstallProgress {
@@ -13,7 +13,7 @@ interface InstallProgress {
 }
 
 interface InstallTarget {
-  hermesHome: string;
+  clawdHome: string;
   repoPath: string;
   state: "fresh" | "update" | "replace";
 }
@@ -31,7 +31,7 @@ function Install({
 }: InstallProps): React.JSX.Element {
   const { t } = useI18n();
   // Gate the install behind an explicit confirmation so it can't run
-  // silently and surprise a user who already has Hermes installed (#272).
+  // silently and surprise a user who already has Clawd installed (#272).
   const [phase, setPhase] = useState<"confirm" | "running">("confirm");
   const [target, setTarget] = useState<InstallTarget | null>(null);
   const [useExistingError, setUseExistingError] = useState<string | null>(null);
@@ -54,7 +54,7 @@ function Install({
   // confirmation can say exactly what to expect (fresh / update / replace).
   useEffect(() => {
     let mounted = true;
-    window.hermesAPI
+    window.clawdAPI
       .inspectInstallTarget()
       .then((info) => {
         if (mounted) setTarget(info);
@@ -71,11 +71,11 @@ function Install({
   useEffect(() => {
     if (phase !== "running") return;
     let isMounted = true;
-    const cleanup = window.hermesAPI.onInstallProgress((p) => {
+    const cleanup = window.clawdAPI.onInstallProgress((p) => {
       if (isMounted) setProgress(p);
     });
 
-    window.hermesAPI
+    window.clawdAPI
       .startInstall()
       .then((result) => {
         if (!isMounted) return;
@@ -109,19 +109,19 @@ function Install({
     setTimeout(() => setCopied(false), 2000);
   }
 
-  // "Use an existing installation": let the user point the app at a Hermes
+  // "Use an existing installation": let the user point the app at a Clawd
   // install it didn't auto-detect. A valid pick is persisted; the app must
   // restart to adopt it (#272).
   async function handleUseExisting(): Promise<void> {
     setUseExistingError(null);
-    const dir = await window.hermesAPI.selectFolder();
+    const dir = await window.clawdAPI.selectFolder();
     if (!dir) return;
-    const ok = await window.hermesAPI.validateHermesHome(dir);
+    const ok = await window.clawdAPI.validateClawdHome(dir);
     if (!ok) {
       setUseExistingError(t("install.useExistingInvalid"));
       return;
     }
-    const saved = await window.hermesAPI.adoptHermesHome(dir);
+    const saved = await window.clawdAPI.adoptClawdHome(dir);
     if (saved) {
       setAdopted(true);
     } else {
@@ -149,7 +149,7 @@ function Install({
             <div className="install-confirm-actions">
               <button
                 className="btn btn-primary"
-                onClick={() => window.hermesAPI.quitApp()}
+                onClick={() => window.clawdAPI.quitApp()}
               >
                 {t("install.useExistingQuitBtn")}
               </button>
@@ -221,7 +221,7 @@ function Install({
           ? t("install.installationComplete")
           : failed
             ? t("install.installationFailed")
-            : t("install.installingHermes")}
+            : t("install.installingClawd")}
       </h1>
 
       <div className="install-progress-container">
@@ -265,7 +265,7 @@ function Install({
             <button
               className="btn btn-secondary btn-sm"
               onClick={() =>
-                window.hermesAPI.openExternal(TELEGRAM_COMMUNITY_URL)
+                window.clawdAPI.openExternal(TELEGRAM_COMMUNITY_URL)
               }
               title={TELEGRAM_COMMUNITY_URL}
             >

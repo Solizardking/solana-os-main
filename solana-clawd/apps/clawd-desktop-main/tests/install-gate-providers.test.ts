@@ -83,7 +83,7 @@ describe("expectedEnvKeyForModel — URL fallback for custom/auto providers", ()
 });
 
 // The actual install-gate behavior is exercised end-to-end by importing
-// the module under a per-test HERMES_HOME — same pattern as the other
+// the module under a per-test CLAWD_HOME — same pattern as the other
 // installer tests. Skipped here because the existing tests already cover
 // the file-existence half; the gap was provider awareness, which the
 // pure-function tests above pin down.

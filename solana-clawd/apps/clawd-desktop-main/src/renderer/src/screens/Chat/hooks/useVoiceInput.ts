@@ -100,7 +100,7 @@ export function useVoiceInput(
         const blob = new Blob(chunksRef.current, { type });
         if (blob.size === 0) return;
         const bytes = new Uint8Array(await blob.arrayBuffer());
-        const text = await window.hermesAPI.transcribeAudio(
+        const text = await window.clawdAPI.transcribeAudio(
           bytes,
           blob.type,
           profile,

@@ -16,7 +16,7 @@ import { tmpdir } from "os";
 
 const TEST_DIR = join(
   tmpdir(),
-  `hermes-test-config-health-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+  `clawd-test-config-health-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
 );
 
 async function freshHealth(
@@ -24,9 +24,9 @@ async function freshHealth(
 ): Promise<typeof import("../src/main/config-health")> {
   vi.resetModules();
   vi.doMock("../src/main/wsl-detection", () => ({
-    findSiblingHermesHomes: () => [],
+    findSiblingClawdHomes: () => [],
   }));
-  process.env.HERMES_HOME = home;
+  process.env.CLAWD_HOME = home;
   return await import("../src/main/config-health");
 }
 
@@ -43,7 +43,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete process.env.HERMES_HOME;
+  delete process.env.CLAWD_HOME;
   vi.resetModules();
   rmSync(TEST_DIR, { recursive: true, force: true });
 });
@@ -125,7 +125,7 @@ describe("runConfigHealthCheck", () => {
 
   it("flags MODEL_KEY_MISSING for nous when neither NOUS_API_KEY nor auth.json is set (#367)", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     const { runConfigHealthCheck } = await freshHealth(TEST_DIR);
     const report = runConfigHealthCheck();
@@ -137,7 +137,7 @@ describe("runConfigHealthCheck", () => {
 
   it("does NOT flag MODEL_KEY_MISSING for nous when auth.json has OAuth credentials", async () => {
     writeConfig(
-      ["model:", "  provider: nous", "  default: hermes-4", ""].join("\n"),
+      ["model:", "  provider: nous", "  default: clawd-4", ""].join("\n"),
     );
     writeFileSync(
       join(TEST_DIR, "auth.json"),
@@ -303,14 +303,14 @@ describe("autoFixIssue", () => {
 });
 
 describe("checkLegacyToolsetName", () => {
-  it("flags a top-level toolsets list containing legacy `- hermes`", async () => {
+  it("flags a top-level toolsets list containing legacy `- clawd`", async () => {
     writeConfig(
       [
         "model:",
         "  provider: auto",
         "  default: ''",
         "toolsets:",
-        "- hermes",
+        "- clawd",
         "agent:",
         "  max_turns: 60",
         "",
@@ -325,14 +325,14 @@ describe("checkLegacyToolsetName", () => {
     expect(issues[0].fixLocation).toBe("config.yaml");
   });
 
-  it("emits no issue when toolsets uses the canonical `hermes-cli` name", async () => {
+  it("emits no issue when toolsets uses the canonical `clawd-cli` name", async () => {
     writeConfig(
       [
         "model:",
         "  provider: auto",
         "  default: ''",
         "toolsets:",
-        "- hermes-cli",
+        "- clawd-cli",
         "",
       ].join("\n"),
     );
@@ -340,13 +340,13 @@ describe("checkLegacyToolsetName", () => {
     expect(checkLegacyToolsetName()).toEqual([]);
   });
 
-  it("emits no issue when only platform-suffixed names are present (`hermes-telegram` etc.)", async () => {
+  it("emits no issue when only platform-suffixed names are present (`clawd-telegram` etc.)", async () => {
     writeConfig(
       [
         "toolsets:",
-        "- hermes-cli",
-        "- hermes-telegram",
-        "- hermes-discord",
+        "- clawd-cli",
+        "- clawd-telegram",
+        "- clawd-discord",
         "",
       ].join("\n"),
     );
@@ -358,7 +358,7 @@ describe("checkLegacyToolsetName", () => {
     writeConfig(
       [
         "toolsets:",
-        '  - "hermes"   # legacy alias',
+        '  - "clawd"   # legacy alias',
         "",
       ].join("\n"),
     );
@@ -370,16 +370,16 @@ describe("checkLegacyToolsetName", () => {
 
   it("only inspects the top-level toolsets block, not platform_toolsets", async () => {
     // `platform_toolsets.cli` is the desktop's own enable list; the legacy
-    // check must not flag a per-platform `hermes` entry under a different
+    // check must not flag a per-platform `clawd` entry under a different
     // parent (that block uses its own validation in tools.ts).
     writeConfig(
       [
         "toolsets:",
-        "- hermes-cli",
+        "- clawd-cli",
         "platform_toolsets:",
         "  cli:",
         "  - web",
-        "  - hermes", // would be a false positive if the parser leaked
+        "  - clawd", // would be a false positive if the parser leaked
         "",
       ].join("\n"),
     );
@@ -400,7 +400,7 @@ describe("fixLegacyToolsetName", () => {
         "model:",
         "  provider: auto",
         "toolsets:",
-        "- hermes",
+        "- clawd",
         "agent:",
         "  max_turns: 60",
         "",
@@ -410,8 +410,8 @@ describe("fixLegacyToolsetName", () => {
     const result = fixLegacyToolsetName();
     expect(result.ok).toBe(true);
     const after = readFileSync(join(TEST_DIR, "config.yaml"), "utf-8");
-    expect(after).toMatch(/^- hermes-cli$/m);
-    expect(after).not.toMatch(/^- hermes$/m);
+    expect(after).toMatch(/^- clawd-cli$/m);
+    expect(after).not.toMatch(/^- clawd$/m);
     // Other blocks untouched
     expect(after).toMatch(/^agent:$/m);
     expect(after).toMatch(/^model:$/m);
@@ -421,25 +421,25 @@ describe("fixLegacyToolsetName", () => {
     writeConfig(
       [
         "toolsets:",
-        '  - "hermes"   # legacy alias',
+        '  - "clawd"   # legacy alias',
         "",
       ].join("\n"),
     );
     const { fixLegacyToolsetName } = await freshHealth(TEST_DIR);
     expect(fixLegacyToolsetName().ok).toBe(true);
     const after = readFileSync(join(TEST_DIR, "config.yaml"), "utf-8");
-    expect(after).toMatch(/^\s+- "hermes-cli"\s+# legacy alias$/m);
+    expect(after).toMatch(/^\s+- "clawd-cli"\s+# legacy alias$/m);
   });
 
   it("returns ok:false when nothing matches", async () => {
-    writeConfig(["toolsets:", "- hermes-cli", ""].join("\n"));
+    writeConfig(["toolsets:", "- clawd-cli", ""].join("\n"));
     const { fixLegacyToolsetName } = await freshHealth(TEST_DIR);
     const result = fixLegacyToolsetName();
     expect(result.ok).toBe(false);
   });
 
   it("writes an audit-log entry recording the rewrite", async () => {
-    writeConfig(["toolsets:", "- hermes", ""].join("\n"));
+    writeConfig(["toolsets:", "- clawd", ""].join("\n"));
     const { fixLegacyToolsetName } = await freshHealth(TEST_DIR);
     fixLegacyToolsetName();
     const logFile = join(TEST_DIR, "logs", "config-fixes.log");
@@ -452,7 +452,7 @@ describe("fixLegacyToolsetName", () => {
     );
     expect(entry.issueCode).toBe("LEGACY_TOOLSET_NAME");
     expect(entry.action).toBe("autofix");
-    expect(entry.from).toBe("hermes");
-    expect(entry.to).toBe("hermes-cli");
+    expect(entry.from).toBe("clawd");
+    expect(entry.to).toBe("clawd-cli");
   });
 });

@@ -184,7 +184,7 @@ export const FileViewer = memo(function FileViewer({
     const loadFile = async (): Promise<void> => {
       // If image file, load as data URL
       if (isImageFile(filePath)) {
-        const imageData = await window.hermesAPI.readImageFile(filePath);
+        const imageData = await window.clawdAPI.readImageFile(filePath);
         if (cancelled) return;
         if (imageData === null) {
           setError(t("worktree.errorLoading"));
@@ -196,7 +196,7 @@ export const FileViewer = memo(function FileViewer({
       }
 
       // Otherwise load as text
-      const result = await window.hermesAPI.readFile(filePath, 102400);
+      const result = await window.clawdAPI.readFile(filePath, 102400);
       if (cancelled) return;
       if (result === null) {
         setError(t("worktree.errorLoading"));
@@ -256,7 +256,7 @@ export const FileViewer = memo(function FileViewer({
           <div className="file-viewer-actions">
             <button
               className="btn-ghost file-viewer-open"
-              onClick={() => window.hermesAPI.openFileInEditor(filePath)}
+              onClick={() => window.clawdAPI.openFileInEditor(filePath)}
               title={t("worktree.openInEditor")}
             >
               <ExternalLink size={14} />

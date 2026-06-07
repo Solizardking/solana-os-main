@@ -1,5 +1,5 @@
 /* ========================================================================
-   Hermes Agent Desktop — Clean Design System
+   Clawd Agent Desktop — Clean Design System
    Dark + Light mode, no gradients, flat design
    ======================================================================== */
 
@@ -3797,25 +3797,25 @@ body {
   }
 }
 
-.settings-hermes-info {
+.settings-clawd-info {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.settings-hermes-row {
+.settings-clawd-row {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
 }
 
-.settings-hermes-detail {
+.settings-clawd-detail {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.settings-hermes-label {
+.settings-clawd-label {
   font-size: 11px;
   font-weight: 600;
   color: var(--text-muted);
@@ -3823,18 +3823,18 @@ body {
   letter-spacing: 0.5px;
 }
 
-.settings-hermes-value {
+.settings-clawd-value {
   font-size: 13px;
   color: var(--text-primary);
 }
 
-.settings-hermes-path {
+.settings-clawd-path {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--text-secondary);
 }
 
-.settings-hermes-update-badge {
+.settings-clawd-update-badge {
   font-size: 12px;
   color: var(--warning);
   background: rgba(245, 158, 11, 0.1);
@@ -3843,23 +3843,23 @@ body {
   width: fit-content;
 }
 
-.settings-hermes-actions {
+.settings-clawd-actions {
   display: flex;
   gap: 8px;
 }
 
-.settings-hermes-result {
+.settings-clawd-result {
   font-size: 12px;
   padding: 6px 10px;
   border-radius: var(--radius);
 }
 
-.settings-hermes-result.success {
+.settings-clawd-result.success {
   color: var(--success);
   background: var(--success-bg);
 }
 
-.settings-hermes-result.error {
+.settings-clawd-result.error {
   color: var(--error);
   background: var(--error-bg);
 }
@@ -3952,7 +3952,7 @@ body {
   gap: 8px;
 }
 
-.settings-hermes-doctor {
+.settings-clawd-doctor {
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 1.5;

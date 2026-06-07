@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractReasoningDelta } from "../src/main/hermes";
+import { extractReasoningDelta } from "../src/main/clawd";
 
 /**
  * `extractReasoningDelta` pulls the streaming reasoning / thinking text
