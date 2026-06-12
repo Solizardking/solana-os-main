@@ -1,4 +1,0 @@
-provider: github
-owner: x402agent
-repo: clawd-desktop
-updaterCacheDirName: clawd-desktop-updater
