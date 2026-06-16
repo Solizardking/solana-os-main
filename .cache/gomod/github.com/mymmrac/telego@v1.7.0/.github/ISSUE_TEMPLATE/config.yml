@@ -1,0 +1,23 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Have a question or topic do discuss?
+    url: https://github.com/mymmrac/telego/discussions
+    about: "Go to discussions and ask anything"
+  - name: 📄 Telegram Bot API
+    url: https://core.telegram.org/bots/api
+    about: "Telegram documentation of Bot API (full reference)"
+  - name: 🧩 Telegram Bot Fundamentals
+    url: https://core.telegram.org/bots
+    about: "Bots: An introduction for developers"
+  - name: 🌟 Telegram Bot Features
+    url: https://core.telegram.org/bots/features
+    about: "Describes individual bot elements and features in detail"
+  - name: 🎧 Telegram Bot Webhooks
+    url: https://core.telegram.org/bots/webhooks
+    about: "Marvin's Marvellous Guide to All Things Webhook"
+  - name: 💰 Telegram Bot Payments
+    url: https://core.telegram.org/bots/payments
+    about: "Describes payment system and payment lifecycle"
+  - name: 📱 Telegram Bot WebApps
+    url: https://core.telegram.org/bots/webapps
+    about: "Describes WebApps and interactions with them"

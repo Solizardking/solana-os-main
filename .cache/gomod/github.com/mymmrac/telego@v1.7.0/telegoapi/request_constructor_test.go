@@ -1,0 +1,191 @@
+package telegoapi
+
+import (
+	"errors"
+	"io"
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestDefaultConstructor_JSONRequest(t *testing.T) {
+	tests := []struct {
+		name       string
+		parameters any
+		data       *RequestData
+		isError    bool
+	}{
+		{
+			name: "success",
+			parameters: struct {
+				N int    `json:"n"`
+				S string `json:"s"`
+				E int    `json:"e,omitempty"`
+			}{
+				N: 1,
+				S: "test",
+			},
+			data: &RequestData{
+				ContentType: ContentTypeJSON,
+				BodyRaw:     []byte(`{"n":1,"s":"test"}`),
+			},
+			isError: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := DefaultConstructor{}
+			data, err := d.JSONRequest(tt.parameters)
+			if tt.isError {
+				require.Error(t, err)
+				assert.Nil(t, data)
+				return
+			}
+			require.NoError(t, err)
+			assert.Equalf(t, tt.data, data, "Expected: %q, actual: %q", string(tt.data.BodyRaw), string(data.BodyRaw))
+		})
+	}
+}
+
+func TestDefaultConstructor_MultipartRequest(t *testing.T) {
+	tests := []struct {
+		name            string
+		parameters      map[string]string
+		filesParameters map[string]NamedReader
+		contentType     string
+		data            []string
+		isError         bool
+		isReadError     bool
+	}{
+		{
+			name: "success",
+			parameters: map[string]string{
+				"testParam": "1",
+			},
+			filesParameters: map[string]NamedReader{
+				"testFile": newTestFile("testF", "Hello World"),
+				"nilFile":  nil,
+			},
+			contentType: "multipart/form-data; boundary=",
+			data: []string{
+				"Content-Disposition: form-data; name=\"testFile\"; filename=\"testF\"\r\n" +
+					"Content-Type: application/octet-stream\r\n\r\nHello World\r\n",
+				"Content-Disposition: form-data; name=\"testParam\"\r\n\r\n1\r\n",
+			},
+			isError: false,
+		},
+		{
+			name:       "error_read",
+			parameters: map[string]string{},
+			filesParameters: map[string]NamedReader{
+				"testFile": newTestErrFile("testF", errors.New("read error")),
+			},
+			isReadError: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := DefaultConstructor{}
+			data, err := d.MultipartRequest(tt.parameters, tt.filesParameters)
+			if tt.isError {
+				require.Error(t, err)
+				assert.Nil(t, data)
+				return
+			}
+			require.NoError(t, err)
+			assert.Contains(t, data.ContentType, tt.contentType)
+
+			body, err := io.ReadAll(data.BodyStream)
+			if tt.isReadError {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+
+			for _, expectedData := range tt.data {
+				assert.Contains(t, string(body), expectedData)
+			}
+		})
+	}
+}
+
+type testFile struct {
+	fileName string
+	data     io.Reader
+}
+
+func newTestFile(name, data string) testFile {
+	return testFile{
+		fileName: name,
+		data:     strings.NewReader(data),
+	}
+}
+
+func (t testFile) Name() string {
+	return t.fileName
+}
+
+func (t testFile) Read(p []byte) (n int, err error) {
+	return t.data.Read(p)
+}
+
+type testErrFile struct {
+	fileName string
+	err      error
+}
+
+func newTestErrFile(name string, err error) testErrFile {
+	return testErrFile{
+		fileName: name,
+		err:      err,
+	}
+}
+
+func (t testErrFile) Name() string {
+	return t.fileName
+}
+
+func (t testErrFile) Read(_ []byte) (n int, err error) {
+	return 0, t.err
+}
+
+func Test_isNil(t *testing.T) {
+	var nr NamedReader
+	var ns any
+	var s []int
+	ns = s
+
+	tests := []struct {
+		name  string
+		value any
+		isNil bool
+	}{
+		{
+			name:  "nil",
+			value: nil,
+			isNil: true,
+		},
+		{
+			name:  "not_nil",
+			value: true,
+			isNil: false,
+		},
+		{
+			name:  "nil_interface",
+			value: nr,
+			isNil: true,
+		},
+		{
+			name:  "nil_value_interface",
+			value: ns,
+			isNil: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.isNil, isNil(tt.value))
+		})
+	}
+}

@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - ":hamster: Go"
+      - ":shamrock: Dependencies"
+
+  - package-ecosystem: "gomod"
+    directory: "/examples"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":hamster: Go"
+      - ":shamrock: Examples dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - ":gear: GitHub Actions"
+      - ":shamrock: Dependencies"
