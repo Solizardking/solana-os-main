@@ -1,1 +1,23 @@
-AgenticCandymachine/.env
+# Environment files — NEVER commit. The root .gitignore already excludes
+# `.env` / `.env.*`, but we keep this subdirectory guard in case the root
+# ignore is ever bypassed (e.g. `git add -f`).
+.env
+.env.*
+!.env.example
+!.env.template
+!.env.sample
+
+# Local private key material
+wallet.json
+*-wallet.json
+keypair.json
+*-keypair.json
+id.json
+
+# Build / cache
+node_modules/
+dist/
+build/
+.anchor/
+target/
+*.tsbuildinfo
