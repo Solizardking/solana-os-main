@@ -1,0 +1,17 @@
+{
+  "constitution": "Clawd Constitution v1.0 (Solana-native)",
+  "immutable_laws_file": "three-laws.md",
+  "algorithm": "sha256",
+  "hash": "2bc3863be5dbb8cfb03ba58ca664f42a4edfac3f92748e68e13f3d06b8ddf309",
+  "genesis_authority": "OpenClawd core team",
+  "created_at": "2026-06-16T13:46:03Z",
+  "mutation_policy": "IMMUTABLE",
+  "spawn_verification": {
+    "method": "compare at spawn: sha256(three-laws.md) == genesis.hash",
+    "failure_mode": "abort spawn with LAW_HASH_MISMATCH",
+    "verifier_path": "src/molting/constitution-gate.ts"
+  },
+  "predecessor": null,
+  "successor": null,
+  "notes": "Genesis hash for the first published version of the three on-chain laws. The hash is regenerated on every change to three-laws.md, but a change to the on-chain laws is an extraordinary event that requires a new constitution version, not a hash bump."
+}
