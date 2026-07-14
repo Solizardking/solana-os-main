@@ -1,9 +1,8 @@
 module github.com/ethereum/go-ethereum
 
-go 1.24.0
+go 1.25.0
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.2.0
 	github.com/Microsoft/go-winio v0.6.2
 	github.com/VictoriaMetrics/fastcache v1.13.0
 	github.com/aws/aws-sdk-go-v2 v1.21.2
@@ -68,13 +67,13 @@ require (
 	go.opentelemetry.io/otel/trace v1.39.0
 	go.uber.org/automaxprocs v1.5.2
 	go.uber.org/goleak v1.3.0
-	golang.org/x/crypto v0.44.0
+	golang.org/x/crypto v0.52.0
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
-	golang.org/x/sync v0.18.0
-	golang.org/x/sys v0.39.0
-	golang.org/x/text v0.31.0
+	golang.org/x/sync v0.20.0
+	golang.org/x/sys v0.45.0
+	golang.org/x/text v0.37.0
 	golang.org/x/time v0.9.0
-	golang.org/x/tools v0.38.0
+	golang.org/x/tools v0.44.0
 	google.golang.org/protobuf v1.36.11
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1
@@ -94,8 +93,6 @@ require (
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.7.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/ProjectZKM/Ziren/crates/go-runtime/zkvm_runtime v0.0.0-20251001021608-1fe7b43fc4d6
 	github.com/StackExchange/wmi v1.2.1 // indirect
@@ -161,8 +158,8 @@ require (
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	golang.org/x/mod v0.29.0 // indirect
-	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/mod v0.35.0 // indirect
+	golang.org/x/net v0.54.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
