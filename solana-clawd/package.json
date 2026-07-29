@@ -70,7 +70,7 @@
     "@xterm/xterm": "^5.5.0",
     "agentwallet-vault": "^0.1.0",
     "auto-bind": "^5.0.1",
-    "axios": "^1.7.0",
+    "axios": "^1.18.0",
     "bs58": "^6.0.0",
     "chalk": "^5.4.0",
     "chokidar": "^4.0.0",
