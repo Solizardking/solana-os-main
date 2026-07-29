@@ -32,10 +32,10 @@
     "@better-auth/infra": "^0.2.11",
     "@sentry/node": "^10.45.0",
     "@solana/kit": "^6.9.0",
-    "better-auth": "^1.6.14",
+    "better-auth": "^1.6.25",
     "better-auth-solana": "^1.0.0",
     "better-sqlite3": "^12.10.0",
-    "netlify-cli": "^24.5.0",
+    "netlify-cli": "^27.0.1",
     "solanaos-cli": "^2.0.0"
   },
   "devDependencies": {
